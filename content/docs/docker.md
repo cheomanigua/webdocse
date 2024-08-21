@@ -216,6 +216,29 @@ $ docker volume ls -qf dangling=true | xargs -r docker volume rm
 
 ## Docker compose
 
+[Docker Compose](https://docs.docker.com/compose/) is a tool for defining and running multi-container applications.
+
+Compose simplifies the control of your entire application stack, making it easy to manage services, networks, and volumes in a single, comprehensible YAML configuration file. Then, with a single command, you create and start all the services from your configuration file.
+
+### Creating the docker compose file
+
+- Create a file called `docker-compose.yml` and add this content:
+
+```yaml
+services:          // indent properly the rest of the code under services:
+  golang-app:
+    image: go-app
+    ports:
+      - 8080:8080
+```
+
+- Run the service:
+
+```
+$ docker-compose up
+```
+
+### Commands
 ```
 docker-compose up -d
 docker-compose down

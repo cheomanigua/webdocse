@@ -4,6 +4,7 @@ contentDir = "content"
 enableEmoji = true
 #enableGitInfo = true # N.B. .GitInfo does not currently function with git submodule content directories
 
+#  uncomment hugo.IsMultilingual at layouts/partials/docs/top-header.html for multi language support
 defaultContentLanguage = 'en'
 [languages]
   [languages.en]
@@ -79,10 +80,10 @@ defaultContentLanguage = 'en'
 
         prism           = true                                # enable syntax highlighting via Prism
 
-        prismTheme      = "lucario"                           # (optional) - Set theme for PrismJS. Options include: lotusdocs (default), solarized-light, twilight, lucario
+        prismTheme      = "solarized-light"                           # (optional) - Set theme for PrismJS. Options include: lotusdocs (default), solarized-light, twilight, lucario
 
         # gitinfo
-        repoURL         = "https://github.com/colinwilson/lotusdocs.dev"  # Git repository URL for your site [support for GitHub, GitLab, and BitBucket]
+        repoURL         = "https://github.com/cheomanigua/devdocse"  # Git repository URL for your site [support for GitHub, GitLab, and BitBucket]
         repoBranch      = "release"
         editPage        = true                                # enable 'Edit this page' feature - default false
         lastMod         = true                                # enable 'Last modified' date on pages - default false

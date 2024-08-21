@@ -73,7 +73,7 @@ func main() {
 
 We can see now in the code above the `http.Handle`. What is it? It is a built in function that registers the handler for the given pattern in DefaultServerMux. You can check those patterns [here](https://pkg.go.dev/net/http#hdr-Patterns). Basically the first parameter declares the pattern to match, and the second paramenter instructs what the handler actually does when the match occurs.
 
-The handlers that ship with `net/http` are useful, but most of the time when building a web application you'll want to use your own custom handlers instead. So how do you do that? Check the Practical Examples at the end of this page.
+The handlers that ship with `net/http` are useful, but most of the time when building a web application you'll want to use your own custom handlers instead. So how do you do that? Check below.
 
 # 1. Handle, HandlerFunc and HandleFunc
 
@@ -191,6 +191,7 @@ func main() {
     http.ListenAndServe(":8080", mux)
 }
 ```
+
 The `timeHandler()` function now has a subtly different role. Instead of coercing the function into a handler (like we did previously), we are now using it to return a handler.
 
 In this example we've just been passing a simple string to a handler. But in a real-world application you could use this method to pass database connection, template map, or any other application-level context. It's a good alternative to using global variables, and has the added benefit of making neat self-contained handlers for testing.

@@ -56,6 +56,8 @@ firebase use --clear            // Clears the active project
     - **? What do you want to use as your public directory? *public*** enter
     - **? Configure as a single-page app (rewrite all urls to /index.html)? *(y/N)*** enter
     - **? Set up automatic builds and deploys with GitHub? *(y/N)*** enter 
+    - **? File public/404.html already exists. Overwrite? *(y/N)*** enter (if applicable)
+    - **? File public/index.html already exists. Overwrite? *(y/N)*** enter (if applicable)
 
 3. In your local machine, in the root directory of your Hugo project, type: `$ hugo && firebase deploy`
 
