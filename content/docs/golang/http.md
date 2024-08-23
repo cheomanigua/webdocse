@@ -243,8 +243,9 @@ func (h myHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    http.Handle("/", myHandler{})
-    http.ListenAndServe(":8080", nil)
+    mux. := http.NewServeMux()
+    mux.Handle("/", myHandler{})
+    http.ListenAndServe(":8080", mux)
 }
 ```
 
@@ -409,23 +410,27 @@ Example:
 package main
 
 import (
-    "io"
-    "net/http"
+	"io"
+	"log"
+	"net/http"
 )
 
-func h1(w http.ResponseWriter, _ *http.Request) {
-    io.WriteString(w, "Hello from HandleFunc #1!\n")
+func h2(w http.ResponseWriter, r *http.Request) {
+	io.WriteString(w, "Hello from HandleFunc #2!\n")
 }
 
-func h2(w http.ResponseWriter, _ *http.Request) {
-    io.WriteString(w, "Hello from HandleFunc #2!\n")
+func h3(http.ResponseWriter, *http.Request) {
+	log.Println("Logging HandleFunc #3!")
 }
 
 func main() {
-    mux := http.NewServeMux()
-    mux.HandleFunc("/h1", h1)
-    mux.HandleFunc("/h2", h2)
-    http.ListenAndServe(":8080", mux)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/h1", func(w http.ResponseWriter, r *http.Request) {
+		io.WriteString(w, "Hello from HandleFunc #2!\n")
+	})
+	mux.HandleFunc("/h2", h2)
+	mux.HandleFunc("/h3", h3)
+	http.ListenAndServe(":8080", mux)
 }
 ```
 
@@ -437,4 +442,52 @@ func main() {
 * `http.HandleFunc` takes in a function of type `http.HandlerFunc`. Note that `http.HandleFunc` is not the same as `http.Handle`.
 * also note that for the argument to `http.HandleFunc` the method `ServeHTTP(...` is not important, what's important is that the signature, ie type, of the function that you pass in is the same as defined by the argument, ie. `func(http.ResponseWriter, *http.Request)`. The ServeHTTP method is only important for the `http.Handle` or anything that depends on the `http.Handler` interface which declares that method as one of its members.
 
+# 5. The default servemux
 
+The default servemux is just a plain ol' servemux like we've already been using, which gets instantiated by default when the net/http package is used and is stored in a global variable. Here's the relevant line from the Go source:
+
+```
+var DefaultServeMux = NewServeMux()
+```
+
+Generally speaking, I recommended against using the default servemux because it makes your code less clear and explicit and it poses a security risk. Because it's stored in a global variable, any package is able to access it and register a route — including any third-party packages that your application imports. If one of those third-party packages is compromised, they could use the default servemux to expose a malicious handler to the web.
+
+Instead it's better to use your own locally-scoped servemux, like we have been so far. But if you do decide to use the default servemux...
+
+The `net/http` package provides a couple of shortcuts for registering routes with the default servemux: [http.Handle()](https://pkg.go.dev/net/http/#Handle)and [http.HandleFunc()](https://pkg.go.dev/net/http/#HandleFunc). These do exactly the same as their namesake functions we've already looked at, with the difference that they add handlers to the default servemux instead of one that you've created.
+
+Additionally, [http.ListenAndServe()](https://pkg.go.dev/net/http#ListenAndServe) will fall back to using the default servemux if no other handler is provided (that is, the second argument is set to nil).
+
+So as a final step, let's demonstrate how to use the default servemux in our application instead:
+
+```go
+package main
+
+import (
+    "log"
+    "net/http"
+    "time"
+)
+
+func timeHandler(format string) http.Handler {
+    fn := func(w http.ResponseWriter, r *http.Request) {
+	tm := time.Now().Format(format)
+	w.Write([]byte("The time is: " + tm))
+    }
+    return http.HandlerFunc(fn)
+}
+
+func main() {
+    // Note that we skip creating the ServeMux...
+
+    var format string = time.RFC1123
+    th := timeHandler(format)
+
+    // We use http.Handle instead of mux.Handle...
+    http.Handle("/time", th)
+
+    log.Print("Listening...")
+    // And pass nil as the handler to ListenAndServe.
+    http.ListenAndServe(":3000", nil)
+}
+```

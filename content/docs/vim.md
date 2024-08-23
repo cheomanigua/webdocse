@@ -506,5 +506,5 @@ Run `:TSUpdate`
 - **g** + **d** -\> Go to Definition of the function/variable where the cursor is on
 - **g** + **D** -\> Go to Declaration of the function/variable where the cursor is on
 - **g** + **I** -\> Go to Implementation of the function/variable where the cursor is on
-- **g** + **I** -\> Go to Implementation of the function/variable where the cursor is on
+- **Ctl** + **o** -\> Go back to previous window after going to Definition/Declaration/Implementation
 - **:e .** -\> Open file explorer
