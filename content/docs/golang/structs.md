@@ -15,9 +15,9 @@ toc: true
 
 ```go
 type person struct {
-    name string
-    age int
-    pet string
+	name string
+	age int
+	pet string
 }
 ```
 
@@ -36,18 +36,18 @@ or
 
 ```go
 bob := person{
-    "Bob",
-    40,
-    "cat",
+	"Bob",
+	40,
+	"cat",
 }
 ```
 or
 
 ```go
 bob := person{
-    name: "Bob",
-    age: 40,
-    pet: "cat",
+	name: "Bob",
+	age: 40,
+	pet: "cat",
 }
 ```
 
@@ -64,9 +64,9 @@ You can also declare that a variable implements a struct type without first givi
 
 ```go
 var person struct {
-    name string
-    age int
-    pet string
+	name string
+	age int
+	pet string
 }
 ```
 
@@ -79,12 +79,12 @@ or
 
 ```go
 person := struct {
-    name string
-    age int
-    pet string
+	name string
+	age int
+	pet string
 }{
-    name: "Bob",
-    age: 40,
+	name: "Bob",
+	age: 40,
 }
 ```
 
@@ -131,30 +131,30 @@ Pointers are better explained at the [pointers page]( {{<ref "pointers">}}), but
 
 ```go
 type Employee struct {
-    name    string
-    age     int
+	name    string
+	age     int
 }
 
 func (e Employee) updateName(newName string) {
-    e.name = newName
-    fmt.Println(e.name)  // It will print Bob
+	e.name = newName
+	fmt.Println(e.name)  // It will print Bob
 }
 
 func (e *Employee) updateNamePointer(newName string) {
-    e.name = newName
-    fmt.Println(e.name)  // It will print Bob
+	e.name = newName
+	fmt.Println(e.name)  // It will print Bob
 }
 
 func main() {
-    employee1 := Employee {
-        name:   "Alice",
-        age:    38,
-    }
+	employee1 := Employee {
+		name:   "Alice",
+		age:    38,
+	}
 
-    employee1.updateName("Bob") // The name will not be updated to Bob. It will remain Alice
-    employee1.updateNamePointer("Bob") // The name will be updated to Bob.
+	employee1.updateName("Bob") // The name will not be updated to Bob. It will remain Alice
+	employee1.updateNamePointer("Bob") // The name will be updated to Bob.
 
-    fmt.Println("Employee Name:", employee1.name)
-    fmt.Println("Employee Age:", employee1.age)
+	fmt.Println("Employee Name:", employee1.name)
+	fmt.Println("Employee Age:", employee1.age)
 }
 ```

@@ -73,13 +73,13 @@ Nginx can handle SSL/TLS encryption and decryption, and forwards the encrypted m
 
 ```
 server {
-    listen 80;
-    server_name example.com www.example.com;
+	listen 80;
+	server_name example.com www.example.com;
 
-    location / {
-        root /var/www/example.com;
-        index index.html index.htm;
-    }
+	location / {
+		root /var/www/example.com;
+		index index.html index.htm;
+	}
 }
 ```
 
@@ -87,29 +87,29 @@ server {
 
 ```
 server {
-    listen 80;
-    server_name example.com www.example.com;
+	listen 80;
+	server_name example.com www.example.com;
 
-    ## Redirect all HTTP requests to HTTPS
-    return 301 https://$host$request_uri;
+	## Redirect all HTTP requests to HTTPS
+	return 301 https://$host$request_uri;
 }
 
 server {
-    listen 443 ssl;
-    server_name example.com www.example.com;
+	listen 443 ssl;
+	server_name example.com www.example.com;
 
-    ## SSL Configuration
-    ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
+	## SSL Configuration
+	ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
+	ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
 
-    ## Security Headers
-    add__header Strict-Transport-Security "max-age=31536000; includeSubDomains” always;
-    #..
+	## Security Headers
+	add__header Strict-Transport-Security "max-age=31536000; includeSubDomains” always;
+	#..
 
-    location / {
-        root /var/www/example.com;
-        index index.html index.htm;
-    }
+	location / {
+		root /var/www/example.com;
+		index index.html index.htm;
+	}
 }
 ```
 
@@ -117,20 +117,20 @@ server {
 
 ```
 http {
-    upstream myapp1 {
-        least_conn; // round-robin is default, so no need to add this line when using round-robin
-        server srv1.example.com;
-        server srv2.example.com;
-        server srv3.example.com;
-    }
+	upstream myapp1 {
+		least_conn; // round-robin is default, so no need to add this line when using round-robin
+		server srv1.example.com;
+		server srv2.example.com;
+		server srv3.example.com;
+	}
 
-    server {
-        listen 80;
+	server {
+		listen 80;
 
-        location / {
-            proxy_pass http://myapp1;
-        }
-    }
+		location / {
+			proxy_pass http://myapp1;
+		}
+	}
 }
 ```
 
@@ -138,13 +138,13 @@ http {
 
 ```
 http {
-    # ...
-    proxy_cache_path /data/nginx/cache keys_zone=mycache:10m;
-    server {
-        proxy_cache mycache;
-        location / {
-            proxy_pass http://localhost:8000;
-        }
-    }
+	# ...
+	proxy_cache_path /data/nginx/cache keys_zone=mycache:10m;
+	server {
+		proxy_cache mycache;
+		location / {
+			proxy_pass http://localhost:8000;
+		}
+	}
 }
 ```

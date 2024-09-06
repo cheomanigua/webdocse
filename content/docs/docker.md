@@ -228,10 +228,10 @@ Compose simplifies the control of your entire application stack, making it easy 
 
 ```yaml
 services:          // Note: indent properly the rest of the code under services:
-  golang-app:
-    image: go-app
-    ports:
-      - 8080:8080
+		golang-app:
+			image: go-app
+			ports:
+				- 8080:8080
 ```
 
 - Run the service:
@@ -239,6 +239,8 @@ services:          // Note: indent properly the rest of the code under services:
 ```
 $ docker-compose up
 ```
+
+{{< alert text="You can use [composerize.com](https://www.composerize.com/) to automatically generate a docker compose file" />}}
 
 ### Commands
 ```

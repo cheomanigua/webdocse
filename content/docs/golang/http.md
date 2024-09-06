@@ -22,11 +22,11 @@ Let's take a lood at the simplest web server:
 package main
 
 import (
-    "net/http"
+	"net/http"
 )
 
 func main() {
-    http.ListenAndServe(":8080", http.FileServer(http.Dir("./static")))
+	http.ListenAndServe(":8080", http.FileServer(http.Dir("./static")))
 }
 ```
 `http.ListenAndServe` creates the server.
@@ -54,20 +54,20 @@ The simplest web server making use of Effective Go writing style: clear and idio
 package main
 
 import (
-    "log"
-    "net/http"
+	"log"
+	"net/http"
 )
 
 func main() {
-    mux := http.NewServeMux()
-    fs := http.FileServer(http.Dir("./static"))
-    mux.Handle("/", fs)
+	mux := http.NewServeMux()
+	fs := http.FileServer(http.Dir("./static"))
+	mux.Handle("/", fs)
 
-    log.Print("Listening on :8080...")
-    err := http.ListenAndServe(":8080", mux)
-    if err != nil {
-        log.Fatal(err)
-    }
+	log.Print("Listening on :8080...")
+	err := http.ListenAndServe(":8080", mux)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 ```
 
@@ -90,25 +90,25 @@ Let's see with an example. This server shows the date and time:
 package main
 
 import (
-    "log"
-    "net/http"
-    "time"
+	"log"
+	"net/http"
+	"time"
 )
 
 type timeHandler struct {
-    format string
+	format string
 }
 
 func (th timeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-    tm := time.Now().Format(th.format)
-    w.Write([]byte("The time is: " + tm))
+	tm := time.Now().Format(th.format)
+	w.Write([]byte("The time is: " + tm))
 }
 
 func main() {
-    mux := http.NewServeMux()
-    mux.Handle("/time", timeHandler{format: time.RFC822})
-    log.Print("Listening...")
-    http.ListenAndServe(":8080", mux)
+	mux := http.NewServeMux()
+	mux.Handle("/time", timeHandler{format: time.RFC822})
+	log.Print("Listening...")
+	http.ListenAndServe(":8080", mux)
 }
 ```
 
@@ -120,14 +120,14 @@ For simple cases like the example above, defining new a custom type (in the abov
 package main
 
 import (
-    "log"
-    "net/http"
-    "time"
+	"log"
+	"net/http"
+	"time"
 )
 
 func timeHandler(w http.ResponseWriter, r *http.Request) {
-    tm := time.Now().Format(time.RFC822)
-    w.Write([]byte("The time is: " + tm))
+	tm := time.Now().Format(time.RFC822)
+	w.Write([]byte("The time is: " + tm))
 }
 
 func main() {
@@ -157,10 +157,10 @@ Converting a function to a `http.HandlerFunc` type and then adding it to a serve
 
 ```go
 func main() {
-    mux := http.NewServeMux()
-    mux.HandleFunc("/time", timeHandler)
-    log.Print("Listening...")
-    http.ListenAndServe(":8080", mux)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/time", timeHandler)
+	log.Print("Listening...")
+	http.ListenAndServe(":8080", mux)
 }
 ```
 
@@ -177,18 +177,18 @@ A neat approach is to put our handler logic into a closure, and close over the v
 
 ```go
 func timeHandler(format string) http.Handler {
-    fn := func(w http.ResponseWriter, r *http.Request) {
-	tm := time.Now().Format(format)
-	w.Write([]byte("The time is: " + tm))
-    }
-    return http.HandlerFunc(fn)
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		tm := time.Now().Format(format)
+		w.Write([]byte("The time is: " + tm))
+	}
+	return http.HandlerFunc(fn)
 }
 
 func main() {
-    mux := http.NewServeMux()
-    mux.Handle("/time", timeHandler(time.RFC1123))
-    log.Print("Listening...")
-    http.ListenAndServe(":8080", mux)
+	mux := http.NewServeMux()
+	mux.Handle("/time", timeHandler(time.RFC1123))
+	log.Print("Listening...")
+	http.ListenAndServe(":8080", mux)
 }
 ```
 
@@ -200,10 +200,10 @@ You might also see this same pattern written as:
 
 ```go
 func timeHandler(format string) http.Handler {
-    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	tm := time.Now().Format(format)
-	w.Write([]byte("The time is: " + tm))
-    })
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		tm := time.Now().Format(format)
+		w.Write([]byte("The time is: " + tm))
+	})
 }
 ```
 
@@ -211,10 +211,10 @@ Or using an implicit conversion to the `http.HandlerFunc` type on return:
 
 ```go
 func timeHandler(format string) http.HandlerFunc {
-    return func(w http.ResponseWriter, r *http.Request) {
-	tm := time.Now().Format(format)
-	w.Write([]byte("The time is: " + tm))
-    }
+	return func(w http.ResponseWriter, r *http.Request) {
+		tm := time.Now().Format(format)
+		w.Write([]byte("The time is: " + tm))
+	}
 }
 ```
 # 2. Handler
@@ -239,13 +239,13 @@ type myHandler struct {
 }
 
 func (h myHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-    w.Write([]byte(`hello world`))
+	w.Write([]byte(`hello world`))
 }
 
 func main() {
-    mux. := http.NewServeMux()
-    mux.Handle("/", myHandler{})
-    http.ListenAndServe(":8080", mux)
+	mux. := http.NewServeMux()
+	mux.Handle("/", myHandler{})
+	http.ListenAndServe(":8080", mux)
 }
 ```
 
@@ -269,13 +269,13 @@ Example of FileServer Handler type:
 package main
 
 import (
-    "log"
-    "net/http"
+	"log"
+	"net/http"
 )
 
 func main() {
-    // Simple static webserver:
-    log.Fatal(http.ListenAndServe(":8080", http.FileServer(http.Dir("/usr/share/doc"))))
+	// Simple static webserver:
+	log.Fatal(http.ListenAndServe(":8080", http.FileServer(http.Dir("/usr/share/doc"))))
 }
 ```
 
@@ -294,9 +294,9 @@ An example of `http.Handle` implementation in six different ways:
 package main
 
 import (
-    "io"
-    "log"
-    "net/http"
+	"io"
+	"log"
+	"net/http"
 )
 
 type myHandler1 struct{}
@@ -305,41 +305,41 @@ type myHandler3 struct{}
 type myHandler4 struct{}
 
 func (h myHandler1) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-    io.WriteString(w, "Hello from myHandler 1")
+	io.WriteString(w, "Hello from myHandler 1")
 }
 
 func (h *myHandler2) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-    io.WriteString(w, "Hello from myHandler 2")
+	io.WriteString(w, "Hello from myHandler 2")
 }
 
 func (h myHandler3) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-    io.WriteString(w, "Hello from myHandler 3")
+	io.WriteString(w, "Hello from myHandler 3")
 }
 
 func (h myHandler4) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-    io.WriteString(w, "Hello from myHandler 4")
+	io.WriteString(w, "Hello from myHandler 4")
 }
 
 func myHandler5() http.Handler {
-    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "Hello from myHandler 5")
-    })
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		io.WriteString(w, "Hello from myHandler 5")
+	})
 }
 
 func myHandler6(w http.ResponseWriter, r *http.Request) {
-    io.WriteString(w, "Hello from myHandler 6")
+	io.WriteString(w, "Hello from myHandler 6")
 }
 
 func main() {
-    var h4 myHandler4
-    mux := http.NewServeMux()
-    mux.Handle("/h1", myHandler1{})
-    mux.Handle("/h2", &myHandler2{})
-    mux.Handle("/h3", new(myHandler3))
-    mux.Handle("/h4", h4)
-    mux.Handle("/h5", myHandler5())
-    mux.Handle("/h6", http.HandlerFunc(myHandler6))
-    log.Fatal(http.ListenAndServe(":8080", mux))
+	var h4 myHandler4
+	mux := http.NewServeMux()
+	mux.Handle("/h1", myHandler1{})
+	mux.Handle("/h2", &myHandler2{})
+	mux.Handle("/h3", new(myHandler3))
+	mux.Handle("/h4", h4)
+	mux.Handle("/h5", myHandler5())
+	mux.Handle("/h6", http.HandlerFunc(myHandler6))
+	log.Fatal(http.ListenAndServe(":8080", mux))
 }
 ```
 
@@ -353,12 +353,12 @@ Example:
 
 ```go
 func myHandlerFunc(w http.ResponseWriter, r *http.Request) {
-    w.Write([]byte(`hello world`))
+	w.Write([]byte(`hello world`))
 }
 
 func main() {
-    http.Handle("/", http.HandlerFunc(myHandlerFunc))
-    http.ListenAndServe(":8080", nil)
+	http.Handle("/", http.HandlerFunc(myHandlerFunc))
+	http.ListenAndServe(":8080", nil)
 }
 ```
 
@@ -376,24 +376,24 @@ Example:
 package main
 
 import (
-    "fmt"
-    "net/http"
+	"fmt"
+	"net/http"
 )
 
 // MyHandler is a simple HTTP handler function.
 func MyHandler(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprint(w, "Hello, this is my handler!")
+	fmt.Fprint(w, "Hello, this is my handler!")
 }
 
 func main() {
-    // Convert MyHandler function to a HandlerFunc
-    handlerFunc := http.HandlerFunc(MyHandler)
+	// Convert MyHandler function to a HandlerFunc
+	handlerFunc := http.HandlerFunc(MyHandler)
 
-    // Use handlerFunc as an HTTP handler
-    http.Handle("/myhandler", handlerFunc)
+	// Use handlerFunc as an HTTP handler
+	http.Handle("/myhandler", handlerFunc)
 
-    // Start the web server
-    http.ListenAndServe(":8000", nil)
+	// Start the web server
+	http.ListenAndServe(":8000", nil)
 }
 ```
 
@@ -464,30 +464,30 @@ So as a final step, let's demonstrate how to use the default servemux in our app
 package main
 
 import (
-    "log"
-    "net/http"
-    "time"
+	"log"
+	"net/http"
+	"time"
 )
 
 func timeHandler(format string) http.Handler {
-    fn := func(w http.ResponseWriter, r *http.Request) {
-	tm := time.Now().Format(format)
-	w.Write([]byte("The time is: " + tm))
-    }
-    return http.HandlerFunc(fn)
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		tm := time.Now().Format(format)
+		w.Write([]byte("The time is: " + tm))
+	}
+	return http.HandlerFunc(fn)
 }
 
 func main() {
-    // Note that we skip creating the ServeMux...
+	// Note that we skip creating the ServeMux...
 
-    var format string = time.RFC1123
-    th := timeHandler(format)
+	var format string = time.RFC1123
+	th := timeHandler(format)
 
-    // We use http.Handle instead of mux.Handle...
-    http.Handle("/time", th)
+	// We use http.Handle instead of mux.Handle...
+	http.Handle("/time", th)
 
-    log.Print("Listening...")
-    // And pass nil as the handler to ListenAndServe.
-    http.ListenAndServe(":3000", nil)
+	log.Print("Listening...")
+	// And pass nil as the handler to ListenAndServe.
+	http.ListenAndServe(":3000", nil)
 }
 ```

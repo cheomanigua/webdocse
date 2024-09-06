@@ -508,3 +508,41 @@ Run `:TSUpdate`
 - **g** + **I** -\> Go to Implementation of the function/variable where the cursor is on
 - **Ctl** + **o** -\> Go back to previous window after going to Definition/Declaration/Implementation
 - **:e .** -\> Open file explorer
+
+
+
+# Tmux
+
+### Installation
+
+```
+$ sudo apt install tmux
+```
+
+### Key bindings
+
+- Leader: **Ctrl** + **b**
+- New window: **leader** + **c**
+- Cycle throug windows: **leader** + **n**
+- Select window: **leader** + **number**
+- New vertical pane: **leader** + **%**
+- New horizontal pane: **leader** + **"**
+- Move between panes: **leader** + **arrows**
+- Resize pane: **hold leader** + **arrows**
+- Command mode: **leader** + **:**
+- Detach from Tmux: **leader** + **d**
+
+Bash:
+- `$ tmux ls`: List sessions
+- `$ tmux attach`: Reattach to tmux
+
+Create new session:
+1. Detach from tmux
+2. Run tmux
+
+- List sessions: **leader** + **s**
+- Change session: list sessions and choose
+
+COMMAND MODE
+- Rename window: `rename-window`
+- Rename session: `rename-session`
