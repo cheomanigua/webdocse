@@ -90,3 +90,35 @@ git push
 - Updates a local repository to the latest changes from GitHub
 - Before pulling, push any local change to GitHub
 - It is recommended to pull frequenctly when working within a team
+
+## Git branch, git merge & git checkout
+
+- Diverge from the main branch to develop new features without messing the main branch.
+- Once the new features are tested, the diverged branch is merged with the new branch.
+
+Workflow:
+
+```
+$ git branch newbranch
+$ git checkout newbranch
+[edit existing file/s or create new file/s]
+[git add and git commit as needed]
+$ git push -u origin newbranch
+[edit, add, commit and push to origin newbranch as needed]
+$ git checkout master
+$ git pull origin master
+$ git merge newbranch
+$ git push origin master
+```
+
+## Other operations
+
+- See what changes has been made: `git diff` (you can specify a filename also)
+- See what has been staged (git added): `git diff --cached` (you can specify a filename also)
+- See differences between working directory and local repository: `git diff HEAD` (use after **git add**)
+- See what has been commited: `git diff --cached --stat origin/main`
+- See differences between local repository and remote repository: `git diff main origin/main` (use after **git commit**)
+- See commits historical: `git log`
+- See modified files in each commit: `git log --stat`
+- See changes in a particular commit: `git show [commit]`
+

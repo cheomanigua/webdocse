@@ -545,4 +545,4 @@ Create new session:
 
 COMMAND MODE
 - Rename window: `rename-window`
-- Rename session: `rename-session`
+- Rename session: `rename-session` or `rename`
