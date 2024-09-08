@@ -529,7 +529,6 @@ $ sudo apt install tmux
 - New horizontal pane: **leader** + **"**
 - Move between panes: **leader** + **arrows**
 - Resize pane: **hold leader** + **arrows**
-- Command mode: **leader** + **:**
 - Detach from Tmux: **leader** + **d**
 
 Bash:
@@ -541,8 +540,16 @@ Create new session:
 2. Run tmux
 
 - List sessions: **leader** + **s**
-- Change session: list sessions and choose
+- Change session: ***leader** + **s*** and choose
+- List all windows in all sessions: **leader** + **w**
+- Change session and/or window: **leader** + **w** and choose
+
+
 
 COMMAND MODE
-- Rename window: `rename-window`
-- Rename session: `rename-session` or `rename`
+- Enter command mode: **leader** + **:**
+
+Then:
+
+- Rename window: `rename-window` + *your_window_name*
+- Rename session: `rename-session` or `rename` + *your_session_name*
