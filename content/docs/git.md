@@ -190,3 +190,30 @@ Staging Area-->> Working Directory: git reset HEAD
 Commit-->>Staging Area: git reset --soft HEAD~1
 Remote Repository->>Working Directory: git pull
 ```
+
+# Gitlab & Bitbucket
+
+You can also host your code in Gitlab and Bitbucket at the same time you host your code on Github.
+
+Simply add the new repositories:
+
+```
+$ git remote add gitlab <GitLab repository URL>
+$ git remote add bitbucket <Bitbucket repository URL>
+```
+
+Confirm that the repository has been added successfully:
+```
+$ git remote -v
+```
+
+To push the changes in your code:
+```
+$ git push gitlab main
+$ git push bitbucket main
+```
+
+You can rename a repository:
+```
+$ git remote rename origin github
+```
