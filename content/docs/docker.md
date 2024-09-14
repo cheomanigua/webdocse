@@ -222,16 +222,17 @@ Compose simplifies the control of your entire application stack, making it easy 
 
 ### Creating the docker compose file
 
-{{< alert context="info" text="Indent properly the code under <strong>services:</strong>. Lotus theme seems to have issues with nested indentation." />}}
+{{< alert context="info" text="Indent properly the code on **yaml** files. Otherwise it won't work." />}}
 
 - Create a file called `docker-compose.yml` and add this content:
 
 ```yaml
-services:          // Note: indent properly the rest of the code under services:
-		golang-app:
-			image: go-app
-			ports:
-				- 8080:8080
+
+services:
+	golang-app:
+		image: go-app
+		ports:
+			- 8080:8080
 ```
 
 - Run the service:
