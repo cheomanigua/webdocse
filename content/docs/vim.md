@@ -519,6 +519,17 @@ Run `:TSUpdate`
 $ sudo apt install tmux
 ```
 
+### Color and mouse scroll configuration
+
+```
+$ touch tmux.conf
+$ echo "set -g default-terminal \"screen-256color\"" >> tmux.conf
+$ echo "set -g mouse on" >> tmux.conf
+$ sudo chown root:root tmux.conf
+$ sudo mv tmux.conf /etc
+```
+
+
 ### Key bindings
 
 - Leader: **Ctrl** + **b**
