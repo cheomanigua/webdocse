@@ -104,6 +104,14 @@ groffer -Kutf8 test.ms
 ```
 
 
+### Wezterm
+
+- **Cmd** + **t**: New tab
+- **Ctrl** + **Tab**: Cycle tabs
+- **Ctrl** + **Shift** + **Alt** + **"**: Split vertically
+- **Ctrl** + **Shift** + **Alt** + **%**: Split horizontally
+
+
 ### Tmux
 
 #### Installation
