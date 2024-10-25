@@ -110,6 +110,7 @@ groffer -Kutf8 test.ms
 - **Ctrl** + **Tab**: Cycle tabs
 - **Ctrl** + **Shift** + **Alt** + **"**: Split vertically
 - **Ctrl** + **Shift** + **Alt** + **%**: Split horizontally
+- **Ctrl** + **Shift** + **Arroy keys**: Move to split pane
 
 
 ### Tmux
