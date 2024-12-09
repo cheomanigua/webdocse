@@ -215,6 +215,11 @@ Examples:
 :g/^static/m$`
 ```
 
+- Move all lines that contain specific character/s to the end of the document. In this example, the specific characters is `static`:
+```
+:g/static/m$`
+```
+
 ## File Management
 
 ### Explorer
