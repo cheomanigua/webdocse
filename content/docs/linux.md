@@ -106,7 +106,7 @@ groffer -Kutf8 test.ms
 From Markdown to PDF:
 ```
 $ sudo install pandoc groff ghostcript --no-install-recommends
-$ pandoc --pdf-engine=pdfroff --output=mydestinationfile.pdf mysourcefile.md
+$ pandoc --pdf-engine=pdfroff --toc-depth=3 myfile.md -o myfile.pdf
 ```
 
 ### Wezterm
