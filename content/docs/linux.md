@@ -61,6 +61,18 @@ kill -9 "PID of the port"
 - **space**: mark a file
 
 
+### LaTeX
+
+Install
+```
+$ sudo apt install texlive-latex-base
+```
+
+Compile `tex` file to `pdf` file
+```
+$ pdflatex file.tex
+```
+
 ### Groff
 
 Basic
