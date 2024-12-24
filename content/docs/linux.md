@@ -120,6 +120,28 @@ From Markdown to PDF:
 $ sudo install pandoc groff ghostcript --no-install-recommends
 $ pandoc --pdf-engine=pdfroff --toc-depth=3 myfile.md -o myfile.pdf
 ```
+#### Lists
+
+- Bullleted list: `.IP \(bu 2`
+- Numbered list: `.IP \n+[step] 4`
+
+#### Custom macro
+
+1. Create macro at the beginning of document
+```
+.de BL
+.IP \(bu
+..
+```
+2. Use macro anywhere in the document:
+```
+.BL
+This is a bullet point
+.BL
+This is another bullet point
+```
+
+
 
 ### Wezterm
 

@@ -62,6 +62,7 @@ The typed text will replicate to all selected lines
 - Move to beginning/end of line and start editing -\> **I** / **A**
 - Move to the beginning/end of the line -\> **0** / **$**
 - Move to the first character of the line -\> **_**
+- Jump to line 34 -\> **:34**
 - Jump forward/backward one line -\> **j** / **k**
 - Jump forward/backward one paragraph -\> **}** / **{**
 - Jump to the top/middle/bottom of the page -\> **H** / **M** / **L**
@@ -144,8 +145,8 @@ Examples:
 - paste -\> **p**
 - undo -\> **u**
 - redo -\> **ctrl** + **r**
-- delete character (Del) -\> **x**
-- delete character (Backspace) -\> **X**
+- delete character or selection (Del) -\> **x**
+- delete character or selection (Backspace) -\> **X**
 - replace character -\> **r**
 - delete character and insert mode -\> **s**
 - Switch to 'Insert' mode -\> **i**
@@ -164,10 +165,10 @@ Examples:
 - paste -\> **p**
 - paste line above -\> **P**
 - delete/cut line -\> **dd**
+- delete/cut the whole line and insert mode -\> **S**
 - delete/cut everything from the beginning of the line up to the cursor -\> **d0**
 - delete/cut everthing from the cursor to the end of the line -\> **D** or **d$**
 - delete/cut the rest of the line and insert mode -\> **C**
-- delete/cut the whole line and insert mode -\> **S**
 - delete/cut from the current line to the end of the file -\> **:.,$d** or **:+,$d**
 - delete/cut from the current line to the beginning of the file -\> **:.,1d**
 - delete/cut from line 3 to line 10 -\> **:3,10d**
