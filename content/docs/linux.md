@@ -75,34 +75,44 @@ $ pdflatex file.tex
 
 ### Groff
 
-Basic
+MS
 ```
 groff -ms test.ms -T pdf > test.pdf
+```
+
+MOM
+```
+pdfmon test.ms > test.pdf
 ```
 
 UTF8 Characters
 ```
 groff -ms -K utf8 test.ms -T pdf > test.pdf
+pdfmom -K utf8 test.ms > test.pdf
 ```
 
 Tables
 ```
 groff -ms -t test.ms -T pdf > test.pdf
+pdfmom -t test.ms > test.pdf
 ```
 
 Mathematical
 ```
 groff -ms -e test.ms -T pdf > test.pdf
+pdfmom -e test.ms > test.pdf
 ```
 
 Graphics
 ```
-grooff -ms -p text.ms -T pdf > test.pdf
+groff -ms -p text.ms -T pdf > test.pdf
+pdfmom -p text.ms > test.pdf
 ```
 
 Flags are cumulative. For instance, if you need to print UTF8 characters and tables:
 ```
 groff -ms -t -K utf8 test.ms -T pdf > test.pdf
+pdfmom -t -K utf8 test.ms > test.pdf
 ```
 
 If you just want to see the changes of your document, you can use:
@@ -115,17 +125,21 @@ or if you need special utf8 characters:
 groffer -Kutf8 test.ms
 ```
 
-From Markdown to PDF:
-```
-$ sudo install pandoc groff ghostcript --no-install-recommends
-$ pandoc --pdf-engine=pdfroff --toc-depth=3 myfile.md -o myfile.pdf
-```
-#### Lists
+#### MS Lists
 
-- Bullleted list: `.IP \(bu 2`
+- Bulleted list: `.IP \(bu 2`
 - Numbered list: `.IP \n+[step] 4`
 
-#### Custom macro
+#### MOM Lists
+
+- Bulleted list: `.LIST`
+- Dash list: `.LIST DASH`
+- Numbered list: `.LIST DIGIT`
+- Alphabetical list: `.LIST alpha`
+- Roman list: `.LIST roman2`
+
+
+#### MS Custom macro
 
 1. Create macro at the beginning of document
 ```
@@ -141,6 +155,13 @@ This is a bullet point
 This is another bullet point
 ```
 
+### Markdown
+
+From Markdown to PDF:
+```
+$ sudo install pandoc groff ghostscript --no-install-recommends
+$ pandoc --pdf-engine=pdfroff --toc-depth=3 myfile.md -o myfile.pdf
+```
 
 
 ### Wezterm
