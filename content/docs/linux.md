@@ -75,44 +75,47 @@ $ pdflatex file.tex
 
 ### Groff
 
-MS
+Groff uses four macros: **ms**, **mm**, **me** and **mom**. In this page I explain **ms** and **mom** macros.
+
+Compile `ms` file to `pdf` file
+
 ```
 groff -ms test.ms -T pdf > test.pdf
 ```
 
-MOM
+Compile `mom` file to `pdf` file
 ```
-pdfmon test.ms > test.pdf
+pdfmon test.mom > test.pdf
 ```
 
 UTF8 Characters
 ```
 groff -ms -K utf8 test.ms -T pdf > test.pdf
-pdfmom -K utf8 test.ms > test.pdf
+pdfmom -K utf8 test.mom > test.pdf
 ```
 
 Tables
 ```
 groff -ms -t test.ms -T pdf > test.pdf
-pdfmom -t test.ms > test.pdf
+pdfmom -t test.mom > test.pdf
 ```
 
 Mathematical
 ```
 groff -ms -e test.ms -T pdf > test.pdf
-pdfmom -e test.ms > test.pdf
+pdfmom -e test.mom > test.pdf
 ```
 
 Graphics
 ```
 groff -ms -p text.ms -T pdf > test.pdf
-pdfmom -p text.ms > test.pdf
+pdfmom -p text.mom > test.pdf
 ```
 
 Flags are cumulative. For instance, if you need to print UTF8 characters and tables:
 ```
 groff -ms -t -K utf8 test.ms -T pdf > test.pdf
-pdfmom -t -K utf8 test.ms > test.pdf
+pdfmom -t -K utf8 test.mom > test.pdf
 ```
 
 If you just want to see the changes of your document, you can use:
