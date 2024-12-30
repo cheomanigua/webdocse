@@ -75,7 +75,9 @@ $ pdflatex file.tex
 
 ### Groff
 
-Groff uses four macros: **ms**, **mm**, **me** and **mom**. In this page I explain **ms** and **mom** macros.
+Groff uses four macro packages: **ms**, **mm**, **me** and **mom**. In this document only **ms** and **mom** macro packages will be explained.
+
+#### Compilation
 
 Compile `ms` file to `pdf` file
 
@@ -87,6 +89,8 @@ Compile `mom` file to `pdf` file
 ```
 pdfmon test.mom > test.pdf
 ```
+
+#### Preprocessors
 
 UTF8 Characters
 ```
@@ -112,7 +116,7 @@ groff -ms -p text.ms -T pdf > test.pdf
 pdfmom -p text.mom > test.pdf
 ```
 
-Flags are cumulative. For instance, if you need to print UTF8 characters and tables:
+Preprocessor flags are cumulative. For instance, if you need to print UTF8 characters and tables:
 ```
 groff -ms -t -K utf8 test.ms -T pdf > test.pdf
 pdfmom -t -K utf8 test.mom > test.pdf
