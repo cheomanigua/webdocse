@@ -194,8 +194,8 @@ $ pandoc --pdf-engine=pdfroff --toc-depth=3 myfile.md -o myfile.pdf
 
 - **Cmd** + **t**: New tab
 - **Ctrl** + **Tab**: Cycle tabs
-- **Ctrl** + **Shift** + **Alt** + **"**: Split vertically
-- **Ctrl** + **Shift** + **Alt** + **%**: Split horizontally
+- **Ctrl** + **Shift** + **Alt** + **2**: Split vertically
+- **Ctrl** + **Shift** + **Alt** + **5**: Split horizontally
 - **Ctrl** + **Shift** + **Arroy keys**: Move to split pane
 
 
