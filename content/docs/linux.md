@@ -158,6 +158,25 @@ This is a bullet point
 This is another bullet point
 ```
 
+#### MOM images
+
+You can embed PDF and EPS format images only. I recommend embeding PDF images.
+
+To embed a PDF image of width 600p, height 250p and scaled down to 50% of its size:
+```
+.PDF_IMAGE myimage.pdf 600p 250p SCALE 50
+```
+
+If you need to convert any other image format to a pdf image format:
+```
+$ convert myimage.png myimage.pdf
+```
+
+If you need to get the width and height of a pdf image:
+```
+$ pdfinfo myimage.pdf
+```
+
 ### Markdown
 
 From Markdown to PDF:
