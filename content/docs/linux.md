@@ -110,6 +110,11 @@ pdfroff -ms -e test.ms > test.pdf
 pdfmom -e test.mom > test.pdf
 ```
 
+Images
+```
+pdfroff -ms -U text.ms > test.pdf
+
+```
 Graphics
 ```
 pdfroff -ms -p text.ms > test.pdf
@@ -162,9 +167,18 @@ This is a bullet point
 This is another bullet point
 ```
 
-#### MOM images
+#### Images
 
 You can embed PDF and EPS format images only. I recommend embeding PDF images.
+
+**MS**
+```
+.PDFPIC "myimage.pdf" <width>
+```
+
+You can optionally add the width of the image. For instance: `600p`. The height will be automatically calculated.
+
+**MOM**
 
 To embed a PDF image of width 600p, height 250p and scaled down to 50% of its size:
 ```

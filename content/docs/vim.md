@@ -52,10 +52,11 @@ The typed text will replicate to all selected lines
 
 - Search forward and backward once -\> **/** and **?**
 - On search: (next hit -\> **n**, previous hit -\> **N**)
-- **f**, **F** -\> "find" the next character, including the character
-- **t**, **T** -\> "find" the next character, up to that character
+- Jump to the next/previous ocurrence of character x -/> **fx**/**Fx**
+- Repeat previous **f/F** movement forward/backward -\> **;**/**,**
 - Search for next/previous match currently under cursor -\> **asterisk** / **#**
 - Find and replace all occurrences of *foo* with *bar* -\> **:%s/foo/bar/g**
+- Jump to the older/newer cursor position -/> **Ctrl** + **o** / **Ctrl** + **i**
 - Move to the paired parenthesis/curly braces -\> **%**
 - Move to the beginning/end of a word (forward) -\> **w** / **e**
 - Move to the beginning/end of a word (backward) -\> **b** / **ge**
@@ -69,11 +70,12 @@ The typed text will replicate to all selected lines
 - Jump forward/backward one page -\> **Ctrl** + **f**  / **Ctrl** + **b**
 - Jump up/down half page -\> **Ctrl** + **u**  / **Ctrl** + **d**
 - Jump to next line with same content -\> **Right Alt** + **3**
+- Move screen down/up one line (without moving cursor) -\> **Ctrl** + **e** / **Ctrl** + **y**
 - Move cursor to the /top/middle/bottom of the page -\> **zt** / **zz** / **zb**
 - Move cursor to the beginning/end of document -\> **gg** / **G**
 - Move cursor to a specific line number -\> **:10**
 - Move cursor X lines above/below -\> **10k**/**10j**
-- Jump to the previous/next file cursor position -\> **Ctrl** + **o** / **Ctrl** + **i**
+- Jump to the older/newer cursor position -\> **Ctrl** + **o** / **Ctrl** + **i**
 
 ### Line numbers
 - Activate absolute line numbers -\> **:set nu**
@@ -167,14 +169,16 @@ Examples:
 - delete/cut line -\> **dd**
 - delete/cut the whole line and insert mode -\> **S**
 - delete/cut everything from the beginning of the line up to the cursor -\> **d0**
-- delete/cut everthing from the cursor to the end of the line -\> **D** or **d$**
-- delete/cut the rest of the line and insert mode -\> **C**
+- delete/cut everything from the cursor to the end of the line -\> **D** or **d$**
+- change everything from the cursor to the end of the line -\> **C** or **c$**
+- yank/copy everything from the cursor to the end of the line -\> **Y** or **y$**
 - delete/cut from the current line to the end of the file -\> **:.,$d** or **:+,$d**
 - delete/cut from the current line to the beginning of the file -\> **:.,1d**
 - delete/cut from line 3 to line 10 -\> **:3,10d**
 - delete/cut from line 3 to the end of the file -\> **:3,$d**
 - delete/cut the last line-\> **:$d**
 - delete/cut all lines-\> **:%d**
+- join line below to current line: **J**
 - move current line after line 6 -\> **:m 6**
 - move line two lines above -\> **:m-2** (note that **:m-1** won't work)
 - move line one line below -\> **:m+1**
