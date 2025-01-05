@@ -289,9 +289,11 @@ awk -F, '$9=="balmora" {print $0}' databasemw.csv
 awk -F, '$9~/balmora/' databasemw.csv
 awk -F, '$9~/balmora/ {print}' databasemw.csv
 awk -F, '$9~/balmora/ {print $0}' databasemw.csv
+```
 
 As you can see from the example above, when printing the whole line (equivalent to SELECT * FROM), we can use {print}, {print $0} or nothing. In the next examples below, we are not using neither {print} or {print $0}.
 
+```
 SELECT * FROM databasemw WHERE type='spell' AND city='balmora';
 is equivalent to
 grep spell databasemw.csv | grep balmora
