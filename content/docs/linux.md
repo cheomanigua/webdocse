@@ -271,34 +271,48 @@ Then:
 **awk** and **grep** can be used for data analysis similar to **SQL** queries. In this example, we are using a **.csv** file as database. The fields correspond to: type, name, quantity, school, npc, location, building, canton, city.
 
 ```
-SHOW * FROM databasemw;
+SELECT * FROM databasemw;
 is equivalent to
 cat databasemw.csv
+awk -F, '{print}' databasemw.csv
 awk -F, '{print $0}' databasemw.csv
 
-SHOW * FROM databasemw WHERE city='balmora';
+SELECT * FROM databasemw WHERE city='balmora';
 is equivalent to
 grep balmora databasemw.csv
+awk -F, '/balmora/' databasemw.csv
+awk -F, '/balmora/ {print}' databasemw.csv
 awk -F, '/balmora/ {print $0}' databasemw.csv
-awk -F, '$9="balmora" {print $0}' databasemw.csv
+awk -F, '$9=="balmora"' databasemw.csv
+awk -F, '$9=="balmora" {print}' databasemw.csv
+awk -F, '$9=="balmora" {print $0}' databasemw.csv
+awk -F, '$9~/balmora/' databasemw.csv
+awk -F, '$9~/balmora/ {print}' databasemw.csv
+awk -F, '$9~/balmora/ {print $0}' databasemw.csv
 
-SHOW * FROM databasemw WHERE type='spell' AND city='balmora';
+As you can see from the example above, when printing the whole line (equivalent to SELECT * FROM), we can use {print}, {print $0} or nothing. In the next examples below, we are not using neither {print} or {print $0}.
+
+SELECT * FROM databasemw WHERE type='spell' AND city='balmora';
 is equivalent to
 grep spell databasemw.csv | grep balmora
-awk -F, '/spell/ && /balmora/ {print $0}' databasemw.csv
-awk -F, '$1=="spell" && $9=="balmora" {print $0}' databasemw.csv
+awk -F, '/spell/ && /balmora/' databasemw.csv
+awk -F, '$1=="spell" && $9=="balmora"' databasemw.csv
+awk -F, '$1~/spell/ && $9~/balmora/' databasemw.csv
 
-SHOW * FROM databasemw WHERE type='spell' AND npc='Ranis Athrys' AND city='balmora'
+SELECT * FROM databasemw WHERE type='spell' AND npc='Ranis Athrys' AND city='balmora'
 is equivalent to
 grep spell databasemw.csv | grep balmora | grep 'Ranis Athrys'
-awk -F, '/spell/ && /balmora/ && /Ranis Athrys/ {print $0}' databasemw.csv
-awk -F, '$1=="spell" && $9=="balmora" && $5="Ranis Athrys" {print $0}' databasemw.csv
+awk -F, '/spell/ && /balmora/ && /Ranis Athrys/' databasemw.csv
+awk -F, '$1=="spell" && $9=="balmora" && $5=="Ranis Athrys"' databasemw.csv
+awk -F, '$1~/spell/ && $9~/balmora/ && $5~/Ranis Athrys/' databasemw.csv
 
-SHOW npc FROM databasemw WHERE type='spell' AND name='soul trap'
+SELECT npc FROM databasemw WHERE type='spell' AND name='soul trap'
 awk -F, '/spell/ && /soul trap/ {print $5}' databasemw.csv
 awk -F, '$1=="spell" && $2=="soul trap" {print $5}' databasemw.csv
+awk -F, '$1~/spell/ && $2~/soul trap/ {print $5}' databasemw.csv
 
-SHOW * FROM databasemw WHERE quantity>4 AND city='vivec'
-awk -F, '$3>4 && /vivec/ {print $0}' databasemw.csv
-awk -F, '$3>4 && $9=="vivec" {print $0}' databasemw.csv
+SELECT * FROM databasemw WHERE quantity>4 AND city='vivec'
+awk -F, '$3>4 && /vivec/' databasemw.csv
+awk -F, '$3>4 && $9=="vivec"' databasemw.csv
+awk -F, '$3>4 && $9~/vivec/' databasemw.csv
 ```
