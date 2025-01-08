@@ -82,7 +82,7 @@ Groff uses four macro packages: **ms**, **mm**, **me** and **mom**. In this docu
 Compile `ms` file to `pdf` file
 
 ```
-pdfroff -ms test.ms > test.pdf
+groff -ms test.ms > test.pdf
 ```
 
 Compile `mom` file to `pdf` file
@@ -94,36 +94,37 @@ pdfmon test.mom > test.pdf
 
 UTF8 Characters
 ```
-pdfroff -ms -K utf8 test.ms > test.pdf
+groff -ms -K utf8 test.ms > test.pdf
 pdfmom -K utf8 test.mom > test.pdf
 ```
 
 Tables
 ```
-pdfroff -ms -t test.ms > test.pdf
+groff -ms -t test.ms > test.pdf
 pdfmom -t test.mom > test.pdf
 ```
 
 Mathematical
 ```
-pdfroff -ms -e test.ms > test.pdf
+groff -ms -e test.ms > test.pdf
 pdfmom -e test.mom > test.pdf
 ```
 
 Images
 ```
-pdfroff -ms -U text.ms > test.pdf
+groff -ms -U text.ms > test.pdf
+pdfmom -U text.mom > test.pdf
 
 ```
 Graphics
 ```
-pdfroff -ms -p text.ms > test.pdf
+groff -ms -p text.ms > test.pdf
 pdfmom -p text.mom > test.pdf
 ```
 
 Preprocessor flags are cumulative. For instance, if you need to print UTF8 characters and tables:
 ```
-pdfroff -ms -t -K utf8 test.ms > test.pdf
+groff -ms -t -K utf8 test.ms > test.pdf
 pdfmom -t -K utf8 test.mom > test.pdf
 ```
 
@@ -200,7 +201,7 @@ $ pdfinfo myimage.pdf
 From Markdown to PDF:
 ```
 $ sudo install pandoc groff ghostscript --no-install-recommends
-$ pandoc --pdf-engine=pdfroff --toc-depth=3 myfile.md -o myfile.pdf
+$ pandoc --pdf-engine=groff --toc-depth=3 myfile.md -o myfile.pdf
 ```
 
 
