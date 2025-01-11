@@ -25,7 +25,83 @@ sudo lsof -i :8080
 kill -9 "PID of the port"
 ```
 
-### vscode
+
+### Wezterm
+
+- **Cmd** + **t**: New tab
+- **Ctrl** + **Tab**: Cycle tabs
+- **Ctrl** + **Shift** + **Alt** + **2**: Split vertically
+- **Ctrl** + **Shift** + **Alt** + **5**: Split horizontally
+- **Ctrl** + **Shift** + **Arroy keys**: Move to split pane
+
+
+### Kitty
+
+- **Ctrl** + **Shift** + **T**: New tab
+- **Ctrl** + **Tab**: Cycle tabs
+- **Ctrl** + **Shift** + **Return**: Split window (1st vertically, 2nd horinzotally)
+- **Ctrl** + **Shift** + **[**: Previous window
+- **Ctrl** + **Shift** + **]**: Next window
+- **Ctrl** + **Shift** + **R**: Enter size mode
+- **Ctrl** + **T**: In size mode, increase size
+- **Ctrl** + **S**: In size mode, decrease size
+
+
+### Tmux
+
+#### Installation
+
+```
+$ sudo apt install tmux
+```
+
+#### Color and mouse scroll configuration
+
+```
+$ touch tmux.conf
+$ echo "set -g default-terminal \"screen-256color\"" >> tmux.conf
+$ echo "set -g mouse on" >> tmux.conf
+$ sudo chown root:root tmux.conf
+$ sudo mv tmux.conf /etc
+```
+
+#### Key bindings
+
+- Leader: **Ctrl** + **b**
+- New window: **leader** + **c**
+- Cycle throug windows: **leader** + **n**
+- Select window: **leader** + **number**
+- New vertical pane: **leader** + **%**
+- New horizontal pane: **leader** + **"**
+- Move between panes: **leader** + **arrows**
+- Resize pane: **hold leader** + **arrows**
+- Detach from Tmux: **leader** + **d**
+
+Bash:
+- `$ tmux ls`: List sessions
+- `$ tmux attach`: Reattach to tmux
+
+Create new session:
+1. Detach from tmux
+2. Run tmux
+
+- List sessions: **leader** + **s**
+- Change session: ***leader** + **s*** and choose
+- List all windows in all sessions: **leader** + **w**
+- Change session and/or window: **leader** + **w** and choose
+
+
+
+COMMAND MODE
+- Enter command mode: **leader** + **:**
+
+Then:
+
+- Rename window: `rename-window` + *your_window_name*
+- Rename session: `rename-session` or `rename` + *your_session_name*
+
+
+### vscodium
 
 - Comment:		Ctrl + K Ctrl + C
 - Uncomment:		Ctrl + K Ctrl + U
@@ -37,18 +113,18 @@ kill -9 "PID of the port"
 ### ranger
 
 - **y**: copy, yank 
-- **p**: paste
+- **p**: paste 
 - **d**: cut
 - **a**: rename
-- **cw**: rename
+- **cw**: rename |**r**: open with ... |**g**: cd |**w**: task view |
 - **c**: search
 - **dD**: console delete
-- **dT**: console trash
+- **dT**: console trash 
 - **f**: find
 - **g**: cd
 - **h, j, k, l**: navigate
-- **m<key>**: bookmark directory
-- **`<key>**: go to bookmarked directory
+- **m\<key\>**: bookmark directory
+- **`\<key\>**: go to bookmarked directory
 - **o**: chain
 - **q**: exit
 - **r**: open with ...
@@ -56,7 +132,6 @@ kill -9 "PID of the port"
 - **t**: tag
 - **ut**: untag
 - **ud, uy**: uncut
-- **w**: task view
 - **z**: set
 - **space**: mark a file
 
@@ -196,6 +271,7 @@ If you need to get the width and height of a pdf image:
 $ pdfinfo myimage.pdf
 ```
 
+
 ### Markdown
 
 From Markdown to PDF:
@@ -205,67 +281,21 @@ $ pandoc --pdf-engine=groff --toc-depth=3 myfile.md -o myfile.pdf
 ```
 
 
-### Wezterm
+### sc spreadsheet
 
-- **Cmd** + **t**: New tab
-- **Ctrl** + **Tab**: Cycle tabs
-- **Ctrl** + **Shift** + **Alt** + **2**: Split vertically
-- **Ctrl** + **Shift** + **Alt** + **5**: Split horizontally
-- **Ctrl** + **Shift** + **Arroy keys**: Move to split pane
+| | |
+|-|-|
+|**<** : insert string left indented||
+|**>** : insert string right indented|**x** : delete cell content|
+|**\\** : insert string centered|**dd**, **dr**, **dc** : delete current cell, row, column|
+|**=** : insert number, expresion or function (1, 1+1, B1+B2, @sum(B1:B5))|**yy**, **yr**, **yc** : copy current cell, row, column|
+|**{**, **\|**, **}** : left justify, center, right justify the string in the current cell|**pp**, **pr**, **pc** : paste cell, row, column|
+|**r{**, **r\|**, **r}** : left justify, center, right justify all strings in the specified range|**m** + character = copy content of cell|
+|**f** + **h**, **f** + **<**, **f** + **left**: decrease column width|**c** + character = paste content of cell|
+|**f** + **l**, **f** + **>**, **f** + **right**: increase column width|**E** : edit cell|
+|**f** + **j**, **f** + **down** : decrease column decimal places|**P** + **enter** : quick save|
+|**f** + **k**, **f** + **up** : increase column decimal places|**ZZ** : save & exit|
 
-
-### Tmux
-
-#### Installation
-
-```
-$ sudo apt install tmux
-```
-
-#### Color and mouse scroll configuration
-
-```
-$ touch tmux.conf
-$ echo "set -g default-terminal \"screen-256color\"" >> tmux.conf
-$ echo "set -g mouse on" >> tmux.conf
-$ sudo chown root:root tmux.conf
-$ sudo mv tmux.conf /etc
-```
-
-#### Key bindings
-
-- Leader: **Ctrl** + **b**
-- New window: **leader** + **c**
-- Cycle throug windows: **leader** + **n**
-- Select window: **leader** + **number**
-- New vertical pane: **leader** + **%**
-- New horizontal pane: **leader** + **"**
-- Move between panes: **leader** + **arrows**
-- Resize pane: **hold leader** + **arrows**
-- Detach from Tmux: **leader** + **d**
-
-Bash:
-- `$ tmux ls`: List sessions
-- `$ tmux attach`: Reattach to tmux
-
-Create new session:
-1. Detach from tmux
-2. Run tmux
-
-- List sessions: **leader** + **s**
-- Change session: ***leader** + **s*** and choose
-- List all windows in all sessions: **leader** + **w**
-- Change session and/or window: **leader** + **w** and choose
-
-
-
-COMMAND MODE
-- Enter command mode: **leader** + **:**
-
-Then:
-
-- Rename window: `rename-window` + *your_window_name*
-- Rename session: `rename-session` or `rename` + *your_session_name*
 
 ### awk & grep like SQL query
 
