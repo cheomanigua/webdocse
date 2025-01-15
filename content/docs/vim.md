@@ -211,8 +211,8 @@ Examples:
   2. Type `cgn` + `bar`
   3. **ESC**
   4. Iterate through the results:
-    - Press **.** to replace next *foo* instance for *bar*
-    - Press **n** to skip next *foo* instance
+    - Press **n** to move to next *foo* instance
+    - Press **.** to replace *foo* for *bar*
 
 
 - Move all lines that start with specific character/s to the end of the document. In this example, the specific characters is `static`:

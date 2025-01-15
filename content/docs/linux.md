@@ -349,3 +349,85 @@ awk -F, '$3>4 && /vivec/' databasemw.csv
 awk -F, '$3>4 && $9=="vivec"' databasemw.csv
 awk -F, '$3>4 && $9~/vivec/' databasemw.csv
 ```
+
+
+### SQLite
+
+The database with all the tables is just a single file. The database is created in the directory where the command is issued. You cannot list databases or tables if you are not in the directory where the database is.
+
+
+- Install:
+
+```
+$ sudo apt install sqlite3
+```
+
+- Create database:
+
+```
+$ sqlite3 mydatabase
+```
+
+- Work with database:
+
+```
+$ sqlite3 mydatabase
+or
+sqlite> .open mydatabase
+```
+
+- Import csv file and create table:
+
+```
+sqlite> .mode csv
+sqlite> .import data.csv mytable
+```
+
+- Query database:
+
+```
+sqlite> .mode box
+sqlite> select * from mytable;
+sqlite> select * from mytable where Abilities='FR(100)';
+sqlite> select * from mytable where Abilities like '%FR%';
+```
+
+- Delete table:
+
+```
+sqlite> drop table `mytable`;
+```
+
+- Delete database:
+
+```
+$ rm mydatabase
+```
+
+- List databases and tables:
+
+```
+$ sqlite3
+sqlite> .databases
+sqlite> .open mydatabase
+sqlite> .tables
+```
+
+The commands must be issued in the directory where the database is.
+
+- Export a table to csv file:
+
+```
+sqlite> .mode csv
+sqlite> .headers on
+sqlite> .out newfile.csv
+sqlite> select * from mytable;
+```
+
+- Export a table to SQL file:
+
+```
+sqlite> .mode insert otherdbtable
+sqlite> .out file.sql
+sqlite> select * from mytable;
+```
