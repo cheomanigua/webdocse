@@ -9,6 +9,8 @@ draft: false
 toc: true
 ---
 
+# 1. Key binding
+
 ### Save/Quit
 
 - Save file -\> **:w**
@@ -282,12 +284,25 @@ Examples:
 You can customize Vim by editing `~/.vimrc`
 
 ```
-let mapleader = "," 
+let mapleader = " " 
+set mouse=a
 set tabstop=4
+set shiftwidth=0
+set noexpandtab
 set autoindent
 set number " enable line numbering
 set relativenumber "enable relative line number
 syntax enable " syntax highlighting enabled
+set listchars=tab:»\ ,trail:·
+
+" enable color themes "
+if !has('gui_running')
+	set t_Co=256
+endif
+" enable true colors support "
+set termguicolors
+" Vim colorscheme "
+colorscheme zellner
 
 
 " KEY MAPPINGS
@@ -302,10 +317,8 @@ vmap <buffer> ;bo "zdi<strong><c-r>z</strong><esc>
 
 `:source $MYVIMRC`
 
-<Message variant='info'>
   🎁 <b>Gift</b> <br/>
 You can download a useful <i>~/.vimrc</i> file by running the command <em>wget https://raw.githubusercontent.com/cheomanigua/config/master/vimrc</em>
-</Message>
 
 
 ### Key mapping
@@ -344,11 +357,10 @@ $ q
 $ @q
 ```
 
-# Plugins
+# 2. Plugin Managers
 
-It is recommended to install a plugin manager in order to install, load and uninstall plugins.
 
-## Vim 8 plugin manager
+## 2.1 Vim 8
 
 Vim comes with a built-in plugin manager called **Vim 8 packages**.
 
@@ -370,7 +382,7 @@ $ sed -i -e '$a\'$'\n''filetype plugin indent on' ~/.vimrc
 Clone (or alternatively, download the zip, and unzip) the plugin you want to install inside the `start` directory:
 
 ```
-$ git clone https://github.com/foo/bar.git ~/.vim/pack/plugins/start/bar
+$ git clone https://github.com/repo/foo.git ~/.vim/pack/plugins/start/foo
 ```
 
 ### Generating helptags for a plugin
@@ -380,13 +392,13 @@ $ git clone https://github.com/foo/bar.git ~/.vim/pack/plugins/start/bar
 
 ### Upgrading a plugin
 ```
-$ cd ~/.vim/pack/plugins/start/bar
+$ cd ~/.vim/pack/plugins/start/foo
 $ git pull origin master
 ```
 
 ### Deleting a plugin
 ```
-$ rm -r ~/.vim/pack/plugins/start/bar
+$ rm -r ~/.vim/pack/plugins/start/foo
 ```
 
 ### Example: installing Vim-go plugin
@@ -415,7 +427,7 @@ $ git clone https://github.com/fatih/vim-go.git ~/.vim/pack/plugins/start/vim-go
    with **Ctrl-X** + **Ctrl-O**
 
 
-## Vim-plug plugin manager
+## 2.2 Vim-plug
 
 1. Download <a href="https://github.com/junegunn/vim-plug" target="_blank">vim-plug</a>:
 
@@ -451,14 +463,18 @@ That's it. This is how you install plugins in Vim with <a href="https://github.c
 
 
 
-# NeoVim 
+# 3. NeoVim 
 
-## Install last version (Ubuntu)
+## 3.1 Install last version (Ubuntu)
 
 ```bash
 $ sudo add-apt-repository ppa:neovim-ppa/unstable -y
 $ sudo apt update
 $ sudo apt install make gcc ripgrep unzip git xclip neovim
+```
+or
+```bash
+$ sudo apt-get install neovim
 ```
 
 ### Launch NeoVim
@@ -467,7 +483,54 @@ $ sudo apt install make gcc ripgrep unzip git xclip neovim
 $ nvim
 ```
 
-## kickstart.nvim
+## 3.2 Configuration files
+
+There are two mutually exclusive config files in NeoVim:
+
+- `~/.config/nvim/init.vim`
+- `~/.config/nvim/init.lua`
+
+## 3.3  Plugin managers
+
+There are several plugin managers for NeoVim. Below is a list of a few of them:
+
+| Name | Plugins directory | Config file |
+|-|-|-|
+| [vim-plug](https://github.com/junegunn/vim-plug) | ~/.local/share/nvim/plugged | file |
+| [lazy.nvim](https://lazy.folke.io/) | ~/.local/share/nvim/site | file |
+| [pckr.nvim](https://github.com/lewis6991/pckr.nvim) | ~/.local/share/nvim/ | file |
+| [Packer.nvim](https://github.com/wbthomason/packer.nvim) | ~/.local/share/nvim/ | file |
+
+### 3.3.1. vim-plug
+
+#### Installation
+
+`sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'`
+
+For installing plugins, follow the instructions explained above at **2.2. vim-plug**, but instead of editing the `~/.vimrc` file (Vim), edit the `~/.config/init.vim` file (NeoVim).
+
+### 3.3.2. lazy.nvim
+
+#### Installation
+
+- Download lazy.vim starter:
+
+`$ git clone https://github.com/LazyVim/starter.git`
+
+- From the downloaded `starter` directory, copy to `~/.config/nvim/` the following: `init.lua`, `stylua.toml` and `lua/`
+
+- Launch NeoVim. Lazy.vim will start installing and configuring plugins automatically.
+
+#### Uninstalling
+
+To uninstall lazy.nvim, you need to remove the following files and directories:
+
+- data: `~/.local/share/nvim/lazy`
+- state: `~/.local/state/nvim/lazy`
+- lockfile: `~/.config/nvim/lazy-lock.json`
+
+## 3.4 kickstart.nvim
 
 Readme Page: [https://github.com/nvim-lua/kickstart.nvim?tab=readme-ov-file](https://github.com/nvim-lua/kickstart.nvim?tab=readme-ov-file)
 
@@ -521,7 +584,7 @@ Run `:TSUpdate`
 
 
 
-# Tmux
+# 4. Tmux
 
 ### Installation
 
