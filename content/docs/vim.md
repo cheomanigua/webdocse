@@ -449,7 +449,6 @@ call plug#end()
 " vim-plug
 call plug#begin('~/.vim/plugged')
 
-" plugin section
 Plug 'maxmellon/vim-jsx-pretty'
 Plug 'mattn/emmet-vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -457,7 +456,8 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " end vim-plug
 call plug#end()
 ```
-4. Launch Vim and run: `:PlugInstall`
+
+4. If you are editing the `~/.config/nvim/init.vim` file with NeoVim, save and exit. Launch NeoVim again and run: `:PlugInstall`
 
 That's it. This is how you install plugins in Vim with <a href="https://github.com/junegunn/vim-plug" target="_blank">vim-plug</a>.
 
@@ -508,7 +508,7 @@ There are several plugin managers for NeoVim. Below is a list of a few of them:
 `sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'`
 
-For installing plugins, follow the instructions explained above at **2.2. vim-plug**, but instead of editing the `~/.vimrc` file (Vim), edit the `~/.config/init.vim` file (NeoVim).
+For installing plugins, follow the instructions explained above at **2.2. vim-plug**, but instead of editing the `~/.vimrc` file (Vim), edit the `~/.config/nvim/init.vim` file (NeoVim).
 
 ### 3.3.2. lazy.nvim
 

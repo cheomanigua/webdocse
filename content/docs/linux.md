@@ -30,8 +30,8 @@ kill -9 "PID of the port"
 
 - **Cmd** + **t**: New tab
 - **Ctrl** + **Tab**: Cycle tabs
-- **Ctrl** + **Shift** + **Alt** + **2**: Split vertically
-- **Ctrl** + **Shift** + **Alt** + **5**: Split horizontally
+- **Ctrl** + **Shift** + **Alt** + **"**: Split vertically
+- **Ctrl** + **Shift** + **Alt** + **%**: Split horizontally
 - **Ctrl** + **Shift** + **Arroy keys**: Move to split pane
 
 
@@ -355,6 +355,7 @@ awk -F, '$3>4 && $9~/vivec/' databasemw.csv
 
 The database with all the tables is just a single file. The database is created in the directory where the command is issued. You cannot list databases or tables if you are not in the directory where the database is.
 
+To back up the database, simply copy the file to a new file: `$ cp mydatabase.db mydatabase-backup.db`
 
 - Install:
 
@@ -368,19 +369,25 @@ $ sudo apt install sqlite3
 $ sqlite3 mydatabase
 ```
 
-- Work with database:
+- Work with an already created database:
 
 ```
 $ sqlite3 mydatabase
 or
-sqlite> .open mydatabase
+sqlite> .open mydatabase.db
 ```
 
-- Import csv file and create table:
+- Create table by importing a CSV file:
 
 ```
 sqlite> .mode csv
 sqlite> .import data.csv mytable
+```
+
+-Create table by importing SQL table:
+
+```
+sqlite3> .read mytable.sql
 ```
 
 - Query database:
@@ -401,7 +408,7 @@ sqlite> drop table `mytable`;
 - Delete database:
 
 ```
-$ rm mydatabase
+$ rm mydatabase.db
 ```
 
 - List databases and tables:
@@ -415,19 +422,24 @@ sqlite> .tables
 
 The commands must be issued in the directory where the database is.
 
-- Export a table to csv file:
+- Export a table to CSV file:
 
 ```
 sqlite> .mode csv
 sqlite> .headers on
-sqlite> .out newfile.csv
+sqlite> .out mytable.csv
 sqlite> select * from mytable;
 ```
 
 - Export a table to SQL file:
 
 ```
-sqlite> .mode insert otherdbtable
-sqlite> .out file.sql
-sqlite> select * from mytable;
+sqlite3> .out mytable.sql
+sqlite3> .dump mytable
+```
+
+- Exit SQLite:
+
+```
+sqlite> .exit
 ```
