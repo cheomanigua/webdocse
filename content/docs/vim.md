@@ -438,8 +438,6 @@ $ git clone https://github.com/fatih/vim-go.git ~/.vim/pack/plugins/start/vim-go
 " vim-plug
 call plug#begin('~/.vim/plugged')
 
-" plugin section
-
 " end vim-plug
 call plug#end()
 ```
@@ -457,10 +455,16 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 call plug#end()
 ```
 
-4. If you are editing the `~/.config/nvim/init.vim` file with NeoVim, save and exit. Launch NeoVim again and run: `:PlugInstall`
+4. Save and exit. Launch Vim and run: `:PlugInstall`
 
 That's it. This is how you install plugins in Vim with <a href="https://github.com/junegunn/vim-plug" target="_blank">vim-plug</a>.
 
+You can download a custom [init.lua](https://drive.google.com/file/d/1LxVKnPmmdMlAu3UM1eAwM37DKdBN3MtK/view?usp=drive_link) config file with some basic configuration.
+
+### Deleting a plugin
+
+- Comment out or delete the plugin line in `.vimrc`
+- Run: `:PlugClean`
 
 
 # 3. NeoVim 
@@ -494,12 +498,10 @@ There are two mutually exclusive config files in NeoVim:
 
 There are several plugin managers for NeoVim. Below is a list of a few of them:
 
-| Name | Plugins directory | Config file |
-|-|-|-|
-| [vim-plug](https://github.com/junegunn/vim-plug) | ~/.local/share/nvim/plugged | file |
-| [lazy.nvim](https://lazy.folke.io/) | ~/.local/share/nvim/site | file |
-| [pckr.nvim](https://github.com/lewis6991/pckr.nvim) | ~/.local/share/nvim/ | file |
-| [Packer.nvim](https://github.com/wbthomason/packer.nvim) | ~/.local/share/nvim/ | file |
+- [vim-plug](https://github.com/junegunn/vim-plug)
+- [lazy.nvim](https://lazy.folke.io/)
+- [pckr.nvim](https://github.com/lewis6991/pckr.nvim)
+- [Packer.nvim](https://github.com/wbthomason/packer.nvim)
 
 ### 3.3.1. vim-plug
 

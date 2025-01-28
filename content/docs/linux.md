@@ -16,6 +16,7 @@ toc: true
 - `grep -R "text"` - Find specific string in current directory and child directories
 - `find /usr -iname "wallpaper.jpg"` - Find all files containing the specified string
 - `sed -i 's/original/new/g' file.txt` - Replace the specified string in a file
+- `sed 's/original/new/g' file.txt` - Preview the replacement preserving the file intact
 
 
 #### How to free a port:
@@ -305,15 +306,15 @@ $ pandoc --pdf-engine=groff --toc-depth=3 myfile.md -o myfile.pdf
 SELECT * FROM databasemw;
 is equivalent to
 cat databasemw.csv
-awk -F, '{print}' databasemw.csv
-awk -F, '{print $0}' databasemw.csv
+awk '{print}' databasemw.csv
+awk '{print $0}' databasemw.csv
 
 SELECT * FROM databasemw WHERE city='balmora';
 is equivalent to
 grep balmora databasemw.csv
-awk -F, '/balmora/' databasemw.csv
-awk -F, '/balmora/ {print}' databasemw.csv
-awk -F, '/balmora/ {print $0}' databasemw.csv
+awk '/balmora/' databasemw.csv
+awk '/balmora/ {print}' databasemw.csv
+awk '/balmora/ {print $0}' databasemw.csv
 awk -F, '$9=="balmora"' databasemw.csv
 awk -F, '$9=="balmora" {print}' databasemw.csv
 awk -F, '$9=="balmora" {print $0}' databasemw.csv
@@ -328,19 +329,19 @@ As you can see from the example above, when printing the whole line (equivalent 
 SELECT * FROM databasemw WHERE type='spell' AND city='balmora';
 is equivalent to
 grep spell databasemw.csv | grep balmora
-awk -F, '/spell/ && /balmora/' databasemw.csv
+awk '/spell/ && /balmora/' databasemw.csv
 awk -F, '$1=="spell" && $9=="balmora"' databasemw.csv
 awk -F, '$1~/spell/ && $9~/balmora/' databasemw.csv
 
 SELECT * FROM databasemw WHERE type='spell' AND npc='Ranis Athrys' AND city='balmora'
 is equivalent to
 grep spell databasemw.csv | grep balmora | grep 'Ranis Athrys'
-awk -F, '/spell/ && /balmora/ && /Ranis Athrys/' databasemw.csv
+awk '/spell/ && /balmora/ && /Ranis Athrys/' databasemw.csv
 awk -F, '$1=="spell" && $9=="balmora" && $5=="Ranis Athrys"' databasemw.csv
 awk -F, '$1~/spell/ && $9~/balmora/ && $5~/Ranis Athrys/' databasemw.csv
 
 SELECT npc FROM databasemw WHERE type='spell' AND name='soul trap'
-awk -F, '/spell/ && /soul trap/ {print $5}' databasemw.csv
+awk '/spell/ && /soul trap/ {print $5}' databasemw.csv
 awk -F, '$1=="spell" && $2=="soul trap" {print $5}' databasemw.csv
 awk -F, '$1~/spell/ && $2~/soul trap/ {print $5}' databasemw.csv
 
@@ -348,98 +349,4 @@ SELECT * FROM databasemw WHERE quantity>4 AND city='vivec'
 awk -F, '$3>4 && /vivec/' databasemw.csv
 awk -F, '$3>4 && $9=="vivec"' databasemw.csv
 awk -F, '$3>4 && $9~/vivec/' databasemw.csv
-```
-
-
-### SQLite
-
-The database with all the tables is just a single file. The database is created in the directory where the command is issued. You cannot list databases or tables if you are not in the directory where the database is.
-
-To back up the database, simply copy the file to a new file: `$ cp mydatabase.db mydatabase-backup.db`
-
-- Install:
-
-```
-$ sudo apt install sqlite3
-```
-
-- Create database:
-
-```
-$ sqlite3 mydatabase
-```
-
-- Work with an already created database:
-
-```
-$ sqlite3 mydatabase
-or
-sqlite> .open mydatabase.db
-```
-
-- Create table by importing a CSV file:
-
-```
-sqlite> .mode csv
-sqlite> .import data.csv mytable
-```
-
--Create table by importing SQL table:
-
-```
-sqlite3> .read mytable.sql
-```
-
-- Query database:
-
-```
-sqlite> .mode box
-sqlite> select * from mytable;
-sqlite> select * from mytable where Abilities='FR(100)';
-sqlite> select * from mytable where Abilities like '%FR%';
-```
-
-- Delete table:
-
-```
-sqlite> drop table `mytable`;
-```
-
-- Delete database:
-
-```
-$ rm mydatabase.db
-```
-
-- List databases and tables:
-
-```
-$ sqlite3
-sqlite> .databases
-sqlite> .open mydatabase
-sqlite> .tables
-```
-
-The commands must be issued in the directory where the database is.
-
-- Export a table to CSV file:
-
-```
-sqlite> .mode csv
-sqlite> .headers on
-sqlite> .out mytable.csv
-sqlite> select * from mytable;
-```
-
-- Export a table to SQL file:
-
-```
-sqlite3> .out mytable.sql
-sqlite3> .dump mytable
-```
-
-- Exit SQLite:
-
-```
-sqlite> .exit
 ```
