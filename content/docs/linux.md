@@ -109,6 +109,7 @@ Then:
 - Show/Hide Explorer	Ctrl + B
 - Selection up/down	Ctrl + Shift + up/down
 - Selection left/right	Ctrl + Shift + left/right
+- Change theme: Ctrl + K Ctrl + T
 
 
 ### ranger
@@ -341,7 +342,7 @@ awk -F, '$1=="spell" && $9=="balmora" && $5=="Ranis Athrys"' databasemw.csv
 awk -F, '$1~/spell/ && $9~/balmora/ && $5~/Ranis Athrys/' databasemw.csv
 
 SELECT npc FROM databasemw WHERE type='spell' AND name='soul trap'
-awk '/spell/ && /soul trap/ {print $5}' databasemw.csv
+awk -F, '/spell/ && /soul trap/ {print $5}' databasemw.csv
 awk -F, '$1=="spell" && $2=="soul trap" {print $5}' databasemw.csv
 awk -F, '$1~/spell/ && $2~/soul trap/ {print $5}' databasemw.csv
 
@@ -349,4 +350,38 @@ SELECT * FROM databasemw WHERE quantity>4 AND city='vivec'
 awk -F, '$3>4 && /vivec/' databasemw.csv
 awk -F, '$3>4 && $9=="vivec"' databasemw.csv
 awk -F, '$3>4 && $9~/vivec/' databasemw.csv
+```
+
+### Adding apps to Launch Menu
+
+1. Add an `png` icon file either in `.local/share/icons` or `/usr/share/icons`
+2. Create a `.desktop` file either in `.local/share/applications` or `/usr/share/applications`
+3. Where you created the `.desktop` file, execute: `sudo desktop-file-install myapp.desktop`
+
+Example with **VSCodium** application:
+
+1. We add the file `vscodium.png` to `.local/share/icons`
+2. We create the file `vscodium.desktop` in `.local/share/applications` with the following content:
+
+    ```
+    [Desktop Entry]
+    Name=VSCodium
+    Comment=Code Editing. Redefined.
+    GenericName=Text Editor
+    Exec=/usr/share/codium/codium
+    Icon=vscodium
+    Type=Application
+    Categories=TextEditor;Development;IDE;
+    ```
+
+3. Within `local/share/applications` directory, we run the command:
+
+    ```
+    $ sudo desktop-file-install vscodium.desktop
+    ```
+
+**Note:** We can check if the `.desktop` file is correct by executing:
+
+```
+$ desktop-file-validate vscodium.desktop
 ```

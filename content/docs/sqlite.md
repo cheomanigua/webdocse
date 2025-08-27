@@ -123,3 +123,54 @@ If any of the following applies, don't use SQLite:
 - Long running write transactions.
 - Remote database: need to run database in a separate server.
 - Ephemeral, serveless environment.
+
+
+### Improve performance
+
+- Run a query with `EXPLAIN QUERY PLAN` prefix:
+
+```sql
+sqlite> EXPLAIN QUERY PLAN select * from customers where city='Berlin';
+```
+
+If the column is not optimized, you'll see this message:
+
+```
+QUERY PLAN
+--SCAN database
+```
+
+- SQLite can make suggestions to improve performance. Enter `expert` mode and run the query normaly:
+
+```
+sqlite> .expert
+sqlite> select * from customers where city='Berlin';
+```
+The response with the suggestion:
+
+```
+CREATE INDEX customers_idx_00013fb1 ON customers(city);
+
+SEARCH customers USING INDEX customers_idx_00013fb1 (city=?)
+```
+
+- So, we create the index suggested by `.expert`:
+
+```
+sqlite> CREATE INDEX customers_city_idx ON customers(city);
+```
+
+- If we run again the command:
+
+```
+sqlite> EXPLAIN QUERY PLAN select * from customers where city='Berlin';
+```
+
+This time we get:
+
+```
+QUERY PLAN
+--SEARCH customers USING INDEX customers_city_idx (city=?)
+```
+
+Now the query will be executed much faster.
