@@ -102,7 +102,7 @@ Then:
 - Rename session: `rename-session` or `rename` + *your_session_name*
 
 
-### vscodium
+### VSCodium
 
 - Comment:		Ctrl + K Ctrl + C
 - Uncomment:		Ctrl + K Ctrl + U
@@ -111,6 +111,33 @@ Then:
 - Selection left/right	Ctrl + Shift + left/right
 - Change theme: Ctrl + K Ctrl + T
 
+### Code::Blocks
+
+#### Installation
+
+```bash
+$ sudo apt install codeblocks
+```
+
+#### Clang
+
+After installation, if you want to use the Clang compiler, you will probably need to install `libstdc++`. To find out which `libstdc++` version Clang needs, run the following command:
+
+```bash
+$ clang -v
+```
+
+On the results, look for this line:
+
+```
+Selected GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/12
+```
+
+In above result, the version is 12. In order to install version 12 of libstdc++, run:
+
+```bash
+$ sudo apt install libstdc++-12-dev
+```
 
 ### ranger
 
