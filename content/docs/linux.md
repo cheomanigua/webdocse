@@ -106,6 +106,7 @@ Then:
 
 - Comment:		Ctrl + K Ctrl + C
 - Uncomment:		Ctrl + K Ctrl + U
+- Batch edit: highlight text and press Ctrl + D several times
 - Show/Hide Explorer	Ctrl + B
 - Selection up/down	Ctrl + Shift + up/down
 - Selection left/right	Ctrl + Shift + left/right
@@ -115,13 +116,42 @@ Then:
 
 #### Installation
 
+##### Not the newest version
+
 ```bash
+$ sudo apt install codeblocks
+```
+
+##### The newest version
+
+```bash
+$ sudo add-apt-repository ppa:x-psoud/cbreleases
+$ apt policy | grep x-psoud
+$ sudo vim /etc/apt/preferences.d/codeblocks-ppa
+```
+Add this to `/etc/apt/preferences.d/codeblocks-ppa` to give priority to **x-psoud/cbreleases** so codeblocks is not fetched from the default repository:
+
+```
+Package: codeblocks*
+Pin: release o=LP-PPA-x-psoud-cbreleases
+Pin-Priority: 1001
+```
+```bash
+$ sudo apt update
 $ sudo apt install codeblocks
 ```
 
 #### Clang
 
-After installation, if you want to use the Clang compiler, you will probably need to install `libstdc++`. To find out which `libstdc++` version Clang needs, run the following command:
+After installation, if you want to use the Clang compiler, you will probably need to install `clang` and `libstdc++`.
+
+##### Install
+
+```bash
+sudo apt install clang
+```
+
+To find out which `libstdc++` version Clang needs, run the following command:
 
 ```bash
 $ clang -v
