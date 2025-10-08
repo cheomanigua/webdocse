@@ -117,7 +117,20 @@ And now we issue the build command:
 
 ### Multi-stage builds
 
-Normal builds generate very big image sizes. To reduce the image size to a minimun, Multi-stage builds come to the rescue.
+Normal builds generate very big image sizes. To reduce the image size to a minimun, Multi-stage builds come to the rescue. Using the previous example:
+
+```dockerfile
+# Stage 1: Build stage to collect static files
+FROM alpine:latest AS build-stage
+WORKDIR /app
+COPY . ./static/
+
+# Stage 2: Serve static files with nginx:alpine-slim
+FROM nginx:alpine-slim
+COPY --from=build-stage /app/static /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+```
 
 The examples below shows how to create a Dockerfile to build a Golang app in a Multi-stage fashion. The first Dockerfile is a normal build and the second Dockerfile is a Multi-stage build.
 
