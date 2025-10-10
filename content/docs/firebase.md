@@ -9,6 +9,10 @@ draft: false
 toc: true
 ---
 
+#### What is Firebase
+
+**Cloud Run** allows you to easily serve your backend code written in any programming language. **Firebase** adds a custom domain, a global content delivery network, and many more useful integrations. Together, Firebase and Cloud Run make it easy to build and deploy web apps that can handle large amounts of traffic.
+
 # Basics
 
 ## Installation
@@ -80,16 +84,11 @@ So, if you want to update your deployment with the last code changes, you have t
 9. If not set yet, click on '**Enable**' to enable the required APIs
 10. Click on the '**Submit**' button
 
-### Use case
-
-**Cloud Run** allows you to easily serve your backend code written in any programming language. **Firebase** adds a custom domain, a global content delivery network, and many more useful integrations. Together, Firebase and Cloud Run make it easy to build and deploy web apps that can handle large amounts of traffic.
-
-
 
 
 ## 3. Hugo site to GitHub to Firebase Hosting
 
-We can create a CI/CD pipeline using GitHub Actions. This way when we `git push`, GitHub Actions will automatically deploy the site on Firebase. These are the steps:
+If you don't want to install Firebase in your computer, you can create a CI/CD pipeline using GitHub Actions. This way when you `git push` in the project on your computer, GitHub Actions will automatically deploy the site on Firebase. These are the steps:
 
 ### 1. Firebase account
 
@@ -197,10 +196,10 @@ jobs:
 
 ```bash
 $ git add .
-$ git commint -m 'Created CI/CD pipeline with GitHub Actions'
+$ git commit -m 'Created CI/CD pipeline with GitHub Actions'
 $ git push
 ```
-
+{{< alert text="I'm using `hugo_extended_0.131.0_Linux-64bit.tar.gz`. because it's the only version of Hugo that builds for the template [Lotus Docs].(https://lotusdocs.dev/docs/)" />}}
 
 # Deleting
 
