@@ -8,7 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Hugo
+        with:
+          submodules: recursive  # Ensure theme submodules are checked out
+      - name: Install Hugo Extended
         run: |
           wget https://github.com/gohugoio/hugo/releases/download/v0.131.0/hugo_extended_0.131.0_Linux-64bit.tar.gz
           tar -xzf hugo_extended_0.131.0_Linux-64bit.tar.gz
@@ -17,7 +19,10 @@ jobs:
         run: hugo --minify
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
+      - name: Set up Google Service Account
+        run: |
+          echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" | base64 -d > $HOME/gcp_credentials.json
+          export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp_credentials.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp_credentials.json" >> $GITHUB_ENV
       - name: Deploy to Firebase
-        run: firebase deploy --only hosting
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: firebase deploy --only hosting --project ${{ secrets.FIREBASE_PROJECT_ID }}
