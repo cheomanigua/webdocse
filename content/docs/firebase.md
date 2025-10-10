@@ -96,49 +96,120 @@ So, if you want to update your deployment with the last code changes, you have t
     5. Select each checkbox to acknowledge the effects of deleting your project
     6. Click **Delete project**
 
-# CI/CD
 
-## Failing to setup CI/CD (ignore all instructions below)
 
-## Deploy Hugo site with GitHub
 
-- Use an existing repository or create a new one
-- Within the root directory of the web project, type: `$ firebase init hosting`
-- **? Select a default Firebase project for this directory:** cursor keys + enter
-- **? What do you want to use as your public directory? *public*** enter
-- **? Configure as a single-page app (rewrite all urls to /index.html)? *(y/N)*** enter
-- **? Set up automatic builds and deploys with GitHub? *(y/N)*** y + enter 
-- **? For which GitHub repository would you like to set up a GitHub workflow? *(format: user/repository)*** user/repository + enter
-- **? Set up the workflow to run a build script before every deploy? *(y/N)*** enter
-- **? Set up automatic deployment to your site's live channel when a PR is merged? *(Y/n)*** enter
-- **? What is the name of the GitHub branch associated with your site's live channel? *(main)*** enter
 
-**PR** is the acronym for **Pull Request**
+## 2. Hugo site to GitHub to Firebase Hosting
 
-### GCP service account
+We can create a CI/CD pipeline using GitHub Actions. These are the steps:
 
-In order to automaticaly create and active the GCP services account necessary for your project, follow these steps:
-1. From your [Firebase console](https://console.firebase.google.com/), go to your project
-2. Click on the 'Project Settings' gear icon on the left panel
-3. Click on the '**Service accounts**' tab
-4. Click on the '**4 service accounts**' link besides the GCP icon
+### 1. Firebase account
 
-## Preview Channel
+1. Go to [Firebase console](https://console.firebase.google.com/)
+2. Go to your project
 
-Firebase Hosting has a feature called **Preview Channels** where you can deploy a verion of your site to a generated short lived URL. They are great in a GitHub workflow.
+##### Check your site ID
 
-You can setup a GitHuB action that will deploy a Preview Channel for every single Pull Request (PR). Firebase CLI will generate the entire workflow for you.
+1. Click on the '**Project Settings**' gear icon on the left panel
+2. Click on the '**General**' tab
+3. If there is only one site on your project, the **Project ID** is your **Site ID**.
 
-## Setup Preview Channel with GitHub Actions
+##### Generate a secret key
 
-- Push a Pull request per branch, and when it happens, generate a preview channel per pull request.
+1. Click on the '**Project Settings**' gear icon on the left panel
+2. Click on the '**Service accounts**' tab
+3. Click on **Generate a new private key**
+4. A **.json** key file will be downloaded into your computer
+
+### 2. Your computer
+
+1. Convert the JSON key file to a base64-encoded string to store it safely in GitHub Secrets:
+	```bash
+	$ base64 yourprojectid-firebase-adminsdk-alphanum-alphanum.json | tr -d '\n'
+	```
+2. Copy the output to the clipboard
+
+### 3. GitHub account
+
+##### Add secret key for Google Service Account
+
+1. Go to your repository -> Settings -> Secrets and variables -> Actions
+2. Click on **New repository secret**
+3. Paste the output of the clipboard in the box **Secret**
+4. Name your new secret `GOOGLE_APPLICATION_CREDENTIALS` in the box **Name**
+
+##### Add secret for your Site ID
+
+1. Click on **New repository secret**
+2. Write the **Project ID** or **Site ID** in the box **Secret**
+3. Name your new secret `FIREBASE_PROJECT_ID` in the box **Name**
+
+### 4. Your computer
+
+##### Create `firebase.json` file
+
+In your root project directory, create the file **firebase.json** with the following content, making sure that you type your ite ID and not your site URL:
+
+```json
+{
+  "hosting": {
+    "public": "public",
+    "site": "my_site_id",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      ".git/",
+      ".gitignore",
+      "README.md",
+      ".firebaserc",
+      ".firebase/"
+    ]
+  }
+}
 ```
-$ git branch next
-$ git checkout next
-$ git status
+
+##### Create `.deploy.yml` file
+
+- Create the folling directory at the root of your project directory: `.github/workflow/`
+- Inside the new created directory, create the file **deploy.yml** with the following content:
+
+```yml
+name: Deploy to Firebase Hosting
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive  # Ensure theme submodules are checked out
+      - name: Install Hugo Extended
+        run: |
+          wget https://github.com/gohugoio/hugo/releases/download/v0.131.0/hugo_extended_0.131.0_Linux-64bit.tar.gz
+          tar -xzf hugo_extended_0.131.0_Linux-64bit.tar.gz
+          mv hugo /usr/local/bin/
+      - name: Build Hugo
+        run: hugo --minify
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+      - name: Set up Google Service Account
+        run: |
+          echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" | base64 -d > $HOME/gcp_credentials.json
+          export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp_credentials.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp_credentials.json" >> $GITHUB_ENV
+      - name: Deploy to Firebase
+        run: firebase deploy --only hosting --project ${{ secrets.FIREBASE_PROJECT_ID }}
+```
+
+##### Push the new changes to GitHub
+
+```bash
 $ git add .
-$ git commit -m 'adding Firebase Hosting'
-$ git push -u origin next
+$ git commint -m 'Created CI/CD pipeline with GitHub Actions'
+$ git push
 ```
-- Go to your GitHub repository and click on the **Compare & pull request** button
-- If you are happy with the default pull request name, click on **Create pull request**
