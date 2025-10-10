@@ -148,9 +148,7 @@ In your root project directory, create the file **firebase.json** with the follo
       "**/node_modules/**",
       ".git/",
       ".gitignore",
-      "README.md",
-      ".firebaserc",
-      ".firebase/"
+      "README.md"
     ]
   }
 }
