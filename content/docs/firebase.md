@@ -51,6 +51,8 @@ firebase use --clear            // Clears the active project
 
 # Deploying
 
+In this section I will explain three different ways to deploy your app to Firebase.
+
 ## 1. Hugo site to Firebase Hosting (static site)
 
 1. Go to [Firebase](https://console.firebase.google.com) and create a new project

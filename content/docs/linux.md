@@ -102,15 +102,49 @@ Then:
 - Rename session: `rename-session` or `rename` + *your_session_name*
 
 
+
 ### VSCodium
 
-- Comment:		Ctrl + K Ctrl + C
-- Uncomment:		Ctrl + K Ctrl + U
-- Batch edit: highlight text and press Ctrl + D several times
-- Show/Hide Explorer	Ctrl + B
-- Selection up/down	Ctrl + Shift + up/down
-- Selection left/right	Ctrl + Shift + left/right
-- Change theme: Ctrl + K Ctrl + T
+##### General
+
+- Comment line or selection: `Ctrl` + `K` + `C`
+- Uncomment line or selection: `Ctrl` + `K` + `U`
+- Delete word on the left/right of cursor: `Ctrl` + `Backspace/Delete`
+- Change theme: `Ctrl` + `K` + `T`
+- Toggle word wrap: `Alt` + `Z`
+- Find: `Ctrl` + `F`
+- Find and Replace: `Ctrl` + `H`
+- Auto-format: `Ctrl` + `Shift` + `I`
+- Close/Open the Explorer: `Ctrl` + `B`
+- Close/Open the Terminal: `Ctrl` + `J`
+- Focus on the Terminal: `Ctrl` + ```
+
+##### Selection
+
+- Select all ocurrences of selection: `Ctrl` + `Shift` + `L`
+- Select N number of ocurrences of selection: `Ctrl` + `D` several times
+- Select element to jump to: `Ctrl` + `Shift` + `\`
+- Select whole word: `Ctrl` + `Shift` + `Left/Right`
+- Select line above/below (cumulative): `Shift` + `Up/Down`
+- Select line above/below (cumulative both ways): `Ctrl` + `Shift` + `Up/Down`
+- Select all above/below cursor: `Ctrl` + `Inicio/Fin`
+- Select up/down:	`Ctrl` + `Shift` + `Up/Down`
+- Select left/right:	Ctrl + Shift + `Left/Right`
+
+##### Lines
+
+- Cut line: `Ctrl` + `X`
+- Copy line: `Ctrl` + `C`
+- Delete line: `Ctrl` + `Shift` + `K`
+- Insert below: `Ctrl` + `Enter`
+- Insert above: `Ctrl` + `Shift` + `Enter`
+- Move line up/down: `Alt` + `Up/Down`
+- Move selected lines (block) up/down: `Alt` + `Up/Down`
+- Duplicate line above/below: `Ctrl` + `Shift` + `Alt` + `Up/Down`
+- Go to beginning/end of line: `Inicio/Fin`
+- Go to beginning/end of file: `Ctrl` + `Inicio/Fin` or `RePág/AvPág`
+
+
 
 ### Code::Blocks
 

@@ -96,6 +96,8 @@ Operators specify which operation to perfom:
 - **r** -\> Replace
 - **v** -\> Visually select
 
+If you want to copy text and paste outside Vim, you need to visually select the text and press at a time: `"+y`
+
 #### Motion
 Motion specifies where the Operators operate in relation to the cursor position:
 
