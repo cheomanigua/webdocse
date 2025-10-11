@@ -90,7 +90,7 @@ So, if you want to update your deployment with the last code changes, you have t
 
 If you don't want to install Firebase in your computer, you can create a CI/CD pipeline using GitHub Actions. This way when you `git push` in the project on your computer, GitHub Actions will automatically deploy the site on Firebase. These are the steps:
 
-### 1. Firebase account
+#### 1. Firebase account
 
 1. Go to [Firebase console](https://console.firebase.google.com/)
 2. Go to your project
@@ -108,7 +108,7 @@ If you don't want to install Firebase in your computer, you can create a CI/CD p
 3. Click on **Generate a new private key**
 4. A **.json** key file will be downloaded into your computer
 
-### 2. Your computer
+#### 2. Your computer
 
 1. Convert the JSON key file to a base64-encoded string to store it safely in GitHub Secrets:
 	```bash
@@ -116,7 +116,7 @@ If you don't want to install Firebase in your computer, you can create a CI/CD p
 	```
 2. Copy the output to the clipboard
 
-### 3. GitHub account
+#### 3. GitHub account
 
 ##### Add secret key for Google Service Account
 
@@ -131,11 +131,13 @@ If you don't want to install Firebase in your computer, you can create a CI/CD p
 2. Write the **Project ID** or **Site ID** in the box **Secret**
 3. Name your new secret `FIREBASE_PROJECT_ID` in the box **Name**
 
-### 4. Your computer
+You will use `GOOGLE_APPLLICATION_CREDENTIALS` and `FIREBASE_PROJECT_ID` when creating the `deploy.yml` file below.
+
+#### 4. Your computer
 
 ##### Create `firebase.json` file
 
-In your root project directory, create the file **firebase.json** with the following content, making sure that you type your ite ID and not your site URL:
+In your root project directory, create the file **firebase.json** with the following content, making sure that you type your site ID and not your site URL:
 
 ```json
 {
