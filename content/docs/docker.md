@@ -11,12 +11,12 @@ toc: true
 
 ### Installation
 
-You can follow the Docker installation instructions in the following Linux distributions:
+You can follow the Docker installation instructions for the following Linux distributions:
 
-- **Centos**: [https://docs.docker.com/engine/install/centos/](https://docs.docker.com/engine/install/centos/)
 - **Debian**: [https://docs.docker.com/engine/install/debian/](https://docs.docker.com/engine/install/debian/)
-- **Fedora**: [https://docs.docker.com/engine/install/fedora/](https://docs.docker.com/engine/install/fedora/)
 - **Ubuntu**: [https://docs.docker.com/engine/install/ubuntu/](https://docs.docker.com/engine/install/ubuntu/)
+- **Centos**: [https://docs.docker.com/engine/install/centos/](https://docs.docker.com/engine/install/centos/)
+- **Fedora**: [https://docs.docker.com/engine/install/fedora/](https://docs.docker.com/engine/install/fedora/)
 
 
 ### Post installation
@@ -92,7 +92,13 @@ Pages are served from `/usr/share/nginx/html`
 `docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' container_name_or_id`
 
 
-## Building our own image
+## Dockerfile : custom image
+
+It is possible to build a custom image by downloading using an image, copying the project to it and adding some configuration.
+
+### Static Site
+
+#### Normal build
 
 Providing we have these files in the directory where we are going to issue the build command:
 
@@ -115,7 +121,7 @@ And now we issue the build command:
 
 `docker image build -t nginx-mywebsite .` 
 
-### Multi-stage builds
+#### Multi-stage build
 
 Normal builds generate very big image sizes. To reduce the image size to a minimun, Multi-stage builds come to the rescue. Using the previous example:
 
@@ -132,9 +138,11 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
+### Dynamic Site
+
 The examples below shows how to create a Dockerfile to build a Golang app in a Multi-stage fashion. The first Dockerfile is a normal build and the second Dockerfile is a Multi-stage build.
 
-*Normal build*
+#### Normal build
 
 ```dockerfile
 FROM golang:1.22.5
@@ -153,7 +161,7 @@ COPY /static ./static/
 CMD ["/main"]
 ```
 
-*Multi-stage build*
+#### Multi-stage build
 
 ```dockerfile
 FROM golang:1.22.5 AS build-stage
@@ -227,7 +235,7 @@ $ docker volume rm $(docker volume ls -qf dangling=true)
 $ docker volume ls -qf dangling=true | xargs -r docker volume rm
 ```
 
-## Docker compose
+## Docker Compose : multi-container applications
 
 [Docker Compose](https://docs.docker.com/compose/) is a tool for defining and running multi-container applications.
 

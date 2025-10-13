@@ -11,11 +11,13 @@ toc: true
 
 #### What is Firebase
 
-**Cloud Run** allows you to easily serve your backend code written in any programming language. **Firebase** adds a custom domain, a global content delivery network, and many more useful integrations. Together, Firebase and Cloud Run make it easy to build and deploy web apps that can handle large amounts of traffic.
+**Firebase** adds a custom domain, a global content delivery network, and many more useful integrations to Cloud Run. **Cloud Run** allows you to easily serve your backend code written in any programming language. Together, Firebase and Cloud Run make it easy to build and deploy web apps that can handle large amounts of traffic.
 
 # Basics
 
 ## Installation
+
+**Note**: You only need to install Firebase if you are deploying from your local computer as explained in the section *1. Hugo site to Firebase Hosting (static site)* in the *Deploying* section [below](#1-hugo-site-to-firebase-hosting-static-site)
 
 ```
 $ curl -sL https://firebase.tools | bash

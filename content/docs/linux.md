@@ -117,7 +117,7 @@ Then:
 - Auto-format: `Ctrl` + `Shift` + `I`
 - Close/Open the Explorer: `Ctrl` + `B`
 - Close/Open the Terminal: `Ctrl` + `J`
-- Focus on the Terminal: `Ctrl` + ```
+- Focus on the Terminal: `Ctrl` + `\``
 
 ##### Selection
 

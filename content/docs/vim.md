@@ -370,14 +370,14 @@ Vim comes with a built-in plugin manager called **Vim 8 packages**.
 
 1. First, create a directory structure representing a plugin-group, say `plugins`, as follows:
 
-```
-$ mkdir -p ~/.vim/pack/plugins/start/
-```
+	```
+	$ mkdir -p ~/.vim/pack/plugins/start/
+	```
 
 2. Activate the plugin manager:
-```
-$ sed -i -e '$a\'$'\n''filetype plugin indent on' ~/.vimrc
-```
+	```
+	$ sed -i -e '$a\'$'\n''filetype plugin indent on' ~/.vimrc
+	```
 
 ### Installing a plugin
 
@@ -409,21 +409,21 @@ Vim-go is a plugin that facilitates the Golang programming experience in Vim. Th
 
 1. Add the plugin:
 
-```
-$ git clone https://github.com/fatih/vim-go.git ~/.vim/pack/plugins/start/vim-go
-```
+	```
+	$ git clone https://github.com/fatih/vim-go.git ~/.vim/pack/plugins/start/vim-go
+	```
 
 2. Install all necessary binaries:
 
-```
-:GoInstallBinaries
-```
+	```
+	:GoInstallBinaries
+	```
 
 3. Generate the plugin's help tags:
 
-```
-:helptags ALL
-```
+	```
+	:helptags ALL
+	```
 
 4. Code completion is enabled by default via `omnifunc`, which you can trigger
    with **Ctrl-X** + **Ctrl-O**
@@ -433,16 +433,16 @@ $ git clone https://github.com/fatih/vim-go.git ~/.vim/pack/plugins/start/vim-go
 
 1. Download <a href="https://github.com/junegunn/vim-plug" target="_blank">vim-plug</a>:
 
-  `$ curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim`
+	`$ curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim`
 
 2. Add **vim-plug** in your **~/.vimrc** file:
-```
-" vim-plug
-call plug#begin('~/.vim/plugged')
+	```
+	" vim-plug
+	call plug#begin('~/.vim/plugged')
 
-" end vim-plug
-call plug#end()
-```
+	" end vim-plug
+	call plug#end()
+	```
 
 3. Add, for instance, <a href="https://github.com/MaxMEllon/vim-jsx-pretty" target="_blank">vim-jsx-pretty</a>, <a href="https://github.com/mattn/emmet-vim" target="_blank">emmet-vim</a> and <a href="https://github.com/neoclide/coc.nvim" target="_blank">Intellisense</a> plugins in your **~/.vimrc** file:
 ```
@@ -549,30 +549,30 @@ Within NeoVim, type: `:e $MYVIMRC`
 
 ### Golang support
 1. Edit the config file and uncomment this line:
-```lua
--- gopls = {},
-```
+	```lua
+	-- gopls = {},
+	```
 
 2. Edit the config file and make these lines to look like this:
-```lua
-        dependencies = {
-          -- `friendly-snippets` contains a variety of premade snippets.
-          --    See the README about individual language/framework/plugin snippets:
-          --    https://github.com/rafamadriz/friendly-snippets
-          {
-            'rafamadriz/friendly-snippets',
-            config = function()
-              require('luasnip.loaders.from_vscode').lazy_load { include = {"go", "html", "css"}}
-            end,
-          },
-        },
-```
+	```lua
+		dependencies = {
+		  -- `friendly-snippets` contains a variety of premade snippets.
+		  --    See the README about individual language/framework/plugin snippets:
+		  --    https://github.com/rafamadriz/friendly-snippets
+		  {
+		    'rafamadriz/friendly-snippets',
+		    config = function()
+		      require('luasnip.loaders.from_vscode').lazy_load { include = {"go", "html", "css"}}
+		    end,
+		  },
+		},
+	```
 
 3. Edit the config file and add 'go' to this line:
-```lua
-ensure_installed = { 'go', 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
-```
-Run `:TSUpdate`
+	```lua
+	ensure_installed = { 'go', 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+	```
+	Run `:TSUpdate`
 
 4. Restart your computer
 
