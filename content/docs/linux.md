@@ -26,6 +26,38 @@ sudo lsof -i :8080
 kill -9 "PID of the port"
 ```
 
+#### How to install nVidia drivers
+
+To install nVidia drivers in **Debian 13 Trixie**, follow these instructions ([source](https://linuxconfig.org/debian-13-nvidia-driver-installation)):
+
+1. Enable **non-free** and **contrib** repositories
+
+    ```
+    $ sudo sed -i 's/main/main non-free contrib/g' /etc/apt/sources.list
+    $ sudo apt update
+    ```
+
+2. Install prerequisites and detect GPU
+
+    ```
+    $ sudo apt install linux-headers-$(uname -r) build-essential dkms nvidia-detect
+    $ nvidia-detect
+    ```
+
+    Running `nvidia-detect` will print the recommended driver to install according to your detected graphic card. In my case it recommends **nvidia-driver**.
+
+3. Install nVidia driver package
+
+    ```
+    $ sudo apt install nvidia-driver nvidia-kernel-dkms
+    $ sudo reboot
+    ```
+
+4. Verify driver installation:
+
+    ```
+    $ nvidia-smi
+    ```
 
 ### Wezterm
 
