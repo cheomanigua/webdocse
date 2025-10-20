@@ -97,6 +97,8 @@ Download the theme as a **zip** file. Extract in the directory `themes/[hugo-the
 
 ##### 4. Hugo module (preferred)
 
+{{< alert context="danger" text="You need [Go](https://go.dev/doc/install) version 1.18 or later and [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) to use Hugo Modules.." />}}
+
 - Initialize your own hugo module system:
 ```
 $ hugo mod init github.com/[your_user]/[your_project] 
@@ -187,3 +189,129 @@ You can upload your site directly from your local machine to a cloud provider by
 ```
 $ hugo deploy
 ```
+
+
+# Menus [](https://gohugo.io/content-management/menus/)
+
+To create a menu for your site, you must follow this workflow:
+
+1. Define the menu entries [](https://gohugo.io/content-management/menus/)
+2. Localize each entry (optional) [](https://gohugo.io/content-management/multilingual/#menus)
+3. Render the menu with a template [](https://gohugo.io/templates/menu/)
+
+## Define menu entries
+
+There are three ways to define menu entries:
+
+1. Define Automatically
+	
+	To automatically define a menu entry for each top-level [section](https://gohugo.io/quick-reference/glossary/#section) of your site, enable the section pages menu in your site configuration by adding this line in your `hugo.` config file:
+
+	{{< tabs tabTotal="3">}}
+	{{% tab tabName="yaml" %}}
+
+	sectionPagesMenu: main
+
+	{{% /tab %}}
+	{{% tab tabName="toml" %}}
+
+	sectionPagesMenu = 'main'
+
+	{{% /tab %}}
+	{{% tab tabName="json" %}}
+
+	{
+	   "sectionPagesMenu": "main"
+	}
+
+	{{% /tab %}}
+	{{< /tabs >}}
+
+	This creates a menu structure that you can access with **site.Menus.main** in your templates. See [menu templates](https://gohugo.io/templates/menu/) for details.
+
+2. Define in front matter
+
+	To add a page to the "main" menu, add this snipped in, for example, `content/about.md`:
+
+
+	{{< tabs tabTotal="3">}}
+	{{% tab tabName="yaml" %}}
+
+	---
+	menus: main
+	title: About
+	---
+
+	{{% /tab %}}
+	{{% tab tabName="toml" %}}
+
+	+++
+	menus = 'main'
+	title = 'About'
+	+++
+
+	{{% /tab %}}
+	{{% tab tabName="json" %}}
+
+	{
+		"menus": "main",
+		"title": "About"
+	}
+
+	{{% /tab %}}
+	{{< /tabs >}}
+
+	Access the entry with **site.Menus.main** in your templates. See [menu templates](https://gohugo.io/templates/menu/) for details.
+
+	To add a page to the "main" and "footer" menus in `content/contact.md`:
+
+	{{< tabs tabTotal="3">}}
+	{{% tab tabName="yaml" %}}
+
+	---
+	menus:
+	- main
+	- footer
+	title: Contact
+	---
+
+	{{% /tab %}}
+	{{% tab tabName="toml" %}}
+
+	+++
+	menus = ['main', 'footer']
+	title = 'Contact'
+	+++
+
+	{{% /tab %}}
+	{{% tab tabName="json" %}}
+
+	{
+		"menus": [
+			"main",
+			"footer"
+		],
+		"title": "Contact"
+	}
+
+	{{% /tab %}}
+	{{< /tabs >}}
+
+	Access the entry with **site.Menus.main** and **site.Menus.footer** in your templates. See [menu templates](https://gohugo.io/templates/menu/) for details.
+
+3. Define in site configuration
+
+	See [configure menus](https://gohugo.io/configuration/menus/)
+
+
+## Render menu with a template [](https://gohugo.io/templates/menu/)
+
+After [defining menu entries](#31-define-menu-entries), use [menu methods](https://gohugo.io/methods/menu/) to render a menu.
+
+Three factors determine how to render a menu:
+
+1. The method used to define the menu entries: automatic, in front matter, or in site configuration
+2. The menu structure: flat or nested
+3. The method used to localize the menu entries: site configuration or translation tables
+
+Check the [official documentation](https://gohugo.io/templates/menu/) for detailed instructions.

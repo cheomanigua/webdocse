@@ -12,8 +12,8 @@ jobs:
           submodules: recursive  # Ensure theme submodules are checked out
       - name: Install Hugo Extended
         run: |
-          wget https://github.com/gohugoio/hugo/releases/download/v0.131.0/hugo_extended_0.131.0_Linux-64bit.tar.gz
-          tar -xzf hugo_extended_0.131.0_Linux-64bit.tar.gz
+          wget https://github.com/gohugoio/hugo/releases/download/v0.151.2/hugo_0.151.2_Linux-64bit.tar.gz
+          tar -xzf hugo_extended_0.151.2_Linux-64bit.tar.gz
           mv hugo /usr/local/bin/
       - name: Build Hugo
         run: hugo --minify
