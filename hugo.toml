@@ -80,7 +80,7 @@ defaultContentLanguage = 'en'
 
         prism           = true                                # enable syntax highlighting via Prism
 
-        prismTheme      = "solarized-light"                           # (optional) - Set theme for PrismJS. Options include: lotusdocs (default), solarized-light, twilight, lucario
+        prismTheme      = "lucario"                           # (optional) - Set theme for PrismJS. Options include: lotusdocs (default), solarized-light, twilight, lucario
 
         # gitinfo
         repoURL         = "https://github.com/cheomanigua/devdocse"  # Git repository URL for your site [support for GitHub, GitLab, and BitBucket]

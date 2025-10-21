@@ -193,6 +193,25 @@ $ hugo deploy
 
 # Menus [](https://gohugo.io/content-management/menus/)
 
+Standard file structure:
+
+```
+
+- root
+	- content/
+		- _index.md
+		- about/
+			- _index.md
+		- posts/
+			- _index.md
+			- post01.md
+			- post02.md
+	- layouts/
+		- index.html
+		- shortcodes/
+			- pricing-cards.html
+```
+
 To create a menu for your site, you must follow this workflow:
 
 1. Define the menu entries [](https://gohugo.io/content-management/menus/)
@@ -229,9 +248,13 @@ There are three ways to define menu entries:
 
 	This creates a menu structure that you can access with **site.Menus.main** in your templates. See [menu templates](https://gohugo.io/templates/menu/) for details.
 
+	Based in the file structure shown above, `sectionPagesMenu: main` will automatically create two entries in the main menu: About and Posts. Both are directly under Content and have an _`index.md` file.
+
+	<br>
+
 2. Define in front matter
 
-	To add a page to the "main" menu, add this snipped in, for example, `content/about.md`:
+	To add a page to the "main" menu, add this snipped in, for example, `content/about/_index.md`:
 
 
 	{{< tabs tabTotal="3">}}
@@ -315,3 +338,41 @@ Three factors determine how to render a menu:
 3. The method used to localize the menu entries: site configuration or translation tables
 
 Check the [official documentation](https://gohugo.io/templates/menu/) for detailed instructions.
+
+
+## Partials, Shortcodes
+
+We can add a snipped of code into a `.md` file by using Partials and Shortcodes.
+
+1. Create the following file: `layouts/shortcodes/pricing-cards.html`
+
+	```html
+	<link rel="stylesheet" href="https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css">
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+	</div>
+	<ul class="list pa0 ma0 mb4">
+	<li class="mb2 fw4">✓ 1 User Account</li>
+	<li class="mb2 fw4">✓ 10GB Storage</li>
+	<li class="mb2 fw4">✓ Basic Support</li>
+	<li class="mb2 fw4 gray">✗ Advanced Analytics</li>
+	</ul>
+	```
+
+2. Add the shortcode into `content/_index.md`
+
+	```markdown
+	+++
+	date = '2025-10-19T22:44:23+02:00'
+	draft = false
+	title = 'My Amazing Website'
+	+++
+	 
+	## Welcome to My Amazing Website
+	 
+	This is the best website in all internet.
+	 
+	### Choose your plan
+	 
+	{{\< pricing-cards \>}}		## Do not use the backlashes, they are used only for escaping to avoid an error.
+	```

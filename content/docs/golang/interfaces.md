@@ -1,13 +1,61 @@
 ---
 weight: 5300
 title: "Interfaces"
-description: ""
+description: "Pointers, Structs and Interfaces working together"
 icon: "article"
 date: "2024-08-13T10:42:07+02:00"
 lastmod: "2024-08-13T10:42:07+02:00"
 draft: false
 toc: true
 ---
+
+### Example 1
+
+```go
+package main
+
+import "fmt"
+
+type Friend interface {
+	SayHello()
+}
+
+type Person struct {
+	Name string
+}
+
+type Dog struct {}
+
+func Greet(f Friend) {
+	f.SayHello()
+}
+
+func (p *Person) SayHello() {
+	fmt.Println("Hello,", p.Name)
+}
+
+func (d *Dog) SayHello() {
+	fmt.Println("Woof woof")
+}
+
+func main() {
+	var foo = new(Person)
+	var bar = new(Dog)
+
+	foo.Name = "Foo"
+
+	foo.SayHello() // Prints: Hello, Foo
+	bar.SayHello() // Prints: Woof woof
+
+	Greet(foo) // Prints: Hello, Foo
+	Greet(bar) // Prints: Woof woof
+}
+```
+
+The *Example 1* shows two types, Person and Dog, that are able to SayHello() and, therefore, are a Friend. You are able to Greet() both a Person and a Dog, since both are capable of SayHello().
+
+### Example 2
+
 ```go
 package main
 
