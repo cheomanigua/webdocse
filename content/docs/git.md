@@ -102,7 +102,6 @@ git push
 - `git pull`
 - It is the same as `git fetch` + `git merge`
 - Updates a local repository to the latest changes from GitHub
-- Before you pull, push any local changes to GitHub
 - It is recommended to pull frequenctly when working within a team
 
 ### Git branch, git merge & git checkout
@@ -144,15 +143,23 @@ $ git push origin main
 
 ### Other operations
 
-#### General
-- Check status of files in Local Repository: `git status`
+#### Working directory
+- Check status of files in working directory: `git status`
 	- **Untracked files**: New created files, not staged
 	- **Modified files**: Edited files,not staged
 	- **Staged**: Modified files to be commited
 	- **Commited**: Modified files to be pushed
-
-#### Working directory 
 - See what changes has been made: `git diff` (you can specify a filename also)
+- Compare status of working directory to remote repository:
+    ```bash
+    git fetch origin
+    git status
+    git diff origin/main
+    ```
+- Update working directory from remote repository
+    ```bash
+    git pull
+    ```
 - Remove last file edits from working directory: `git checkout [file]`
 
 #### Staged (after git add)
