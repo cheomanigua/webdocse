@@ -101,16 +101,120 @@ func main() {
 
 ## Slices
 
+##### Declaration
+
 ```go
-var s = make([]string, 0)
-s = append(s, "some string")
+// Declare a slice (uninitialized - nil)
+var numbers []int
+
+// Initialize with make()
+numbers := make([]int, 0)        // empty slice
+numbers := make([]int, 5)        // length 5, capacity 5
+numbers := make([]int, 3, 10)    // length 3, capacity 10
+
+// Literal syntax (preferred)
+numbers := []int{1, 2, 3, 4, 5}
+```
+
+##### Common Patterns
+
+```go
+// Empty slice
+empty := []int{}
+
+// Pre-allocated with capacity
+numbers := make([]int, 0, 100)  // capacity 100, length 0
+
+// From array
+arr := [5]int{1, 2, 3, 4, 5}
+slice := arr[:]
+
+// From string
+chars := []rune("hello")  // []rune for Unicode
+bytes := []byte("hello")  // []byte
+```
+
+##### Key Operations
+
+```go
+slice := []int{1, 2, 3, 4, 5}
+
+// Append (most important!)
+slice = append(slice, 6, 7, 8)  // [1,2,3,4,5,6,7,8]
+
+// Append to pre-allocated slice
+slice2 := make([]int, 0, 10)
+slice2 = append(slice2, 1, 2, 3)  // No reallocation
+
+// Copy
+slice3 := make([]int, len(slice))
+copy(slice3, slice)
+
+// Slicing
+subset := slice[1:4]     // [2,3,4]
+prefix := slice[:3]      // [1,2,3]
+suffix := slice[2:]      // [3,4,5,6,7,8]
+
+// Zero slice (don't do this - keeps capacity)
+slice = slice[:0]        // length becomes 0
+```
+
+##### Iteration
+
+```go
+numbers := []int{10, 20, 30, 40}
+
+// All 3 ways work
+for i := 0; i < len(numbers); i++ {
+    fmt.Println(numbers[i])
+}
+
+for i, v := range numbers {
+    fmt.Printf("Index %d: %d\n", i, v)
+}
+
+for _, v := range numbers {
+    fmt.Println(v)
+}
 ```
 
 ## Maps
 
 ```go
-var m = make(map[string]string)
-m["some key"] = "some value"
+// declaration
+var m = map[string]string{}	// the same as below	
+var m = make(map[string]string)	// the same as above
+
+// assignement
+m["Name"] = "John Doe"
+
+// access
+fmt.Println(m["Name"])	// Prints John Doe
+
+// Declaration and assigment
+m := map[string]int{"a": 1, "b": 2, "c": 3}
+
+// Iterate over all key-value pairs (order is random)
+for key, value := range m {
+    fmt.Printf("%s: %d\n", key, value)
+}
+
+// Only keys
+for key := range m {
+    fmt.Println(key)
+}
+
+// Only values
+for _, value := range m {
+    fmt.Println(value)
+}
+
+// Checking key existence
+m := map[string]int{"key": 42}
+
+if value, exists := m["key"]; exists {
+	fmt.Println("Found:", value)	// Prints Found: 42
+}
 ```
 
 ## Control structures
