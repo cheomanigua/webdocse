@@ -290,10 +290,20 @@ docker-compose up -d --scale myservice=3
   + **Dockerfile.test**: To build our application test image
   + **docker-test.yml**: Test our application
 
+* You can copy a docker image to a pendrive:
+	```bash
+	docker save -o /path/to/pendrive/image_name.tar image_name:tag
+	```
+* You can import a saved docker image from a pendrive:
+	```bash
+	docker load -i /path/to/pendrive/image_name.tar
+	```
+
+
 
 # Create development environment in container
 
-In this example will create a container ready to develop in Go and Hugo. The container will install Git, NeoVim, Curl, Go, Hugo and some other applications.
+In this example will create a container ready to develop in Go and Hugo. The container will install Git, NeoVim, Tmux, Curl, Go, Hugo and some other applications.
 
 1. Prepare the local computer
 2. Create Dockerfile
@@ -353,12 +363,12 @@ RUN apk add --no-cache \
     git \
     neovim \
     bash \
+    tmux \
     gcompat \
     && rm -rf /var/cache/apk/*
 
 # Copy Hugo binary
 COPY --from=builder /usr/local/bin/hugo /usr/local/bin/hugo
-RUN ln -s /opt/vscodium/codium /usr/local/bin/codium
 
 # User
 ARG USERNAME=cheocon
@@ -374,6 +384,46 @@ USER ${USERNAME}
 
 EXPOSE 1313
 CMD ["/bin/bash"]
+```
+
+### Create docker-compose.yaml
+
+```yml
+version: '3.9'
+
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: hugo-go-dev:latest
+    container_name: cheocon-dev
+    user: "1000:1000"
+    working_dir: /home/cheocon/workspace
+    volumes:
+      # Persistent workspace
+      - ./workspace:/home/cheocon/workspace
+      # X11 GUI
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+
+      # Git config — only if file exists
+      - ${HOME:-~}/.gitconfig:/home/cheocon/.gitconfig:ro
+      # SSH keys — only if directory exists
+      - ${HOME:-~}/.ssh:/home/cheocon/.ssh:ro
+
+    environment:
+      - DISPLAY=${DISPLAY:-host.docker.internal:0}
+      - XDG_RUNTIME_DIR=/tmp
+    ports:
+      - "1313:1313"
+    devices:
+      - /dev/dri:/dev/dri
+    tty: true
+    stdin_open: true
+    restart: unless-stopped
+    network_mode: bridge
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 ```
 
 ### Build the container, run it and enter

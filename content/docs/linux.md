@@ -100,6 +100,8 @@ $ sudo mv tmux.conf /etc
 
 #### Key bindings
 
+{{< alert context="warning" text="When combining **leader** with other key, release **leader** before pressing the other key, otherwise it won't work." />}}
+
 - Leader: **Ctrl** + **b**
 - New window: **leader** + **c**
 - Cycle throug windows: **leader** + **n**
