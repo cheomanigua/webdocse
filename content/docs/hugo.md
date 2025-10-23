@@ -42,7 +42,7 @@ hugo new site my-site
 cd my-site
 git init
 git submodule add https://github.com/theNewDynamic/gohugo-theme-ananke.git themes/ananke
-echo "theme = 'ananke'" >> config.toml
+echo "theme = 'ananke'" >> hugo.toml
 hugo server
 ```
 

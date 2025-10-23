@@ -25,6 +25,7 @@ After installation, you have to make the user member of group `docker` :
 
 ``` 
 sudo usermod -aG docker $USER
+newgrp docker
 ```
 
 ### Commands
@@ -288,3 +289,105 @@ docker-compose up -d --scale myservice=3
   + **docker-compose.yml**: To execute our application
   + **Dockerfile.test**: To build our application test image
   + **docker-test.yml**: Test our application
+
+
+# Create development environment in container
+
+In this example will create a container ready to develop in Go and Hugo. The container will install Git, NeoVim, Curl, Go, Hugo and some other applications.
+
+1. Prepare the local computer
+2. Create Dockerfile
+3. Create docker-compose.yaml
+4. Spin the container
+
+
+### Prepare the local computer
+
+Check that `~/.gitconfig` is not a directory but a file properly configured
+
+```bash
+[user]
+	email = myemail@gmail.com
+```
+
+### Create a directory structure for the volumes
+```bash
+mkdir -p ~/Documents/code/docker/hugo-go-dev
+cd ~/Documents/code/docker/hugo-go-dev
+mkdir dev-workspace
+```
+
+From now on all commands below are issued from `~/Documents/code/docker/hugo-go-dev/`
+
+### Create Dockerfile
+
+```
+$ nvim Dockerfile
+```
+
+```dockerfile
+# ============ Builder Stage ============
+FROM ubuntu:22.04 AS builder
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y wget curl && rm -rf /var/lib/apt/lists/*
+
+# Hugo v0.152.1 Extended
+RUN wget -O hugo.tar.gz \
+    https://github.com/gohugoio/hugo/releases/download/v0.152.1/hugo_extended_0.152.1_Linux-64bit.tar.gz \
+ && tar -xzf hugo.tar.gz -C /tmp && \
+    find /tmp -name hugo -exec mv {} /usr/local/bin/hugo \; && \
+    rm -rf /tmp/*
+
+# ============ Runtime Stage (Alpine) ============
+FROM alpine:3.20
+
+# Enable community repo
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/v3.20/main"     >> /etc/apk/repositories && \
+    echo "http://dl-cdn.alpinelinux.org/alpine/v3.20/community" >> /etc/apk/repositories && \
+    apk update
+
+# Install REAL Alpine packages only
+RUN apk add --no-cache \
+    go \
+    git \
+    neovim \
+    bash \
+    gcompat \
+    && rm -rf /var/cache/apk/*
+
+# Copy Hugo binary
+COPY --from=builder /usr/local/bin/hugo /usr/local/bin/hugo
+RUN ln -s /opt/vscodium/codium /usr/local/bin/codium
+
+# User
+ARG USERNAME=cheocon
+ARG USER_UID=1000
+ARG USER_GID=1000
+RUN addgroup -g ${USER_GID} ${USERNAME} && \
+    adduser -D -u ${USER_UID} -G ${USERNAME} -h /home/${USERNAME} ${USERNAME} && \
+    mkdir -p /home/${USERNAME}/workspace && \
+    chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}
+
+WORKDIR /home/${USERNAME}/workspace
+USER ${USERNAME}
+
+EXPOSE 1313
+CMD ["/bin/bash"]
+```
+
+### Build the container, run it and enter
+
+```bash
+docker build -t hugo-go-dev .
+docker-compose up -d
+docker-compose exec dev bash
+```
+
+- If docker build fails, run: `docker build --no-cache -t hugo-go-dev .`
+- In order to serve pages with Hugo, you must run:
+
+```bash
+$ hugo server --bind 0.0.0.0 --port 1313 --watch
+```
+
