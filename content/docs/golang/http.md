@@ -9,6 +9,8 @@ draft: false
 toc: true
 ---
 
+# Basics
+
 Processing HTTP requests with Go is primarily about two things: `handlers` and `servemuxes`.
 
 - Handlers are responsible for carrying out your application logic and writing response headers and bodies.
@@ -106,7 +108,7 @@ func (th timeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	mux := http.NewServeMux()
-	mux.Handle("/time", timeHandler{format: time.RFC822})
+	mux.Handle("/time", timeHandler{format: time.RFC822}) // <---- Handle
 	log.Print("Listening...")
 	http.ListenAndServe(":8080", mux)
 }
@@ -166,6 +168,22 @@ func main() {
 
 `http.HandleFunc` is a **function** that registers the handler function for the the given pattern in `[DefaultServerMux]`. The documentation for `[ServerMux]` explains how patterns are matched.
 
+You could also this:
+
+```go
+func main() {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/time", timeHandler)
+    mux.Handle("/time", func(w http.ResponseWriter, r *http.Request) {
+        tm := time.Now().Format(time.RFC822)
+        w.Write([]byte("The time is: " + tm))
+    })
+	log.Print("Listening...")
+	http.ListenAndServe(":8080", mux)
+}
+```
+
+More convenient for registering simple function-based handlers, including anonymous functions.
 
 ### 1.4 Passing variables to handlers
 
@@ -217,6 +235,22 @@ func timeHandler(format string) http.HandlerFunc {
 	}
 }
 ```
+
+### Key Differences Between mux.Handle and mux.HandleFunc
+
+- `mux.Handle(pattern string, handler http.Handler)`:
+ 
+    - Requires an `http.Handler` (something that implements the `http.Handler` interface, i.e., has a `ServeHTTP` method).
+    - You must explicitly convert a function to `http.HandlerFunc` if you’re using a function as the handler.
+    - Used for registering custom handlers (e.g., structs that implement `http.Handler`) or explicitly converted function handlers.
+ 
+ 
+- `mux.HandleFunc(pattern string, handler func(http.ResponseWriter, *http.Request))`:
+ 
+    - Accepts a function with the signature `func(http.ResponseWriter, *http.Request)` directly.
+    - Internally wraps the function in `http.HandlerFunc` to make it an `http.Handler`.
+    - More convenient for registering simple function-based handlers, including anonymous functions.
+
 # 2. Handler
 
 So, what is a handler?
@@ -343,7 +377,44 @@ func main() {
 }
 ```
 
-## 3.2 HandlerFunc
+## 3.2 HandleFunc
+
+
+```go
+func HandleFunc(pattern string, handler func(ResponseWriter, *Request))
+```
+
+Example:
+
+```go
+package main
+
+import (
+	"io"
+	"log"
+	"net/http"
+)
+
+func h2(w http.ResponseWriter, r *http.Request) {
+	io.WriteString(w, "Hello from HandleFunc #2!\n")
+}
+
+func h3(http.ResponseWriter, *http.Request) {
+	log.Println("Logging HandleFunc #3!")
+}
+
+func main() {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/h1", func(w http.ResponseWriter, r *http.Request) {
+		io.WriteString(w, "Hello from HandleFunc #2!\n")
+	})
+	mux.HandleFunc("/h2", h2)
+	mux.HandleFunc("/h3", h3)
+	http.ListenAndServe(":8080", mux)
+}
+```
+
+## 3.3 HandlerFunc
 
 ```go
 type HandlerFunc func(ResponseWriter, *Request)
@@ -397,100 +468,8 @@ func main() {
 }
 ```
 
-## 3.3 HandleFunc
 
-
-```go
-func HandleFunc(pattern string, handler func(ResponseWriter, *Request))
-```
-
-Example:
-
-```go
-package main
-
-import (
-	"io"
-	"log"
-	"net/http"
-)
-
-func h2(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "Hello from HandleFunc #2!\n")
-}
-
-func h3(http.ResponseWriter, *http.Request) {
-	log.Println("Logging HandleFunc #3!")
-}
-
-func main() {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/h1", func(w http.ResponseWriter, r *http.Request) {
-		io.WriteString(w, "Hello from HandleFunc #2!\n")
-	})
-	mux.HandleFunc("/h2", h2)
-	mux.HandleFunc("/h3", h3)
-	http.ListenAndServe(":8080", mux)
-}
-```
-
-
-
-# 4. Tips
-
-* `http.Handle` takes a value of any type that implements the `http.Handler` interface, `http.HandlerFunc` is one of those types that implements that interface, but it's not the only one.
-* `http.HandleFunc` takes in a function of type `http.HandlerFunc`. Note that `http.HandleFunc` is not the same as `http.Handle`.
-* also note that for the argument to `http.HandleFunc` the method `ServeHTTP(...` is not important, what's important is that the signature, ie type, of the function that you pass in is the same as defined by the argument, ie. `func(http.ResponseWriter, *http.Request)`. The ServeHTTP method is only important for the `http.Handle` or anything that depends on the `http.Handler` interface which declares that method as one of its members.
-
-# 5. The default servemux
-
-The default servemux is just a plain ol' servemux like we've already been using, which gets instantiated by default when the net/http package is used and is stored in a global variable. Here's the relevant line from the Go source:
-
-```
-var DefaultServeMux = NewServeMux()
-```
-
-Generally speaking, I recommended against using the default servemux because it makes your code less clear and explicit and it poses a security risk. Because it's stored in a global variable, any package is able to access it and register a route — including any third-party packages that your application imports. If one of those third-party packages is compromised, they could use the default servemux to expose a malicious handler to the web.
-
-Instead it's better to use your own locally-scoped servemux, like we have been so far. But if you do decide to use the default servemux...
-
-The `net/http` package provides a couple of shortcuts for registering routes with the default servemux: [http.Handle()](https://pkg.go.dev/net/http/#Handle)and [http.HandleFunc()](https://pkg.go.dev/net/http/#HandleFunc). These do exactly the same as their namesake functions we've already looked at, with the difference that they add handlers to the default servemux instead of one that you've created.
-
-Additionally, [http.ListenAndServe()](https://pkg.go.dev/net/http#ListenAndServe) will fall back to using the default servemux if no other handler is provided (that is, the second argument is set to nil).
-
-So as a final step, let's demonstrate how to use the default servemux in our application instead:
-
-```go
-package main
-
-import (
-	"log"
-	"net/http"
-	"time"
-)
-
-func timeHandler(format string) http.Handler {
-	fn := func(w http.ResponseWriter, r *http.Request) {
-		tm := time.Now().Format(format)
-		w.Write([]byte("The time is: " + tm))
-	}
-	return http.HandlerFunc(fn)
-}
-
-func main() {
-	// Note that we skip creating the ServeMux...
-
-	var format string = time.RFC1123
-	th := timeHandler(format)
-
-	// We use http.Handle instead of mux.Handle...
-	http.Handle("/time", th)
-
-	log.Print("Listening...")
-	// And pass nil as the handler to ListenAndServe.
-	http.ListenAndServe(":3000", nil)
-}
-```
+# 4. Uses
 
 In the context of Go's `net/http` package, `Handle`, `HandleFunc`, and `HandlerFunc` are related to handling HTTP requests, but they serve different purposes and have distinct roles. Below, I explain the differences:
 
@@ -593,3 +572,61 @@ This achieves the same result without needing a custom struct.
 - Use **`Handle`** for registering types that implement `http.Handler`.
 - Use **`HandleFunc`** for registering plain functions as handlers.
 - Use **`HandlerFunc`** as a type to explicitly treat a function as an `http.Handler` or when passing functions to `Handle`.
+
+
+# 5. Tips
+
+* `http.Handle` takes a value of any type that implements the `http.Handler` interface, `http.HandlerFunc` is one of those types that implements that interface, but it's not the only one.
+* `http.HandleFunc` takes in a function of type `http.HandlerFunc`. Note that `http.HandleFunc` is not the same as `http.Handle`.
+* also note that for the argument to `http.HandleFunc` the method `ServeHTTP(...` is not important, what's important is that the signature, ie type, of the function that you pass in is the same as defined by the argument, ie. `func(http.ResponseWriter, *http.Request)`. The ServeHTTP method is only important for the `http.Handle` or anything that depends on the `http.Handler` interface which declares that method as one of its members.
+
+# 6. The default servemux
+
+The default servemux is just a plain ol' servemux like we've already been using, which gets instantiated by default when the net/http package is used and is stored in a global variable. Here's the relevant line from the Go source:
+
+```
+var DefaultServeMux = NewServeMux()
+```
+
+Generally speaking, I recommended against using the default servemux because it makes your code less clear and explicit and it poses a security risk. Because it's stored in a global variable, any package is able to access it and register a route — including any third-party packages that your application imports. If one of those third-party packages is compromised, they could use the default servemux to expose a malicious handler to the web.
+
+Instead it's better to use your own locally-scoped servemux, like we have been so far. But if you do decide to use the default servemux...
+
+The `net/http` package provides a couple of shortcuts for registering routes with the default servemux: [http.Handle()](https://pkg.go.dev/net/http/#Handle)and [http.HandleFunc()](https://pkg.go.dev/net/http/#HandleFunc). These do exactly the same as their namesake functions we've already looked at, with the difference that they add handlers to the default servemux instead of one that you've created.
+
+Additionally, [http.ListenAndServe()](https://pkg.go.dev/net/http#ListenAndServe) will fall back to using the default servemux if no other handler is provided (that is, the second argument is set to nil).
+
+So as a final step, let's demonstrate how to use the default servemux in our application instead:
+
+```go
+package main
+
+import (
+	"log"
+	"net/http"
+	"time"
+)
+
+func timeHandler(format string) http.Handler {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		tm := time.Now().Format(format)
+		w.Write([]byte("The time is: " + tm))
+	}
+	return http.HandlerFunc(fn)
+}
+
+func main() {
+	// Note that we skip creating the ServeMux...
+
+	var format string = time.RFC1123
+	th := timeHandler(format)
+
+	// We use http.Handle instead of mux.Handle...
+	http.Handle("/time", th)
+
+	log.Print("Listening...")
+	// And pass nil as the handler to ListenAndServe.
+	http.ListenAndServe(":3000", nil)
+}
+```
+
