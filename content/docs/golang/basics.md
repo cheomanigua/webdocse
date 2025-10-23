@@ -99,6 +99,39 @@ func main() {
 }
 ```
 
+## Arrays
+
+##### Declaration
+
+```go
+// Declare an array (unitialized - nil)
+var nums [5]int			// [0, 0, 0, 0, 0]
+
+// Initialization
+nums := [5]int{1, 2}			// [1, 2, 0, 0, 0]
+nums := [5]int{1, 2, 3, 4, 5}	// [1, 2, 3, 4, 5]
+nums := [...]int{1 ,2}			// [1, 2]
+nums := [...]int{1, 2, 3, 4, 5}	// [1, 2, 3, 4, 5]
+```
+##### Iteration
+
+```go
+numbers := []int{10, 20, 30, 40}
+
+// All 3 ways work
+for i := 0; i < len(numbers); i++ {
+    fmt.Println(numbers[i])
+}
+
+for i, v := range numbers {
+    fmt.Printf("Index %d: %d\n", i, v)
+}
+
+for _, v := range numbers {
+    fmt.Println(v)
+}
+```
+
 ## Slices
 
 ##### Declaration
@@ -193,6 +226,9 @@ fmt.Println(m["Name"])	// Prints John Doe
 
 // Declaration and assigment
 m := map[string]int{"a": 1, "b": 2, "c": 3}
+
+// Deletion
+delete(m, "a")
 
 // Iterate over all key-value pairs (order is random)
 for key, value := range m {
