@@ -149,18 +149,22 @@ $ git push origin main
 	- **Modified files**: Edited files,not staged
 	- **Staged**: Modified files to be commited
 	- **Commited**: Modified files to be pushed
-- Remove last file edits from working directory: `git checkout [file]`
+- Remove last edits in a file from working directory: `git checkout [file]`
+- Undo all files editing: `git reset --hard` (like you never made any change since last commit)
 - See what changes has been made: `git diff` (you can specify a filename also)
 - Compare status of working directory to remote repository:
     ```bash
     git fetch origin
     git status
-    git diff origin/main
     ```
-	- If your branch is behind to remote repository:
+	- If your branch is behind compared to remote repository:
+        - See what changed (raw output)
+            ```bash
+            git diff origin/main
+            ```
 		- See what changed (commit messages)
 			```bash
-			git log HEAD..origin/main --online
+			git log HEAD..origin/main --oneline
 			```
 			Example output:
 			```
@@ -180,11 +184,13 @@ $ git push origin main
 - See what has been staged: `git diff --cached` (you can specify a filename also)
 - See differences between working directory and local repository: `git diff HEAD`
 - Put file back to the working directory: `git reset HEAD [file]`
+- Undo recent stage and all files editing: `git reset --hard` (like you never made any change since last commit)
 
 #### Commited (after git commit)
 - See what has been commited: `git diff --cached --stat origin/main`
 - See differences between local repository and remote repository: `git diff main origin/main` 
 - Put all files back to the staging area: `git reset --soft HEAD~1`
+- Undo recent commit, stage and all files editing: `git reset --hard HEAD^` (like you never made any change since last commit)
 - Edit or add new file to last commit: `git commit --amend`
 - See commits historical: `git log`
 - See modified files in each commit: `git log --stat`

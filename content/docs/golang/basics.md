@@ -113,24 +113,6 @@ nums := [5]int{1, 2, 3, 4, 5}	// [1, 2, 3, 4, 5]
 nums := [...]int{1 ,2}			// [1, 2]
 nums := [...]int{1, 2, 3, 4, 5}	// [1, 2, 3, 4, 5]
 ```
-##### Iteration
-
-```go
-numbers := []int{10, 20, 30, 40}
-
-// All 3 ways work
-for i := 0; i < len(numbers); i++ {
-    fmt.Println(numbers[i])
-}
-
-for i, v := range numbers {
-    fmt.Printf("Index %d: %d\n", i, v)
-}
-
-for _, v := range numbers {
-    fmt.Println(v)
-}
-```
 
 ## Slices
 
@@ -196,18 +178,24 @@ suffix := slice[2:]      // [3,4,5,6,7,8]
 slice = slice[:0]        // length becomes 0
 ```
 
-##### Iteration
+## Arrays/Slices Iteration
 
 ```go
-numbers := []int{10, 20, 30, 40}
 
-// All 3 ways work
+numbers := [4]int{10, 20, 30, 40}   // Array
+numbers := []int{10, 20, 30, 40}    // Slice
+
+// All 4 ways work
 for i := 0; i < len(numbers); i++ {
     fmt.Println(numbers[i])
 }
 
 for i, v := range numbers {
     fmt.Printf("Index %d: %d\n", i, v)
+}
+
+for i := range numbers {
+    fmt.Printf("Index %d: %d\n", i, numbers[i])
 }
 
 for _, v := range numbers {
@@ -249,11 +237,95 @@ for _, value := range m {
     fmt.Println(value)
 }
 
-// Checking key existence
-m := map[string]int{"key": 42}
+// Only values
+for key := range m {
+    fmt.Println(m[key])
+}
+```
 
-if value, exists := m["key"]; exists {
-	fmt.Println("Found:", value)	// Prints Found: 42
+##### Checking key existence
+
+```go
+users := map[string]int{"John": 42}
+name := "John"
+
+if age, exists := users[name]; exists {
+    fmt.Printf("%s is %d years old\n", name, age)
+    return
+}
+
+fmt.Printf("Couldn't find %s in the users map\n", name)
+```
+
+##### Testing presence only
+
+```go
+func main() {
+    words := map[string]int{
+        "brown": 1,
+        "dog":1,
+        "fox":1,
+        "jumps": 1,
+        "lazy":1,
+        "over":1,
+        "quick": 1,
+        "the": 2,
+    }
+    // discard the value using '_'
+    // keep only the existence boolean
+    _, exists := words["foo"]
+    fmt.Println(exists) // false
+}
+```
+
+##### Exploiting Zero Value
+
+```go
+func main() {
+    counts := map[string]int{}
+    sentence := "The quick brown fox jumps over the lazy dog"
+    words := strings.Fields(strings.ToLower(sentence))
+    for _, w := range words {
+        counts[w]++
+    }
+    fmt.Println(counts) // map[brown:1 dog:1 fox:1 jumps:1 lazy:1 over:1 quick:1 the:2]
+}
+```
+
+##### Listing and Sorting
+
+Go does not provide a way to get just a list of keys or values from a map. To build a list of keys or values, you must iterate over the map and save the keys or values to a slice or array.
+
+In Go, maps are not ordered and there are no built-in methods for sorting maps. When iterating over a map, the order of the keys is not guaranteed.
+
+Below is an example of listing and sorting keys:
+
+```go
+func main() {
+    months := map[int]string{
+        1:"January",
+        2:"February",
+        3:"March",
+        4:"April",
+        5:"May",
+        6:"June",
+        7:"July",
+        8:"August",
+        9:"September",
+        10: "October",
+        11: "November",
+        12: "December",
+    }
+    keys := make([]int, 0, len(months))
+    // loop through the map
+    for k := range months {
+        // append the key to the slice
+        keys = append(keys, k)
+    }
+    sort.Ints(keys)
+    for _, k := range keys {
+        fmt.Printf("%02d: %s\n", k, months[k])
+    }
 }
 ```
 
@@ -268,17 +340,12 @@ if x == 1 {
 	fmt.Println("X is not equal to 1")
 }
 ```
-
-### switch
+In Go, it is considered best practice to avoid using the else statement whenever possible. This code is clearer:
 
 ```go
-switch x {
-	case "foo":
-		fmt.Println("Found foo")
-	case "bar":
-		fmt.Println("Found bar")
-	default:
-		fmt.Println("Default case")
+if x == 1 {
+	fmt.Println("X is equal to 1")
+    return
 }
 ```
 
@@ -297,6 +364,48 @@ nums := []int{2,4,6,8}
 
 for idx, val := range nums {
 	fmt.Println(idx, val)
+}
+```
+
+### switch
+
+```go
+switch x {
+	case "foo":
+		fmt.Println("Found foo")
+	case "bar":
+		fmt.Println("Found bar")
+	default:
+		fmt.Println("Nothing found")
+}
+```
+
+##### Fallthrough
+
+When there is a need to match more than one condition, you can use `fallthrough` to allow more than one case to be matched.
+
+```go
+func RecommendActivity(temp int) {
+    fmt.Printf("It is %d degrees out. You could", temp)
+    switch {
+        case temp <= 32:
+            fmt.Print(" go ice skating,")
+            fallthrough
+        case temp >= 45 && temp < 90:
+            fmt.Print(" go jogging,")
+            fallthrough
+        case temp >= 80:
+            fmt.Print(" go swimming,")
+            fallthrough
+        default:
+            fmt.Print(" or just stay home.\n")
+    }
+}
+
+func main() {
+    RecommendActivity(19)
+    RecommendActivity(45)
+    RecommendActivity(90)
 }
 ```
 
