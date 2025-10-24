@@ -149,6 +149,7 @@ $ git push origin main
 	- **Modified files**: Edited files,not staged
 	- **Staged**: Modified files to be commited
 	- **Commited**: Modified files to be pushed
+- Remove last file edits from working directory: `git checkout [file]`
 - See what changes has been made: `git diff` (you can specify a filename also)
 - Compare status of working directory to remote repository:
     ```bash
@@ -156,11 +157,24 @@ $ git push origin main
     git status
     git diff origin/main
     ```
+	- If your branch is behind to remote repository:
+		- See what changed (commit messages)
+			```bash
+			git log HEAD..origin/main --online
+			```
+			Example output:
+			```
+			a1b2c3d Add new feature X
+			e4f5g6h Fix typo in README
+			```
+		- See actual code differences per specific commit:
+			```bash
+			git show a1b2c3d
+			```
 - Update working directory from remote repository
     ```bash
     git pull
     ```
-- Remove last file edits from working directory: `git checkout [file]`
 
 #### Staged (after git add)
 - See what has been staged: `git diff --cached` (you can specify a filename also)

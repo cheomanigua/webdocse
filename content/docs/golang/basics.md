@@ -101,7 +101,7 @@ func main() {
 
 ## Arrays
 
-##### Declaration
+##### Declaration/Initialization
 
 ```go
 // Declare an array (unitialized - nil)
@@ -134,7 +134,7 @@ for _, v := range numbers {
 
 ## Slices
 
-##### Declaration
+##### Declaration/Initialization
 
 ```go
 // Declare a slice (uninitialized - nil)
@@ -145,7 +145,11 @@ numbers := make([]int, 0)        // empty slice
 numbers := make([]int, 5)        // length 5, capacity 5
 numbers := make([]int, 3, 10)    // length 3, capacity 10
 
-// Literal syntax (preferred)
+// len and cap functions
+fmt.Println(len(numbers)	// 3
+fmt.Println(cap(numbers)	// 10
+
+// Initialize with Literal syntax (preferred)
 numbers := []int{1, 2, 3, 4, 5}
 ```
 
