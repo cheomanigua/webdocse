@@ -102,6 +102,7 @@ If you want to copy text and paste outside Vim, you need to visually select the 
 Motion specifies where the Operators operate in relation to the cursor position:
 
 - **w** -\> word 
+- **W** -\> all text between empty spaces 
 - **p** -\> paragraph 
 - **_** -\> line
 - **2j** -\> down 2 lines
@@ -126,6 +127,11 @@ Motion specifies where the Operators operate in relation to the cursor position:
 
 Examples:
 
+- Copy everything inside parenthesis: `yi(`
+- Copy everything around parenthesis: `ya(`
+- Copy everything between empty spaces: `yiW`
+- Delete everything until the end of the line: `d$`
+- Delete everything to the beginning of the line: `d0`
 - Delete everything within/closest tag, type: `dit`
 - Delete everything until it finds a dot: `dt.`
 - Delete everything until it finds a dot, including the dot: `df.`
