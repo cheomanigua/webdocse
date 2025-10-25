@@ -473,7 +473,7 @@ func main() {
 
 In the context of Go's `net/http` package, `Handle`, `HandleFunc`, and `HandlerFunc` are related to handling HTTP requests, but they serve different purposes and have distinct roles. Below, I explain the differences:
 
-### 1. **`Handle`**
+### 1. `Handle`
 - **Type**: Method of the `http.ServeMux` type.
 - **Purpose**: Registers a handler for a specific URL pattern.
 - **Signature**:
@@ -495,7 +495,7 @@ In the context of Go's `net/http` package, `Handle`, `HandleFunc`, and `HandlerF
     Here, `timeHandler` implements `http.Handler` because it has a `ServeHTTP` method, and `Handle` registers it to handle requests to `/time`.
 - **Use Case**: Use `Handle` when you have a custom type (e.g., a struct) that implements the `http.Handler` interface.
 
-### 2. **`HandleFunc`**
+### 2. `HandleFunc`
 - **Type**: Method of the `http.ServeMux` type.
 - **Purpose**: Registers a function (not an interface) as an HTTP handler for a specific URL pattern.
 - **Signature**:
@@ -515,7 +515,7 @@ In the context of Go's `net/http` package, `Handle`, `HandleFunc`, and `HandlerF
     This registers a function to respond with "Hello, World!" for requests to `/hello`.
 - **Use Case**: Use `HandleFunc` when you want to quickly define a handler as a function without creating a custom struct or type.
 
-### 3. **`HandlerFunc`**
+### 3. `HandlerFunc`
 - **Type**: A type defined in the `net/http` package.
 - **Purpose**: A type that wraps a function to make it compatible with the `http.Handler` interface.
 - **Signature**:

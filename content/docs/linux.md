@@ -13,11 +13,14 @@ toc: true
 
 #### Finding text and files
 
-- `grep -R "text"` - Find specific string in current directory and child directories
-- `find /usr -iname "wallpaper.jpg"` - Find all files containing the specified string
+- `grep -R "text"` - Find all files containing the specific string in current directory and child directories
+- `find /usr -iname "wallpaper.jpg"` - Find all files named with the specified string
 - `sed -i 's/original/new/g' file.txt` - Replace the specified string in a file
 - `sed 's/original/new/g' file.txt` - Preview the replacement preserving the file intact
 
+#### Backup
+
+- `tar -czf ~/backup.tar.gz ~/Documents ~/Downloads` - Backup Documents and Downloads directories
 
 #### How to free a port:
 
