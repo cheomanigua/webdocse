@@ -25,6 +25,7 @@ Visit the [latest release](https://github.com/gohugoio/hugo/releases/latest) and
 2. Run:
 ```
 $ sudo dpkg -i hugo_extended_0.131.0_linux-amd64.deb
+$ hugo version
 ```
 
 ### 2. Repository packages (outdated)
@@ -33,6 +34,7 @@ If you are using Debian or its derivative distros, run:
 
 ```
 $ sudo apt install hugo
+$ hugo version
 ```
 
 # Create a site
