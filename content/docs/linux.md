@@ -148,7 +148,40 @@ Then:
 - Rename window: `rename-window` + *your_window_name*
 - Rename session: `rename-session` or `rename` + *your_session_name*
 
+### Kate
 
+### Change to VIM mode
+
+- Edit -> Input Modes -> vi-mode
+
+Shortcut to toggle between vi-mode and Normal mode:
+
+- `Ctrl` + `Alt` + `v`
+
+##### Set indentation and tabulation globally
+
+- Settings -> Configure Kate -> Editing -> Open/Save -> Modes & Filetypes tab
+- Click the **FileType** from the dropdown menu and select your source language
+- Edit the **Variables** field string to your liking (ex. change 8 to 4)
+
+##### LSP Client for Go
+
+1. Install **gopls**:
+    ```bash
+    $ go install golang.org/x/tools/gopls@latest
+    ```
+
+2. Check **gopls** installation path and env path:
+    ```bash
+    $ whereis gopls
+    $ go env GOPATH
+    ```
+
+3. Create **gopls** paths both for terminal apps and desktop apps
+    ```bash
+    $ echo 'export PATH="$HOME/go/bin:$PATH"' >> ~/.bashrc
+    $ echo 'export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin' >> ~/.profile
+    ```
 
 ### VSCodium
 

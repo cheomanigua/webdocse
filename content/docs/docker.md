@@ -1,13 +1,15 @@
 ---
 weight: 400
-title: "Docker"
-description: ""
+title: "Containers"
+description: "How to use containers like Docker or Podman"
 icon: "article"
 date: "2024-08-13T11:23:45+02:00"
 lastmod: "2024-08-13T11:23:45+02:00"
 draft: false
 toc: true
 ---
+
+# Docker
 
 ### Installation
 
@@ -183,6 +185,24 @@ COPY --from=build-stage /app /
 COPY /static ./static/
 
 CMD ["/main"]
+```
+
+or
+
+```dockerfile
+FROM golang:1.25.3-alpine AS build     
+WORKDIR /src
+COPY go.mod go.sum* ./
+RUN go mod download
+COPY . .               
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o /bin/hello ./main.go
+
+FROM scratch
+COPY --from=build /bin/hello /bin/hello
+COPY --from=build /src/static /static
+
+EXPOSE 8080
+CMD ["/bin/hello"]
 ```
 
 To build the image, issue: `docker image build -t golang-image .` 
@@ -439,5 +459,38 @@ docker-compose exec dev bash
 
 ```bash
 $ hugo server --bind 0.0.0.0 --port 1313 --watch
+```
+
+# Podman
+
+### Installation
+
+The command below will install podman, buildah, crun, criu, conmon, fuse-overlayfs, slirp4netns
+
+```bash
+$ sudo apt install podman
+```
+
+If you want to use podman-compose, you must install it:
+
+```bash
+$ sudo apt install podman-compose
+```
+
+If you want to use skopeo you must install it:
+
+```bash
+$ sudo apt install skopeo
+```
+
+Skopeo handles image transfers securely.
+
+### Post-Installation Configuration (optional but recommended)
+
+- Enable Rootless Mode: Add your user to necessary groups if not already done:
+
+```bash
+sudo usermod --add-subuids 100000-165535 --add-subgids 100000-165535 $USER
+newgrp subuid subgid  # Or log out and back in
 ```
 
