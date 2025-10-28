@@ -380,13 +380,8 @@ EXPOSE 8080
 CMD ["/bin/hello"]
 ```
 
-{{< alert context="info" text="For the smallest built container, use one of the following in the last stage build:
+{{< alert context="info" text="For the smallest built container, use one of the following in the last stage build: `FROM scratch` or `FROM gcr.io/distroless/static`" />}}
 
-```bash
-FROM scratch
-FROM gcr.io/distroless/static
-```
-" />}}
 
 
 ### Building the image
