@@ -95,8 +95,29 @@ func main() {
     var x = 10		// Function-level variable, inferred integer
     var int x = 10	// Function-level variable
     x := 10			// Only Function-level variable, infered integer
-    x := (int)10	// Only Function level variable
+    x := (int)10	// Only Function level variable, cast integer
 }
+```
+
+##### Zero values
+
+```
+string :                    ""
+rune :                      0
+byte :                      0
+int :                       0
+uint :                      0
+float32 :                   0
+bool :                      false
+array [2]int :              [0 0]
+slice []int :               []
+map map[int]string :        map[]
+struct :                    {false [0 0]}
+function func() :           <nil>
+channel chan string :       <nil>
+*string :                   <nil>
+any :                       <nil>
+complex64 :                 (0+0i)
 ```
 
 ## Arrays

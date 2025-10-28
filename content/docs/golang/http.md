@@ -62,8 +62,7 @@ import (
 
 func main() {
 	mux := http.NewServeMux()
-	fs := http.FileServer(http.Dir("./static"))
-	mux.Handle("/", fs)
+	mux.Handle("/", http.FileServer(http.Dir("./static")))
 
 	log.Print("Listening on :8080...")
 	err := http.ListenAndServe(":8080", mux)

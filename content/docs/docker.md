@@ -1,13 +1,169 @@
 ---
 weight: 400
 title: "Containers"
-description: "How to use containers like Docker or Podman"
+description: "How to use Podman and Docker containers"
 icon: "article"
 date: "2024-08-13T11:23:45+02:00"
 lastmod: "2024-08-13T11:23:45+02:00"
 draft: false
 toc: true
 ---
+
+# Podman
+
+### Installation
+
+The command below will install podman, buildah, crun, criu, conmon, fuse-overlayfs, slirp4netns
+
+```bash
+$ sudo apt install podman
+```
+
+If you want to use podman-compose, you must install it:
+
+```bash
+$ sudo apt install podman-compose
+```
+
+If you want to use skopeo you must install it:
+
+```bash
+$ sudo apt install skopeo
+```
+
+Skopeo handles image transfers securely.
+
+### Post-Installation Configuration (optional but recommended)
+
+- Enable Rootless Mode: Add your user to necessary groups if not already done:
+
+```bash
+sudo usermod --add-subuids 100000-165535 --add-subgids 100000-165535 $USER
+newgrp subuid subgid  # Or log out and back in
+```
+
+### Equivalences with Docker
+
+- All Podman commands are the same as Docker. Just use the prefix **podman** instead of **docker**
+- Containerfile = Dockerfile
+- podman-compose = docker-compose
+
+
+### Operations
+
+##### Build an Image
+
+- Create a Dockerfile/Containerfile and run:
+
+```bash
+$ podman build -t my-go-app .               // Creates an image tagged my-go-app 
+```
+
+##### Create a Container
+
+Creates but do not run a container:
+
+```bash
+podman create my-go-app:latest              // Creates a container with random name using my-go-app image
+podman create --name foo my-go-app:latest   // Creates a container named foo using my-go-app image
+```
+
+##### Create and Start Container
+
+Creates and run a container:
+
+```bash
+podman run -d --rm -p 8080:8080 --name foo my-go-app:latest
+podman run -d --rm -p 8080:8080 my-go-app
+```
+
+##### Flags for Create and Run commands
+
+- **-d**: detatch
+- **--rm**: when container is stopped, it is also removed
+- **-p**: port
+- **-t**: tag image (when using **--name** also, no need for **-t**)
+- **--name**: name image
+
+
+##### Start a Container
+
+Start an already created container. Most likely the Dockerfile will need some initialization data, like port number, etc:
+
+```bash
+podman start container-name
+```
+
+##### Stop a Container
+
+Stop a running container. If the container was started with the flag **--rm**, the container will be deleted as well:
+
+```bash
+podman stop container-name
+```
+
+##### Remove an image
+
+```bash
+podman rmi my-go-app
+```
+
+##### Remove all dangling images
+
+```
+podman images prune
+```
+
+
+
+### Buildah
+
+You can also build images and create containers using **Buildah**. Instead of a **Dockerfile** file, Buildah uses a **Containerfile** file, but script is the same.
+
+##### Build image
+
+```bash
+$ buildah build --tag my-image
+$ buildah images
+```
+
+##### Start a container
+
+The `buildah from` command can be used to start a container that uses the image:
+
+```bash
+$ buildah from my-image
+$ buildah containers
+```
+
+##### Remove a container
+
+```bash
+buildah rm my-image-working-container
+```
+
+##### Remove image
+
+```bash
+buildah rmi my-image
+```
+
+or
+
+```bash
+buildah rmi localhost/my-image:latest
+```
+
+### Further operations
+
+For further operations, check the Docker operations below:
+
+- [Creating a nging container](#creating-a-nginx-container)
+- [Dockerfile: custom image](#dockerfile--custom-image)
+- [Volumes](#volumes-1)
+- [Docker Compose](#docker-compose--multi-container-applications)
+
+
 
 # Docker
 
@@ -74,6 +230,25 @@ newgrp docker
 - **docker builder prune**: Remove all dangling build cache
 - **docker system prune -a**: Delete all images, containers and cache
 
+
+#### Operations
+
+##### Build Image
+
+- Create a Dockerfile and run:
+
+```bash
+$ docker build -t my-go-app .                               // Creates an image tagged my-go-app
+```
+
+##### Run Container
+
+```bash
+docker run -d --rm -p 8080:8080  my-go-app                  // Creates and run a container with random name using my-go-app image
+docker run -d --rm -p 8080:8080  --name foo my-go-app       // Creates and run a container named foo using my-go-app image
+```
+
+
 ## Creating a nginx container
 
 `docker run -d -p 8080:80 --name mynginx nginx` 
@@ -97,7 +272,9 @@ Pages are served from `/usr/share/nginx/html`
 
 ## Dockerfile : custom image
 
-It is possible to build a custom image by downloading using an image, copying the project to it and adding some configuration.
+It is possible to build a custom image by using an image, copying the project to it and adding some configuration.
+
+For that you need a **Dockerfile** with some commands:
 
 ### Static Site
 
@@ -120,9 +297,7 @@ COPY . .
 This dockerfile above will download a very tiny linux OS with nginx already installed and configured. We then set the default working directory of the image to `usr/share/nginx/html`. Lastly, we copy all files in our local directory to the image working directory, namely, all html files to the default nginx serving directory.
 
 
-And now we issue the build command:
 
-`docker image build -t nginx-mywebsite .` 
 
 #### Multi-stage build
 
@@ -187,7 +362,7 @@ COPY /static ./static/
 CMD ["/main"]
 ```
 
-or
+Or a slightly different approach:
 
 ```dockerfile
 FROM golang:1.25.3-alpine AS build     
@@ -205,7 +380,38 @@ EXPOSE 8080
 CMD ["/bin/hello"]
 ```
 
-To build the image, issue: `docker image build -t golang-image .` 
+{{< alert context="info" text="For the smallest built container, use one of the following in the last stage build:
+
+```bash
+FROM scratch
+FROM gcr.io/distroless/static
+```
+" />}}
+
+
+### Building the image
+
+In the same directory of the Dockerfile, run:
+
+```bash
+$ docker build -t nginx-mywebsite . 
+```
+
+
+### Running the container
+
+To build the image from the Dockerfile, issue: 
+
+```bash
+docker run -d --rm -p 8080:8080 -t my-go-app                // tagged my-go-app
+docker run -d --rm -p 8080:8080  my-go-app --name pepita    // tagged my-go-app and named pepita
+```
+
+- **-d**: detatch
+- **--rm**: when container is stopped, it is also removed
+- **-p**: port
+- **-t**: tag image (when using **--name** also, no need for **-t**)
+- **--name**: name image
 
 
 ### Pushing our new created image to Docker Hub
@@ -493,4 +699,3 @@ Skopeo handles image transfers securely.
 sudo usermod --add-subuids 100000-165535 --add-subgids 100000-165535 $USER
 newgrp subuid subgid  # Or log out and back in
 ```
-

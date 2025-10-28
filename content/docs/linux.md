@@ -53,24 +53,24 @@ To install nVidia drivers in **Debian 13 Trixie**, follow these instructions ([s
 
     ```
     $ sudo apt install nvidia-kernel-dkms nvidia-driver firmware-misc-nonfree 
-    $ sudo reboot
     ```
 
-4. Verify driver installation:
+4. **Wayland**
+    
+    If you are using Wayland, you must enable kernel modesetting with the Nvidia driver:
+
+    ```bash
+    $ sudo echo 'GRUB_CMDLINE_LINUX="$GRUB_CMDLINE_LINUX nvidia-drm.modeset=1 nvidia-drm.fbdev=1"' > /etc/default/grub.d/nvidia-modeset.cfg
+    $ sudo update-grub
+    $ reboot
+    ```
+
+5. Verify driver installation:
 
     ```
     $ nvidia-smi
     ```
 
-##### Wayland
-
-If you are using Wayland, you must enable kernel modesetting with the Nvidia driver:
-
-```bash
-$ sudo echo 'GRUB_CMDLINE_LINUX="$GRUB_CMDLINE_LINUX nvidia-drm.modeset=1 nvidia-drm.fbdev=1"' > /etc/default/grub.d/nvidia-modeset.cfg
-$ sudo update-grub
-$ reboot
-```
 
 ### Wezterm
 
@@ -150,7 +150,7 @@ Then:
 
 ### Kate
 
-### Change to VIM mode
+##### Change to VIM mode
 
 - Edit -> Input Modes -> vi-mode
 
