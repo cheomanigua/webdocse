@@ -85,6 +85,8 @@ golint is a standalone tool, and not a subcommand of the main go binary. You’l
 
 ## Variables
 
+{{< alert context="info" text="The case of the first letter of an identifier (variable, constant, array, slice, etc) has special meaning in Go. If an identifier starts with an uppercase letter, that identifier is accessible outside the package it is declared in (or exported). If an identifier starts with a lowercase letter, it is only available within the package it is declared in." />}}
+
 ```go
 package main
 
@@ -119,6 +121,7 @@ channel chan string :       <nil>
 any :                       <nil>
 complex64 :                 (0+0i)
 ```
+
 
 ## Arrays
 

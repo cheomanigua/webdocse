@@ -78,8 +78,10 @@ git push
 # Operations
 
 ### Git add
-- `git add [file]` or `git add .`
-- Add a file/all files that has/have been edited from the working directory to the staging area 
+- `git add [file]`: Add a modified or untracked file from the working directory to the staging area.
+- `git add -u`: Add all modified files from the working directory to the staging area.
+- `git add .` Add all modified and untracked files from the working directory to the stagin area.
+
 
 ### Git commit
 - `git commit -m 'useful comment'`
@@ -141,9 +143,25 @@ $ git push origin main
 		commit
 ```
 
-### Other operations
+## Operations (General)
 
-#### Working directory
+#### Setup & Config
+
+```
+git config --global/--local user.name "Your Name"
+git config --global/--local user.email "your@email.com"
+git config --list
+```
+
+#### Starting a Repo
+
+```
+git init                            # Start new local repo
+git clone <url>                     # Clone repo from GitHub/Gitlab/etc
+gir clone --branch <branch> <url>   # Clone repo and checkout to branch
+```
+
+## Status and Version Control
 - Check status of files in working directory: `git status`
 	- **Untracked files**: New created files, not staged
 	- **Modified files**: Edited files,not staged

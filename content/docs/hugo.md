@@ -342,9 +342,47 @@ Three factors determine how to render a menu:
 Check the [official documentation](https://gohugo.io/templates/menu/) for detailed instructions.
 
 
-## Partials, Shortcodes
+# Partials
 
-We can add a snipped of code into a `.md` file by using Partials and Shortcodes.
+We can add reausable HTML chunks into a `.md` file by using Partials.
+
+1. Create the following file: `layouts/partials/pricing-cards.html`
+
+	```html
+	<link rel="stylesheet" href="https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css">
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+	</div>
+	<ul class="list pa0 ma0 mb4">
+	<li class="mb2 fw4">✓ 1 User Account</li>
+	<li class="mb2 fw4">✓ 10GB Storage</li>
+	<li class="mb2 fw4">✓ Basic Support</li>
+	<li class="mb2 fw4 gray">✗ Advanced Analytics</li>
+	</ul>
+	```
+
+2. Add the partial into `content/_index.md`
+
+	```markdown
+	+++
+	date = '2025-10-19T22:44:23+02:00'
+	draft = false
+	title = 'My Amazing Website'
+	+++
+	 
+	## Welcome to My Amazing Website
+	 
+	This is the best website in all internet.
+
+    ### Choose your plan
+
+    {{ partial "pricing-cards.html" }}
+	```
+
+3. If the page shows an error, stop hugo and restart again.
+# Shortcodes
+
+We can embed mini-templates into a `.md` file by using Shortcodes.
 
 1. Create the following file: `layouts/shortcodes/pricing-cards.html`
 
@@ -378,3 +416,181 @@ We can add a snipped of code into a `.md` file by using Partials and Shortcodes.
 	 
 	{{\< pricing-cards \>}}		## Do not use the backlashes, they are used only for escaping to avoid an error.
 	```
+3. If the page shows an error, stop hugo and restart again.
+
+# Posts list
+
+If we want to show the last five posts in a page, for ex `layout/index.md`, we can call `.Site.RegularPages` and iterate with `range`. We add a partial that is in charge of the look of the post.
+
+```markdown
+{{ range first 5 (where .Site.RegularPages "Section" "posts") }}
+    {{ partial "post-card.html" . }}
+{{ end }}
+```
+
+<br>
+<br>
+
+- **layouts/partials/post-card.html**
+
+This is an example of a `post-card.html`
+
+```html
+{{ $featured_image := partial "func/GetFeaturedImage.html" . }}
+
+<article class="mb5 w-100">
+  <div class="flex flex-column flex-row-ns items-start">
+    {{/* ---- IMAGE ---- */}}
+    {{ if $featured_image }}
+      <div class="w-100 w-40-ns pr3-ns mb3 mb0-ns">
+        <a href="{{ .RelPermalink }}" class="db">
+          <img src="{{ $featured_image }}" class="w-100 br2" alt="{{ .Title | plainify }}">
+        </a>
+      </div>
+    {{ end }}
+
+    {{/* ---- TEXT BOX ---- */}}
+    <div class="{{ if $featured_image }}w-100 w-60-ns{{ end }} flex flex-column">
+      <div class="bg-white br3 pa4 shadow-2 flex-grow-1">
+        <h2 class="f3 fw1 mt0 mb3 lh-title">
+          <a href="{{ .RelPermalink }}" class="link dim black">{{ .Title }}</a>
+        </h2>
+
+        <div class="f5 lh-copy mid-gray mb4">{{ .Summary }}</div>
+
+        {{ with .Params.author | default .Site.Params.author }}
+          <p class="f6 mt0 mb3 mid-gray">By {{ . }}</p>
+        {{ end }}
+
+        <a href="{{ .RelPermalink }}"
+           class="f6 link dib ba b--black-20 br2 ph3 pv2 bg-near-white hover-bg-light-gray">
+          {{ $.Param "read_more_copy" | default (T "readMore") }}
+        </a>
+      </div>
+    </div>
+  </div>
+</article>
+```
+
+
+# Structure
+
+Below is a **practical cheat-sheet** that shows **where each piece lives**, **what it is meant for**, and **how they relate** in a Hugo site.  
+Think of it as the “who-does-what” map of Hugo’s templating system.
+
+| Piece | Folder (default) | Primary purpose | When you use it | Key characteristics |
+|-------|------------------|----------------|-----------------|---------------------|
+| **_default** | `layouts/_default/` | **Fallback templates** for any content type that does not have its own specific template. | You have many content types (blog, docs, products…) and you don’t want to duplicate the same HTML for each. | Files like `baseof.html`, `single.html`, `list.html`, `home.html` live here. Hugo looks here **after** it checks a more specific folder (e.g. `layouts/post/`). |
+| **partials** | `layouts/partials/` | **Reusable HTML snippets** that can be embedded anywhere (pages, shortcodes, other partials). | Header, footer, navigation, sidebar, social-share buttons, meta tags, etc. | Called with `{{ partial "header.html" . }}`. Receives the current context (`.`) and any data you pass (`partial "card.html" .Data`). No front-matter, pure HTML + Go template. |
+| **shortcodes** | `layouts/shortcodes/` | **Markdown-embedded mini-templates** that let content authors write &#123;&#123;< name >&#125;&#125; or &#123;&#123;% name %&#125;&#125;. | Galleries, YouTube embeds, alerts, buttons, figures, call-outs, etc. | Two flavours: <br>• &#123;&#123;< … >&#125;&#125; – **HTML-escaped** (safe for inline text). <br>• &#123;&#123;% … %&#125;&#125; – **rendered as markdown** (allows nested markdown). Can have parameters and inner content. |
+| **page** | `content/` (any section) | **Individual content file** (markdown, HTML, etc.) that becomes a **single page** (`kind = "page"`). | About, Contact, Landing pages, Documentation articles, etc. | Rendered with `layouts/_default/single.html` **or** a more specific template (e.g. `layouts/pages/single.html`). |
+| **post** | `content/posts/` (or any section you configure) | **Blog-style article** that appears in lists, RSS, archives (`kind = "page"` but usually in a section named “post”). | Blog posts, news, tutorials. | Usually rendered with `layouts/_default/list.html` for the archive and `layouts/_default/single.html` (or `layouts/post/single.html`) for the article. |
+
+---
+
+## Visual Hierarchy (how Hugo decides which file to render)
+
+```
+content/
+ └─ posts/
+     └─ my-post.md   ──> kind = page (section = "posts")
+                         └─ looks for:
+                              1. layouts/posts/single.html
+                              2. layouts/_default/single.html
+
+layouts/
+ ├─ _default/
+ │    ├─ baseof.html      (wrapper)
+ │    ├─ single.html      (fallback for any single page)
+ │    └─ list.html        (fallback for any list page)
+ ├─ posts/
+ │    └─ single.html      (specific for post singles)
+ ├─ pages/
+ │    └─ single.html
+ └─ partials/
+      ├─ header.html
+      └─ footer.html
+```
+
+### Rendering flow for a **post** (`content/posts/hello.md`)
+
+1. **Determine kind** → `page` (single)  
+2. **Look for template**:  
+   - `layouts/posts/single.html` → **found** → use it.  
+   - If missing → `layouts/_default/single.html`  
+3. Inside that template you will typically see:
+
+```html
+{{ define "main" }}
+  {{ partial "header.html" . }}
+  <article>
+    <h1>{{ .Title }}</h1>
+    {{ .Content }}
+  </article>
+  {{ partial "footer.html" . }}
+{{ end }}
+```
+
+---
+
+## Quick “when to choose what”
+
+| Need | Choose |
+|------|--------|
+| **Same HTML wrapper for every page** | `layouts/_default/baseof.html` + `{{ block "main" . }}{{ end }}` |
+| **Header / Footer / Nav** | `partials/` |
+| **Reusable UI component that may contain logic** | `partials/` (or a shortcode if authors need to drop it into markdown) |
+| **Content authors should type &#123;&#123;< youtube id >&#125;&#125;** | `shortcodes/youtube.html` |
+| **Content authors should type `{{< youtube oayOen6OOXw >}}`** | `shortcodes/youtube.html` |
+| **A one-off landing page with custom layout** | Create `layouts/pages/single.html` **or** put a `layout: special` front-matter key |
+| **Blog list page** | `layouts/_default/list.html` (or `layouts/posts/list.html`) |
+| **All other pages (about, contact, docs…)** | Fall back to `_default/single.html` |
+
+---
+
+## Example Mini-Site Structure
+
+```
+my-site/
+├─ content/
+│   ├─ about.md
+│   ├─ contact.md
+│   └─ posts/
+│       ├─ first.md
+│       └─ second.md
+├─ layouts/
+│   ├─ _default/
+│   │   ├─ baseof.html
+│   │   ├─ single.html
+│   │   └─ list.html
+│   ├─ posts/
+│   │   └─ list.html          # custom blog archive
+│   └─ partials/
+│       ├─ head.html
+│       ├─ header.html
+│       ├─ footer.html
+│       └─ social.html
+└─ layouts/shortcodes/
+    ├─ figure.html
+    └─ youtube.html
+```
+
+*`about.md` → `_default/single.html`*  
+*`posts/*.md` → `posts/list.html` (archive) + `_default/single.html` (article)*  
+*All pages share `baseof.html` → `head.html` → `header.html` → `footer.html`.*
+
+---
+
+### TL;DR
+
+| Term | What it is | Where it lives | Typical use |
+|------|------------|----------------|-------------|
+| **_default** | Fallback layout templates | `layouts/_default/` | Base HTML for any kind of page |
+| **partials** | Reusable HTML chunks | `layouts/partials/` | Header, footer, widgets |
+| **shortcodes** | Markdown-callable mini-templates | `layouts/shortcodes/` | Embeds, alerts, galleries |
+| **page** | Single piece of content | `content/` | Any standalone page |
+| **post** | Blog article (still a “page” kind) | `content/posts/` (or any section) | Blog entries, news |
+
+Use **_default** for the safety net, **partials** for DRY HTML, **shortcodes** for author-friendly markdown, and **specific layout folders** (`posts/`, `docs/`, etc.) when you need a custom look for a particular section. Happy Hugo-ing!
+
+

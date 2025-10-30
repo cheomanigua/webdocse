@@ -45,6 +45,11 @@ bob := Person{
 	Age: 40,
 	Pet: "cat",
 }
+
+bob := Person{
+	Name: "Bob",
+	Pet: "cat",
+}
 ```
 
 ##### Pointer initialization
@@ -145,9 +150,79 @@ bob.Name = "Bob"
 fmt.Println(bob.Name)
 ```
 
+## Struct Tags
 
+Check this code:
 
+```go
+package main
 
+import (
+	"encoding/json"
+	"log"
+	"os"
+)
+
+type User struct {
+	ID int
+	Name string
+	Phone string
+	Password string
+}
+
+func main() {
+	u := User{ID: 1, Name: "Bob", Phone: "", Password: "goIsAwesome", }
+	enc := json.NewEncoder(os.Stdout)
+	if err := enc.Encode(u); err != nil {
+		log.Fatal(err)
+	}
+}
+```
+
+It will print:
+
+```
+{"ID":1,"Name":"Bob","Phone":"","Password":"goIsAwesome"}
+```
+
+The problem with the code above: fields with zero values are being encoded and wasting bytes. Sensitive data, like the Password field, is being encoded, which poses a security risk.
+
+If we use Struct Tags, we can filter the json output:
+
+```go
+type User struct {
+	ID int `json:"id"`
+	Name string `json:"name"`
+	Phone string `json:"phone,omitempty"`
+	Password string `json:"-"`
+}
+```
+
+It will print:
+
+```
+{"id":1,"name":"Bob"}
+```
+
+## Methods
+
+Methods are syntactic sugar for declaring functions on types. Consider the code below that adds a method, `Info() string`, to the `User` struct. Before the name of the function, we are introducing a new set of `()`. This new set of () is there to allow us to define the receiver of the method. The receiver is the type of the value that is passed to the method. In this case, the receiver is `User`. The receiver is available inside the method as the variable `u`.
+
+```go
+type User struct {
+    Name string
+    Age int
+}
+
+func (u User) Info() string {
+    return fmt.Sprintf("%s is %d", u.Name, u.Age)
+}
+
+func main() {
+    u := User{ Name: "Janis", Age: 27, }
+    fmt.Println(u.Info())
+}
+```
 
 ## Anonimous Struct
 
