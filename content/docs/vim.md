@@ -54,7 +54,8 @@ The typed text will replicate to all selected lines
 
 - Search forward and backward once -\> **/** and **?**
 - On search: (next hit -\> **n**, previous hit -\> **N**)
-- Jump to the next/previous ocurrence of character x -/> **fx**/**Fx**
+- Jump into the next/previous ocurrence of character x -/> **fx**/**Fx**
+- Jump up to the next/previous ocurrence of character x -/> **tx**/**Tx**
 - Repeat previous **f/F** movement forward/backward -\> **;**/**,**
 - Search for next/previous match currently under cursor -\> **asterisk** / **#**
 - Find and replace all occurrences of *foo* with *bar* -\> **:%s/foo/bar/g**
