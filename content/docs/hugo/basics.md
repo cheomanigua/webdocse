@@ -15,9 +15,8 @@ toc: true
 
 Although not required in all cases, [Git](https://git-scm.com/), [Go](https://go.dev/), and [Dart Sass](https://gohugo.io/hugo-pipes/transpile-sass-to-css/#dart-sass) are commonly used when working with Hugo. The following two methods to install '**Hugo**' also take care of the necessary dependecies.
 
-## Methods
 
-### 1. Prebuilt binaries (latest)
+##  Prebuilt binaries (latest)
 
 Visit the [latest release](https://github.com/gohugoio/hugo/releases/latest) and scroll down to the Assets section. If you are using Debian or its derivative distros, follow these steps:
 
@@ -25,15 +24,6 @@ Visit the [latest release](https://github.com/gohugoio/hugo/releases/latest) and
 2. Run:
 ```
 $ sudo dpkg -i hugo_extended_0.131.0_linux-amd64.deb
-$ hugo version
-```
-
-### 2. Repository packages (outdated)
-
-If you are using Debian or its derivative distros, run:
-
-```
-$ sudo apt install hugo
 $ hugo version
 ```
 
@@ -49,7 +39,7 @@ echo "theme = 'my-theme'" >> hugo.toml
 hugo server
 ```
 
-## Create a site third party template site
+## Create a third party template site
 
 ```
 hugo new site my-site
@@ -72,7 +62,35 @@ In order for a Hugo site to work, there must be at least one theme present in th
 
 There are four different methods to download and add themes to your project: Git clone, Git submodule, Zip file and Hugo module. 
 
-##### 1. Git Clone
+##### 1. Hugo module (preferred)
+
+{{< alert context="danger" text="You need [Go](https://go.dev/doc/install) version 1.18 or later and [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) to use Hugo Modules.." />}}
+
+1. Initialize your own hugo module system:
+
+    ```
+    $ hugo mod init github.com/[your_user]/[your_project] 
+    ```
+
+2. Import the theme in `hugo.toml`
+
+    ```
+    [module]
+        [[module.import]]
+            path = 'github.com/theNewDynamic/gohugo-theme-ananke/v2'
+    ```
+
+3. Update modules
+
+    ```
+    hugo mod get -u ./...
+    ```
+
+More information about Hugo Modules: [https://gohugo.io/hugo-modules/use-modules/](https://gohugo.io/hugo-modules/use-modules/)
+
+{{< alert context="warning" text="In the three methods below, don't forget to add the theme in `hugo.toml`." />}}
+
+##### 2. Git Clone
 ```
 $ git clone https://github.com/[user-account]/[hugo-theme].git themes/[hugo-theme]
 $ cp -a themes[hugo-theme]/exampleSite/. .
@@ -84,7 +102,13 @@ $ cd themes/[hugo-theme]
 $ git pull
 ```
 
-##### 2. Git Submodule
+
+##### 3. Download an unzip
+
+Download the theme as a **zip** file. Extract in the directory `themes/[hugo-theme]`.
+
+
+##### 4. Git Submodule
 
 ```
 $ git init
@@ -105,43 +129,9 @@ $ git submodule update --remote --merge themes/[hugo-theme]
 
 [Git submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules) is meant to separate your main project from another project within it. In above case the other project is the theme repository.
 
-##### 3. Download an unzip
-
-Download the theme as a **zip** file. Extract in the directory `themes/[hugo-theme]`.
-
-##### 4. Hugo module (preferred)
-
-{{< alert context="danger" text="You need [Go](https://go.dev/doc/install) version 1.18 or later and [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) to use Hugo Modules.." />}}
-
-- Initialize your own hugo module system:
-```
-$ hugo mod init github.com/[your_user]/[your_project] 
-```
-
-- Add the Theme Module
-```
-$ hugo mod get github.com/[user-account]/[hugo-theme] 
-```
-
-- Configure the theme by adding it in your `hugo.toml` file:
-```
-theme = "github.com/[user-account]/[hugo-theme]"
-```
-If you want to update the theme:
-```
-$ hugo mode get -u github.com/[user-account]/[hugo-theme]
-```
-
-More information about Hugo Modules: [https://gohugo.io/hugo-modules/use-modules/](https://gohugo.io/hugo-modules/use-modules/)
-
-
 ### Set the theme in your config file
 
-In the first three methods, be sure that your project's `config.toml` file has the theme added:
-```
-$ echo "theme = 'theme-name'" >> config.toml
-```
-or
+
 ```
 $ echo "theme = 'theme-name'" >> hugo.toml
 ```
@@ -180,7 +170,7 @@ $ hugo server -D
 Or you just can delete `draft: true` altogether or set it to `false` and run `hugo server` by itself.
 
 
-## Running the site in developer mode
+# Running the site in developer mode
 
 During development, you can visualize instantly the changes you make while editing your files every time you save your files. For that you have to run your site in developer mode:
 
@@ -188,7 +178,7 @@ During development, you can visualize instantly the changes you make while editi
 $ hugo server
 ```
 
-## Publish the site
+# Publish the site
 
 Publishing a site does not deploy it. Hugo creates the entire static site in the `public` directory in the root of your project. This includes the HTML files, and assets such as images, CSS files, and JavaScript files.
 
@@ -196,159 +186,10 @@ Publishing a site does not deploy it. Hugo creates the entire static site in the
 $ hugo
 ```
 
-## Deploying the site
+# Deploying the site
 
 You can upload your site directly from your local machine to a cloud provider by running:
 
 ```
 $ hugo deploy
 ```
-
-
-# Menus [](https://gohugo.io/content-management/menus/)
-
-Standard file structure:
-
-```
-
-- root
-	- content/
-		- _index.md
-		- about/
-			- _index.md
-		- posts/
-			- _index.md
-			- post01.md
-			- post02.md
-	- layouts/
-		- index.html
-		- shortcodes/
-			- pricing-cards.html
-```
-
-To create a menu for your site, you must follow this workflow:
-
-1. Define the menu entries [](https://gohugo.io/content-management/menus/)
-2. Localize each entry (optional) [](https://gohugo.io/content-management/multilingual/#menus)
-3. Render the menu with a template [](https://gohugo.io/templates/menu/)
-
-## Define menu entries
-
-There are three ways to define menu entries:
-
-1. Define Automatically
-	
-	To automatically define a menu entry for each top-level [section](https://gohugo.io/quick-reference/glossary/#section) of your site, enable the section pages menu in your site configuration by adding this line in your `hugo.` config file:
-
-	{{< tabs tabTotal="3">}}
-	{{% tab tabName="yaml" %}}
-
-	sectionPagesMenu: main
-
-	{{% /tab %}}
-	{{% tab tabName="toml" %}}
-
-	sectionPagesMenu = 'main'
-
-	{{% /tab %}}
-	{{% tab tabName="json" %}}
-
-	{
-	   "sectionPagesMenu": "main"
-	}
-
-	{{% /tab %}}
-	{{< /tabs >}}
-
-	This creates a menu structure that you can access with **site.Menus.main** in your templates. See [menu templates](https://gohugo.io/templates/menu/) for details.
-
-	Based in the file structure shown above, `sectionPagesMenu: main` will automatically create two entries in the main menu: About and Posts. Both are directly under Content and have an _`index.md` file.
-
-	<br>
-
-2. Define in front matter
-
-	To add a page to the "main" menu, add this snipped in, for example, `content/about/_index.md`:
-
-
-	{{< tabs tabTotal="3">}}
-	{{% tab tabName="yaml" %}}
-
-	---
-	menus: main
-	title: About
-	---
-
-	{{% /tab %}}
-	{{% tab tabName="toml" %}}
-
-	+++
-	menus = 'main'
-	title = 'About'
-	+++
-
-	{{% /tab %}}
-	{{% tab tabName="json" %}}
-
-	{
-		"menus": "main",
-		"title": "About"
-	}
-
-	{{% /tab %}}
-	{{< /tabs >}}
-
-	Access the entry with **site.Menus.main** in your templates. See [menu templates](https://gohugo.io/templates/menu/) for details.
-
-	To add a page to the "main" and "footer" menus in `content/contact.md`:
-
-	{{< tabs tabTotal="3">}}
-	{{% tab tabName="yaml" %}}
-
-	---
-	menus:
-	- main
-	- footer
-	title: Contact
-	---
-
-	{{% /tab %}}
-	{{% tab tabName="toml" %}}
-
-	+++
-	menus = ['main', 'footer']
-	title = 'Contact'
-	+++
-
-	{{% /tab %}}
-	{{% tab tabName="json" %}}
-
-	{
-		"menus": [
-			"main",
-			"footer"
-		],
-		"title": "Contact"
-	}
-
-	{{% /tab %}}
-	{{< /tabs >}}
-
-	Access the entry with **site.Menus.main** and **site.Menus.footer** in your templates. See [menu templates](https://gohugo.io/templates/menu/) for details.
-
-3. Define in site configuration
-
-	See [configure menus](https://gohugo.io/configuration/menus/)
-
-
-## Render menu with a template [](https://gohugo.io/templates/menu/)
-
-After [defining menu entries](#31-define-menu-entries), use [menu methods](https://gohugo.io/methods/menu/) to render a menu.
-
-Three factors determine how to render a menu:
-
-1. The method used to define the menu entries: automatic, in front matter, or in site configuration
-2. The menu structure: flat or nested
-3. The method used to localize the menu entries: site configuration or translation tables
-
-Check the [official documentation](https://gohugo.io/templates/menu/) for detailed instructions.

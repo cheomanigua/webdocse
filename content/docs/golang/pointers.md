@@ -51,15 +51,33 @@ func main() {
 ```
 
 
-### 3. Pass by Value vs. Pass by Reference:
+### 3. Pass by Value vs. Pass by Reference
 
 In Go, all function parameters are passed by value by default. This means that a copy of the parameter value is passed to the function. However, you can use pointers to pass parameters by reference, which means that the function can modify the original parameter value.
 
+Example:
+
+
+{{< tabs tabTotal="2">}}
+{{% tab tabName="Pass by value" %}}
+
 ```go
-package main
+func addOne(x int) {
+	x++
+}
 
-import "fmt"
+func main() {
+	x := 10
+	fmt.Println(x) // output: 10
+	addOne(x)
+	fmt.Println(x) // output: 10
+}
+```
 
+{{% /tab %}}
+{{% tab tabName="Pass by reference" %}}
+
+```go
 func addOne(x *int) {
 	*x++
 }
@@ -70,8 +88,83 @@ func main() {
 	addOne(&x)
 	fmt.Println(x) // output: 11
 }
-
 ```
+
+{{% /tab %}}
+{{< /tabs >}}
+
+
+Another example:
+
+
+
+{{< tabs tabTotal="3">}}
+{{% tab tabName="Pass by value" %}}
+
+
+```go
+type User struct {
+  Name string
+}
+
+func changeName(b User){
+  b.Name = "Kurt"
+  fmt.Println("new name:", b.Name)
+}
+
+func main() {
+  u := User { "Janis" }
+  fmt.Println("before:", u.Name)    // before: Janis
+  changeName(u)                     // new name: Kurt
+  fmt.Println("after:", u.Name)     // after: Janis
+}
+```
+
+{{% /tab %}}
+{{% tab tabName="Pass by reference 1" %}}
+
+```go
+type User struct {
+  Name string
+}
+
+func changeName(b *User){
+  b.Name = "Kurt"
+  fmt.Println("new name:", b.Name)
+}
+
+func main() {
+  u := User { "Janis" }
+  fmt.Println("before:", u.Name)    // before: Janis
+  changeName(&u)                    // new name: Kurt
+  fmt.Println("after:", u.Name)     // after: Kurt
+}
+```
+
+{{% /tab %}}
+{{% tab tabName="Pass by reference 2" %}}
+
+```go
+type User struct {
+  Name string
+}
+
+func changeName(b *User){
+  b.Name = "Kurt"
+  fmt.Println("new name:", b.Name)
+}
+
+func main() {
+  u := &User { "Janis" }
+  fmt.Println("before:", u.Name)    // before: Janis
+  changeName(u)                     // new name: Kurt
+  fmt.Println("after:", u.Name)     // after: Kurt
+}
+```
+
+{{% /tab %}}
+{{< /tabs >}}
+
 
 ### 4. Pointer Arithmetic:
 

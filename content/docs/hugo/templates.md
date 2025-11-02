@@ -1,5 +1,5 @@
 ---
-weight: 320
+weight: 330
 title: "Templates"
 description: "Layouts, Partials, Shortcodes, base, page, list, etc"
 icon: "article"
@@ -16,15 +16,15 @@ Oficial documentation on [Templates](https://gohugo.io/templates/types/)
 
 <br>
 
-##### `home.html`
-
-Changes here will affect the home page / landing page (`content/_index.md`) 
-
-<br>
-
 ##### `baseof.html`
 
 Changes here will affect all pages.
+
+<br>
+
+##### `home.html`
+
+Changes here will affect the home page / landing page (`content/_index.md`) 
 
 <br>
 
@@ -36,7 +36,7 @@ Changes here will affect all pages under `content/`, except `_index.md`.
 
 ##### `section.html`
 
-Changes here will affect `content/posts/_index.md`
+Changes here will affect the `_index.md` file within a section:
 
 <br>
 
