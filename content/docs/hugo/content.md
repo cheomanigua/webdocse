@@ -1,5 +1,5 @@
 ---
-weight: 320
+weight: 2200
 title: "Content"
 description: ""
 icon: "article"
@@ -22,7 +22,7 @@ We can classify content into sections like blog, news, or products. Each section
 
 The sections have a template for the index page where we have access to all the pages and subsections. The template is located at `layouts/section.html`
 
-## Summary
+### Summary
 
 The index pages of the sections automatically provide a summary and titles of the posts in the section. Hugo generates the summary information automatically if we do not provide it. Although the index pages are the most common places where we can use a post’s summary, it can also be used elsewhere by the theme. Here are the ways to provide the summary:
 
@@ -49,8 +49,8 @@ Standard file structure:
 			- post01.md
 			- post02.md
 	- layouts/
-		- index.html
-		- shortcodes/
+		- home.html
+		- _shortcodes/
 			- pricing-cards.html
 ```
 
@@ -60,7 +60,7 @@ To create a menu for your site, you must follow this workflow:
 2. Localize each entry (optional) [](https://gohugo.io/content-management/multilingual/#menus)
 3. Render the menu with a template [](https://gohugo.io/templates/menu/)
 
-## Define menu entries
+### Define menu entries
 
 There are three ways to define menu entries:
 
@@ -169,7 +169,7 @@ There are three ways to define menu entries:
 	See [configure menus](https://gohugo.io/configuration/menus/)
 
 
-## Render menu with a template [](https://gohugo.io/templates/menu/)
+### Render menu with a template [](https://gohugo.io/templates/menu/)
 
 After [defining menu entries](#31-define-menu-entries), use [menu methods](https://gohugo.io/methods/menu/) to render a menu.
 
@@ -184,7 +184,7 @@ Check the [official documentation](https://gohugo.io/templates/menu/) for detail
 
 # Bundles
 
-## Leaf bundles
+### Leaf bundles
 
 We can add all necessary resources for a page in a leaf bundle. This is fine if no other pages are going to use those resources.
 
@@ -200,13 +200,13 @@ In the worflow below, we convert a single page called `about.md` to a bundle:
 
 We can move a leaf bundle independently to a different Hugo website, which provides everything needed to render it correctly.
 
-## Branch bundles
+### Branch bundles
 
 Branch bundles form a collection of both textual and nontextual resources that represent a website section. An ideal branch bundle contains page bundles for all the pages in the section, the `_index` file, and the resources referred to in the index page.
 
 The objective of the independent branch bundle is the same as that of a leaf bundle: to allow sections to be dropped into the website and to become functional with no other change in the site. A branch bundle should ideally set its menu entries and provide all the assets referred to in the branch and then be good to go.
 
-## Branch vs Leaf bundles
+### Branch vs Leaf bundles
 
 ||Branch|Leaf
 -|-|-
@@ -231,6 +231,137 @@ Ideally, we should move as many images as possible to the `assets` folder to uti
 
 Taxonomies are higher-level constructs that we can use to group the pages that describe relationships between web pages.
 
-A paradigm of using Hugo (or any JAMstack) is to move the content from the database to the markup files. We gained the ability to represent unstructured content better but lost some of the capabilities to provide structured relationships. Taxonomies attempt to build relationships between web pages.
+For a website about movies, we could include the following taxonimies: Actors and Directors.
 
-Taxonomies have two parts: the **lists** and the **terms**. Each taxonomy list is a collection of taxonomy terms. A page can be associated with many taxonomy terms, and a taxonomy term can be associated with many pages.
+Then, in each of the movies, you would specify **terms** for each of these taxonomies (i.e., in the front matter of each of your movie content files). From these **terms**, Hugo would automatically create pages for each Actor and Director, with each listing all of the Movies that matched that specific Actor and Director.
+
+### Taxonomy organization
+
+- Content relationship from the perspective of the taxonomy:
+
+```
+Actor                 <- Taxonomy
+    Bruce Willis        <- Term
+        The Sixth Sense <- Value
+        Unbreakable     <- Value
+    Samuel L. Jackson   <- Term
+        Unbreakable     <- Value
+        The Avengers    <- Value
+```
+
+- Content relationship from the perspective of the content:
+
+```
+Unbreakable                 <- Value
+    Actors                  <- Taxonomy
+        Bruce Willis        <- Term
+        Samuel L. Jackson   <- Term
+    Director                <- Taxonomy
+        M. Shyamalan        <- Term
+    ...
+The Sixth Sense             <- Value
+    Actors                  <- Taxonomy
+        Bruce Willis        <- Term
+        Haley Osment        <- Term
+    Director                <- Taxonomy
+        M. Shyamalan        <- Term
+```
+
+### Default destinations
+
+When taxonomies are used Hugo will automatically create both a page listing all the taxonomy’s terms and individual pages with lists of content associated with each term. For example, an `actors` taxonomy declared in your configuration and used in your content front matter will create the following pages:
+
+- A single page at `example.com/actors/` that lists all the terms within the taxonomy
+- Individual taxonomy list pages (e.g., /actors/bruce-willis/) for each of the terms that shows a listing of all pages marked as part of that taxonomy within any content file’s front matter
+
+### Configuration
+
+{{< alert context="info" text="Hugo has two built in taxonomies which do not need configuration: `tags` and `categories`. This works as long as you don't add custom taxonomies. If you add custom taxonomy, you must add tags and categories to the `[taxonomies]` section in `hugo.toml`" />}}
+
+For custom taxonomies, let's define them in the default configuration (`hugo.toml`). If we want to use the built in `tags` and `categories`, we also have to include tags and categories:
+
+
+```toml
+[taxonomies]
+    tag = 'tags'    
+    category = 'categories'
+    actor = 'actors'
+    director = 'directors'
+```
+
+When creating a taxonomy:
+
+- Use the singular form for the key (e.g., actor).
+- Use the plural form for the value (e.g., actors).
+
+Then use the value as the key in front matter:
+
+```toml
++++
+actors = ['bruce willis', 'samuel l. jackson']
+directors = ['m. shyamalan']
++++
+```
+
+### Show taxonomy term list in content pages
+
+Add this code in `layouts/pages.html`
+
+```html
+{{ define "main" }}
+  <h1>{{ .Title }}</h1>
+
+  {{ $dateMachine := .Date | time.Format "2006-01-02T15:04:05-07:00" }}
+  {{ $dateHuman := .Date | time.Format ":date_long" }}
+  <time datetime="{{ $dateMachine }}">{{ $dateHuman }}</time>
+
+  {{ .Content }}
+  {{ partial "terms.html" (dict "taxonomy" "tags" "page" .) }}
+  {{ partial "terms.html" (dict "taxonomy" "categories" "page" .) }}
+  {{ partial "terms.html" (dict "taxonomy" "actors" "page" .) }}
+{{ end }}
+```
+
+### Create menu entries for taxonomies
+
+Add the taxonomies under menu to `hugo.toml`
+
+```toml
+[menus]
+  [[menus.main]]
+    name = 'Home'
+    pageRef = '/'
+    weight = 10
+
+  [[menus.main]]
+    name = 'Posts'
+    pageRef = '/posts'
+    weight = 20
+
+  [[menus.main]]
+    name = 'Tags'
+    pageRef = '/tags'
+    weight = 30
+
+  [[menus.main]]
+    name = 'Categories'
+    pageRef = '/categories'
+    weight = 40
+
+  [[menus.main]]
+    name = 'Actors'
+    pageRef = '/actors'
+    weight = 50
+```
+
+`/tags`, `/categories` and `/actors` pages are created automatically by `layout/taxonomy.html`:
+
+```html
+{{ define "main" }}
+  <h1>{{ .Title }}</h1>
+  {{ .Content }}
+  {{ range .Pages }}
+    <h2><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h2>
+  {{ end }}
+{{ end }}
+```

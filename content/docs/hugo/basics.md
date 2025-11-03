@@ -1,13 +1,22 @@
 ---
-weight: 305
+weight: 2100
 title: "Basics"
-description: "Installation, setup and first steps"
+description: "Introduction, installation, setup and first steps of Hugo"
 icon: "article"
 date: "2024-08-13T11:24:43+02:00"
 lastmod: "2024-08-13T11:24:43+02:00"
 draft: false
 toc: true
 ---
+
+
+Hugo is an open-source static site generator categorized as JAMStack. It splits the creation of a website between the [Content](https://gohugo.io/content-management/) (authors) and [Templates](https://gohugo.io/templates/introduction) (developer).
+
+A paradigm of using Hugo (or any JAMstack) is to move the content from the database to markup files. This allows to represent unstructured content better but lost some of the capabilities to provide structured relationships.
+
+Hugo [Taxonomies](https://gohugo.io/content-management/taxonomies/) attempt to build relationships between web pages by mimicking somehow a database.
+
+The logic of a Hugo site is the domain of Templates, which uses [Go template](https://pkg.go.dev/html/template) language. 
 
 # Installation
 
@@ -141,7 +150,7 @@ $ echo "theme = 'theme-name'" >> hugo.toml
 
 In Hugo, layouts can live in either the project’s (root) or the themes’ layout folders. Any template inside the root layout folder will override the theme’s layout that is relative to it.
 
-For example: `layouts/_default/baseof.html` will override `themes/[hugo-theme]/layouts/_default/baseof.html`. So, you can easily customize the theme without editing it directly, which makes updating the theme easier.
+For example: `layouts/baseof.html` will override `themes/[hugo-theme]/layouts/baseof.html`. So, you can easily customize the theme without editing it directly, which makes updating the theme easier.
 
 ## Add content
 

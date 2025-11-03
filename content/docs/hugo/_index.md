@@ -1,5 +1,5 @@
 ---
-weight: 300
+weight: 2000
 title: "Hugo"
 description: ""
 icon: "folder"
