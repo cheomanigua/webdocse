@@ -27,19 +27,22 @@ In this tutorial you'll learn how to create and maintain a version control syste
 
 Generate the ssh keys: `$ ssh-keygen`
 
-By default it will generate the file `~/.ssh/id_rsa`, but you can edit the name. Leave it like that.
+By default it will generate the file `~/.ssh/id_ed25519`, but you can edit the name. Leave it like that.
 
 You will be asked to enter a passphrase. This is optional. If you decide to setup a passphrase, you will need to enter the passphrase everytime you ssh to a remote server. Fortunately, you can prevent from entering the passphrase everytime by adding the private key to the ssh-agent. In order to add the private key to the ssh-agent, issue:
 
 ```
 $ eval $(ssh-agent)
-$ ssh-add ~/.ssh/id_rsa
+$ ssh-add ~/.ssh/id_ed25519
 ```
 
-The files `id_rsa` and `id_rsa.pub` have been created in the `.ssh` directory. Copy the content of `id_rsa.pub` to the clipboard for the next step.
+The files `id_ed25519` and `id_ed25519.pub` have been created in the `.ssh` directory. Copy the content of `id_ed25519.pub` to the clipboard for the next step:
+
+```bash
+$ xclip -sel c < ~/.ssh/id_ed25519.pub
+```
 
 ### 2. Add your public ssh key to GitHub
-***Skip this step if you already added your public SSH key to GitHub***
 
 1. Log into GitHub ➡️  Settings ➡️  SSH and GPG keys ➡️  New SSH key
 2. Paste the content of your public SSH key into the '**Key**' field. Add a descriptive label for the '**Title**' field.

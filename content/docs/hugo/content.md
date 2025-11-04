@@ -276,7 +276,7 @@ When taxonomies are used Hugo will automatically create both a page listing all 
 
 ### Configuration
 
-{{< alert context="info" text="Hugo has two built in taxonomies which do not need configuration: `tags` and `categories`. This works as long as you don't add custom taxonomies. If you add custom taxonomy, you must add tags and categories to the `[taxonomies]` section in `hugo.toml`" />}}
+{{< alert context="info" text="Hugo has two built in taxonomies which do not need configuration: `tags` and `categories`. This works as long as you don't add custom taxonomies. If you add custom taxonomy, you must add `tags` and `categories` to the `[taxonomies]` section in `hugo.toml`" />}}
 
 For custom taxonomies, let's define them in the default configuration (`hugo.toml`). If we want to use the built in `tags` and `categories`, we also have to include tags and categories:
 

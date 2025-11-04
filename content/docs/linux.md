@@ -18,18 +18,8 @@ toc: true
 - `sed -i 's/original/new/g' file.txt` - Replace the specified string in a file
 - `sed 's/original/new/g' file.txt` - Preview the replacement preserving the file intact
 
-#### Backup
 
-- `tar -czf ~/backup.tar.gz ~/Documents ~/Downloads` - Backup Documents and Downloads directories
-
-#### How to free a port:
-
-```
-sudo lsof -i :8080
-kill -9 "PID of the port"
-```
-
-#### How to install nVidia drivers
+#### NVidia Drivers
 
 To install nVidia drivers in **Debian 13 Trixie**, follow these instructions ([source](https://linuxconfig.org/debian-13-nvidia-driver-installation)):
 
@@ -71,6 +61,43 @@ To install nVidia drivers in **Debian 13 Trixie**, follow these instructions ([s
     $ nvidia-smi
     ```
 
+#### ffmpeg screen recording
+
+Start screen recording in H.265 codec, no sound, using nvidia driver: 
+
+```bash
+ffmpeg \
+  -framerate 30 \
+  -video_size 1920x1080 \
+  -f x11grab \
+  -i :0.0 \
+  -c:v hevc_nvenc \
+  -preset llhq \
+  -tune ll \
+  -rc vbr \
+  output.mkv
+```
+
+#### Apple keyboards
+
+```bash
+echo 0 | sudo tee /sys/module/hid_apple/parameters/fnmode   # detect from hardware (rarely works)
+echo 1 | sudo tee /sys/module/hid_apple/parameters/fnmode   # Media keys
+echo 2 | sudo tee /sys/module/hid_apple/parameters/fnmode   # Function keys
+echo 3 | sudo tee /sys/module/hid_apple/parameters/fnmode   # firmware default
+```
+
+#### Backup
+
+- `tar -czf ~/backup.tar.gz ~/Documents ~/Downloads` - Backup Documents and Downloads directories
+
+
+#### How to free a port:
+
+```
+sudo lsof -i :8080
+kill -9 "PID of the port"
+```
 
 ### Wezterm
 
