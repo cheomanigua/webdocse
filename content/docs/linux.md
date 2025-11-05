@@ -61,6 +61,12 @@ To install nVidia drivers in **Debian 13 Trixie**, follow these instructions ([s
     $ nvidia-smi
     ```
 
+6. For nVidia GeForce GTX 960 graphics card, you can watch high performance videos using hardware acceleration using this command:
+    
+    ```
+    $ mpv --hwdec=nvdec "https://www.youtube.com/watch?v=<foo>"
+    ```
+
 #### ffmpeg screen recording
 
 Start screen recording in H.265 codec, no sound, using nvidia driver: 
@@ -86,6 +92,14 @@ echo 1 | sudo tee /sys/module/hid_apple/parameters/fnmode   # Media keys
 echo 2 | sudo tee /sys/module/hid_apple/parameters/fnmode   # Function keys
 echo 3 | sudo tee /sys/module/hid_apple/parameters/fnmode   # firmware default
 ```
+
+#### LXQt setup
+
+- **QTerminal**: File -> Preferences -> Appearance -> Color scheme = Falcon
+- **FeatherPad**: Options -> Preferences -> enable *Show whitespaces*, *Show vertical lines* and *Text tab size = 2*
+- **PCManFM-Qt**: Edit -> Preferences -> Behaviour -> enable *Open files with single click*
+- **qpdfview**: Edit -> Settings -> Behaviour -> enable *Track recently used* and *Restore per-file settings*
+
 
 #### Backup
 
