@@ -61,11 +61,36 @@ To install nVidia drivers in **Debian 13 Trixie**, follow these instructions ([s
     $ nvidia-smi
     ```
 
-6. For nVidia GeForce GTX 960 graphics card, you can watch high performance videos using hardware acceleration using this command:
+6. For YouTube videos, we can force the system to use the graphic card to decode the video. Due to the old model of the graphic card, we should tell to exclude AV1, but allows H.264, VP9, or HEVC. It’ll automatically choose whichever the GTX 960 can decode (H.264 or VP9).
     
-    ```
-    $ mpv --hwdec=nvdec "https://www.youtube.com/watch?v=<foo>"
-    ```
+    1. Create the following file `~/.config/mpv/mpv.conf`:
+        ```bash
+        # Use NVIDIA GPU hardware decoding
+        hwdec=nvdec
+
+        # Modern GPU output for smooth playback
+        vo=gpu-next
+        gpu-context=x11egl
+
+        # Avoid AV1, allow H.264 (avc1) and VP9 (8-bit) up to 1080p
+        ytdl-format=bestvideo[vcodec~="avc1|vp9"][height<=1080]+bestaudio/best
+
+        # Enable caching to reduce stutter
+        cache=yes
+
+        # Use high-quality video profile
+        profile=high-quality
+
+        # Optional: smooth seeking and interpolation
+        interpolation=yes
+        tscale=oversample
+        ```
+
+    2. To run a YouTube video:
+    
+        ```
+        $ mpv "https://www.youtube.com/watch?v=<foo>"
+        ```
 
 #### ffmpeg screen recording
 
@@ -96,7 +121,7 @@ echo 3 | sudo tee /sys/module/hid_apple/parameters/fnmode   # firmware default
 #### LXQt setup
 
 - **QTerminal**: File -> Preferences -> Appearance -> Color scheme = Falcon
-- **FeatherPad**: Options -> Preferences -> enable *Show whitespaces*, *Show vertical lines* and *Text tab size = 2*
+- **FeatherPad**: Options -> Preferences -> Text -> enable *Show whitespaces*, *Show vertical lines* and *Text tab size = 2*
 - **PCManFM-Qt**: Edit -> Preferences -> Behaviour -> enable *Open files with single click*
 - **qpdfview**: Edit -> Settings -> Behaviour -> enable *Track recently used* and *Restore per-file settings*
 

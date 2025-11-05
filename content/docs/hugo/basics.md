@@ -32,7 +32,7 @@ Visit the [latest release](https://github.com/gohugoio/hugo/releases/latest) and
 1. Download the last extended .deb package: `hugo_extended_0.131.0_linux-amd64.deb`
 2. Run:
 ```
-$ sudo dpkg -i hugo_extended_0.131.0_linux-amd64.deb
+$ sudo apt install ./hugo_extended_0.131.0_linux-amd64.deb
 $ hugo version
 ```
 
