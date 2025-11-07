@@ -123,7 +123,9 @@ echo 3 | sudo tee /sys/module/hid_apple/parameters/fnmode   # firmware default
 - **QTerminal**: File -> Preferences -> Appearance -> Color scheme = Falcon
 - **FeatherPad**: Options -> Preferences -> Text -> enable *Show whitespaces*, *Show vertical lines* and *Text tab size = 2*
 - **PCManFM-Qt**: Edit -> Preferences -> Behaviour -> enable *Open files with single click*
-- **qpdfview**: Edit -> Settings -> Behaviour -> enable *Track recently used* and *Restore per-file settings*
+- **qpdfview**:
+    - View -> Docks -> enable *Outline*
+    - Edit -> Settings -> Behaviour -> enable *Track recently used* and *Restore per-file settings*
 
 
 #### Backup

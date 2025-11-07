@@ -1,7 +1,7 @@
 ---
 weight: 2300
 title: "Templates"
-description: "Layouts, Partials, Shortcodes, base, page, list, etc"
+description: "Layouts, Partials, Shortcodes, etc"
 icon: "article"
 date: "2025-10-31T15:37:27-06:00"
 lastmod: "2025-10-31T15:37:27-06:00"
@@ -14,6 +14,9 @@ Oficial documentation on [Templates](https://gohugo.io/templates/types/)
 
 # Layouts
 
+- All templates are in the `layouts` directory.
+- Pages refer to all markdown in the `content/` directory.
+
 <br>
 
 ##### `baseof.html`
@@ -24,19 +27,25 @@ Changes here will affect all pages.
 
 ##### `home.html`
 
-Changes here will affect the home page / landing page (`content/_index.md`) 
-
-<br>
-
-##### `page.html`
-
-Changes here will affect all pages under `content/`, except `_index.md`.
+Changes here will affect only the home page (`content/_index.md`).
 
 <br>
 
 ##### `section.html`
 
-Changes here will affect the `_index.md` file within a section:
+Changes here will affect all `_index.md` pages, except the home page.
+
+<br>
+
+##### `page.html`
+
+Changes here will affect all single pages.
+
+<br>
+
+##### `post/page.html`
+
+Changes here will affect all post pages. 
 
 <br>
 
@@ -106,6 +115,7 @@ We can add reausable HTML chunks into a `.md` file by using Partials.
 	```
 
 3. If the page shows an error, stop hugo and restart again.
+
 # Shortcodes
 
 We can embed mini-templates into a `.md` file by using Shortcodes.
@@ -208,8 +218,8 @@ Think of it as the “who-does-what” map of Hugo’s templating system.
 |-------|------------------|----------------|-----------------|---------------------|
 | **_partials** | `layouts/_partials/` | **Reusable HTML snippets** that can be embedded anywhere (pages, shortcodes, other partials). | Header, footer, navigation, sidebar, social-share buttons, meta tags, etc. | Called with `{{ partial "header.html" . }}`. Receives the current context (`.`) and any data you pass (`partial "card.html" .Data`). No front-matter, pure HTML + Go template. |
 | **_shortcodes** | `layouts/_shortcodes/` | **Markdown-embedded mini-templates** that let content authors write &#123;&#123;< name >&#125;&#125; or &#123;&#123;% name %&#125;&#125;. | Galleries, YouTube embeds, alerts, buttons, figures, call-outs, etc. | Two flavours: <br>• &#123;&#123;< … >&#125;&#125; – **HTML-escaped** (safe for inline text). <br>• &#123;&#123;% … %&#125;&#125; – **rendered as markdown** (allows nested markdown). Can have parameters and inner content. |
-| **page** | `content/` (any section) | **Individual content file** (markdown, HTML, etc.) that becomes a **single page** (`kind = "page"`). | About, Contact, Landing pages, Documentation articles, etc. | Rendered with `layouts/single.html` **or** a more specific template (e.g. `layouts/pages/single.html`). |
-| **post** | `content/posts/` (or any section you configure) | **Blog-style article** that appears in lists, RSS, archives (`kind = "page"` but usually in a section named “post”). | Blog posts, news, tutorials. | Usually rendered with `layouts/list.html` for the archive and `layouts/single.html` (or `layouts/post/single.html`) for the article. |
+| **page** | `content/` (any section) | **Individual content file** (markdown, HTML, etc.) that becomes a **single page** (`kind = "page"`). | About, Contact, Landing pages, Documentation articles, etc. | Rendered with `layout/page.html` **or** a more specific template (e.g. `layouts/pages/single.html`). |
+| **post** | `content/posts/` (or any section you configure) | **Blog-style article** that appears in lists, RSS, archives (`kind = "page"` but usually in a section named “post”). | Blog posts, news, tutorials. | Usually rendered with `layouts/list.html` for the archive and `layout/page.html` (or `layouts/post/single.html`) for the article. |
 
 ---
 
@@ -220,8 +230,8 @@ content/
  └─ posts/
      └─ my-post.md   ──> kind = page (section = "posts")
                          └─ looks for:
-                              1. layouts/posts/single.html
-                              2. layouts/single.html
+                              1. layouts/posts/page.html
+                              2. layout/page.html
 
 layouts/
  │ 
@@ -241,8 +251,8 @@ layouts/
 
 1. **Determine kind** → `page` (single)  
 2. **Look for template**:  
-   - `layouts/posts/single.html` → **found** → use it.  
-   - If missing → `layouts/single.html`  
+   - `layouts/posts/page.html` → **found** → use it.  
+   - If missing → `layout/page.html`  
 3. Inside that template you will typically see:
 
 ```html
