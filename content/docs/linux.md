@@ -65,6 +65,7 @@ To install nVidia drivers in **Debian 13 Trixie**, follow these instructions ([s
     
     1. Create the following file `~/.config/mpv/mpv.conf`:
         ```bash
+
         # Use NVIDIA GPU hardware decoding
         hwdec=nvdec
 
@@ -84,6 +85,18 @@ To install nVidia drivers in **Debian 13 Trixie**, follow these instructions ([s
         # Optional: smooth seeking and interpolation
         interpolation=yes
         tscale=oversample
+
+        # Force mpv to treat every YouTube stream as seekable
+        # You can click any point in the bar
+        force-seekable=yes
+
+        # Aggressive prefetch after a seek (10 s is usually enough)
+        # Playback starts almost instantly
+        demuxer-readahead-secs=10
+
+        # (Optional) Slightly larger cache for instant seeks – still tiny on RAM
+        # Reduces rebuffering on fast connections
+        demuxer-max-bytes=100M
         ```
 
     2. To run a YouTube video:

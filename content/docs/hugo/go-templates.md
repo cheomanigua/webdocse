@@ -1,13 +1,19 @@
 ---
-weight: 5500
-title: "Templates"
-description: "Go Templates"
+weight: 2400
+title: "Go Templates"
+description: "Generate safe, dynamic text output (HTML, JSON) from data structures"
 icon: "article"
 date: "2025-11-07T11:12:08+01:00"
 lastmod: "2025-11-07T11:12:08+01:00"
 draft: false
 toc: true
 ---
+
+Hugo uses the **Go Templates** package under the hood for its templates. Although is not an Hugo feature, I include Go Templates in this documentation since it is paramount to know about them in order to create Hugo templates.
+
+Package template (html/template) implements data-driven templates for generating HTML output safe against code injection. It provides the same interface as text/template and should be used instead of text/template whenever the output is HTML.
+
+The documentation for [html/template](https://pkg.go.dev/html/template) focuses on the security features of the package. For information about how to program the templates themselves, see the documentation for [text/template](https://pkg.go.dev/text/template).
 
 ## Use case
 
@@ -32,6 +38,11 @@ import (
   "html/template"
 )
 
+type Profile struct {
+    SiteName string
+    UserName string
+}
+
 //go:embed *html
 var templateFS embed.FS
 var tmpl = template.Must(template.ParseFS(templateFS, "*.html"))
@@ -46,15 +57,9 @@ func main() {
       return
     }
 
-    data := struct {
-        SiteName string
-        UserName string
-    }{
-        SiteName: "My Amazing Website",
-        UserName: "Alice",
-    }
+    p := Profile{"My Amazing Site", "Alice"}
 
-    if err := tmpl.ExecuteTemplate(w, "home.html", data); err != nil {
+    if err := tmpl.ExecuteTemplate(w, "home.html", p); err != nil {
       log.Printf("Template error: %v", err)
       http.Error(w, err.Error(), http.StatusInternalServerError)
     }
