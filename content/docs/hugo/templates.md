@@ -16,15 +16,15 @@ Oficial documentation on [Templates](https://gohugo.io/templates/types/)
 
 <br>
 
-##### `home.html`
-
-Changes here will affect the home page / landing page (`content/_index.md`) 
-
-<br>
-
 ##### `baseof.html`
 
 Changes here will affect all pages.
+
+<br>
+
+##### `home.html`
+
+Changes here will affect the home page / landing page (`content/_index.md`) 
 
 <br>
 

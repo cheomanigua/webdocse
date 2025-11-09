@@ -18,7 +18,7 @@ Processing HTTP requests with Go is primarily about two things: `handlers` and `
 
 Go's [net/http](https://pkg.go.dev/net/http) package ships with the simple but effective [ServeMux](https://pkg.go.dev/net/ServeMux) servemux, plus a few functions to generate common handlers including [http.FileServer()](https://pkg.go.dev/net/http/#FileServer), [http.NotFoundHandler()](https://pkg.go.dev/net/http/#NotFoundHandler) and [http.RedirectHandler()](https://pkg.go.dev/net/http/#RedirectHandler).
 
-Let's take a look at the simplest web server:
+Let's take a look at the simplest static web server:
 
 ```go
 package main
@@ -90,7 +90,7 @@ import (
 )
 
 func main() {
-	http.Handle("/", http.FileServer(http.Dir("./static")))
+	http.Handle("/", http.FileServer(http.Dir("./html")))
 
 	log.Print("Listening on :8080...")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
@@ -104,7 +104,7 @@ However it is better to have a dedicated function:
 ```go
 func rootFileServer() http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
-        http.FileServer(http.Dir("./static")).ServeHTTP(w, r)
+        http.FileServer(http.Dir("./html")).ServeHTTP(w, r)
     }
 }
 
@@ -114,22 +114,17 @@ func main() {
 }
 ```
 
-We can improve it so we can target any path:
+We can do even better. Make a handler factory so we can target any path, not just `/html`:
 
 ```go
 // === FACTORY: Returns a full http.Handler (not just HandlerFunc) ===
-func handlerFactory(dir string) http.Handler {
-    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-      http.FileServer(http.Dir(dir)).ServeHTTP(w, r)
-    })
+func handlerFactory(prefix, rootDir string) http.Handler {
+    return http.StripPrefix(prefix, http.FileServer(http.Dir(rootDir)))
 }
 
 func main() {
-  http.Handle("/", handlerFactory("./static"))
-  http.Handle("/assets/", handlerFactory("./static/assets"))
-  http.Handle("/public/", handlerFactory("./static/public"))
-  http.Handle("/uploads/", handlerFactory("./uploads"))
-
+  http.Handle("/", handlerFactory("/", "html"))
+  http.Handle("/static/", handlerFactory("/static/", "static"))
   // ...
 ```
 
@@ -172,23 +167,21 @@ func main() {
 }
 ```
 
-We can improve it so we can target any path:
+We can do even better. Make a handler factory so we can target any path, not just `/html`:
 
 ```go
-// === FACTORY: Returns just a HandlerFunc (not a full http.Handler) ===
-func handlerFuncFactory(dir string) http.HandlerFunc {
-    return func(w http.ResponseWriter, r *http.Request) {
-        http.FileServer(http.Dir(dir)).ServeHTTP(w, r)
-    }
+// === FACTORY: Returns a HandlerFunc that serves files ===
+func handlerFuncFactory(prefix, rootDir string) http.HandlerFunc {
+	fs := http.StripPrefix(prefix, http.FileServer(http.Dir(rootDir)))
+	return func(w http.ResponseWriter, r *http.Request) {
+		fs.ServeHTTP(w, r)
+	}
 }
 
 func main() {
-    http.HandleFunc("/", handlerFuncFactory("./static"))
-    http.HandleFunc("/assets/", handlerFuncFactory("./static/assets"))
-    http.HandleFunc("/public/", handlerFuncFactory("./static/public"))
-    http.HandleFunc("/uploads/", handlerFuncFactory("./uploads"))
-    // ...
-}
+  http.HandleFunc("/", handlerFuncFactory("/", "html"))
+  http.HandleFunc("/static/", handlerFuncFactory("/static/", "static"))
+//...
 ```
 
 {{% /tab %}}
@@ -251,6 +244,15 @@ Generally speaking, I recommended against using the default servemux because it 
 
 We can create our own serve muxes to prevent the possible issues explained above. Let's refactor the previous code to make use of our own ServeMux:
 
+
+
+
+
+
+
+
+
+
 {{< tabs tabTotal="3">}}
 {{% tab tabName="Handle" %}}
 
@@ -264,7 +266,7 @@ import (
 
 func main() {
 	mux := http.NewServeMux()
-	mux.Handle("/", http.FileServer(http.Dir("./static")))
+	mux.Handle("/", http.FileServer(http.Dir("./html")))
 
 	log.Print("Listening on :8080...")
 	if err := http.ListenAndServe(":8080", mux); err != nil {
@@ -272,6 +274,38 @@ func main() {
 	}
 }
 ```
+
+However it is better to have a dedicated function:
+
+```go
+func rootFileServer() http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        http.FileServer(http.Dir("./html")).ServeHTTP(w, r)
+    }
+}
+
+func main() {
+	mux := http.NewServeMux()
+    mux.Handle("/", rootFileServer())
+    // ...
+}
+```
+
+We can do even better. Make a handler factory so we can target any path, not just `/html`:
+
+```go
+// === FACTORY: Returns a full http.Handler (not just HandlerFunc) ===
+func handlerFactory(prefix, rootDir string) http.Handler {
+    return http.StripPrefix(prefix, http.FileServer(http.Dir(rootDir)))
+}
+
+func main() {
+  mux := http.NewServeMux()
+  mux.Handle("/", handlerFactory("/", "html"))
+  mux.Handle("/static/", handlerFactory("/static/", "static"))
+  // ...
+```
+
 
 {{% /tab %}}
 {{% tab tabName="HandleFunc" %}}
@@ -307,29 +341,28 @@ func rootFileServer() http.HandlerFunc {
 }
 
 func main() {
-    mux := http.NewServeMux()
+	mux := http.NewServeMux()
     mux.HandleFunc("/", rootFileServer())
     // ...
 }
 ```
 
-We can improve it so we can target any path:
+We can do even better. Make a handler factory so we can target any path, not just `/html`:
 
 ```go
-func staticHandler(dir string) http.HandlerFunc {
-    return func(w http.ResponseWriter, r *http.Request) {
-        http.FileServer(http.Dir(dir)).ServeHTTP(w, r)
-    }
+// === FACTORY: Returns a HandlerFunc that serves files ===
+func handlerFuncFactory(prefix, rootDir string) http.HandlerFunc {
+	fs := http.StripPrefix(prefix, http.FileServer(http.Dir(rootDir)))
+	return func(w http.ResponseWriter, r *http.Request) {
+		fs.ServeHTTP(w, r)
+	}
 }
 
 func main() {
-    mux := http.NewServeMux()
-    mux.HandleFunc("/", staticHandler("./static"))
-    mux.HandleFunc("/assets/", staticHandler("./static/assets"))
-    mux.HandleFunc("/public/", staticHandler("./static/public"))
-    mux.HandleFunc("/uploads/", staticHandler("./uploads"))
-    // ...
-}
+	mux := http.NewServeMux()
+  mux.HandleFunc("/", handlerFuncFactory("/", "html"))
+  mux.HandleFunc("/static/", handlerFuncFactory("/static/", "static"))
+//...
 ```
 
 {{% /tab %}}
@@ -350,8 +383,7 @@ func staticHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    mux := http.NewServeMux()
-
+	mux := http.NewServeMux()
     mux.Handle("/", staticHandler)  // Compile error: staticHandler is a function, not Handler
 
     // Solution: use http.HandlerFunc to adapt the function into a Handler
@@ -366,6 +398,7 @@ func main() {
 
 {{% /tab %}}
 {{< /tabs >}}
+
 
 
 ## Passing variables to handlers
@@ -485,7 +518,7 @@ func main() {
 
 # 3. Implementations
 
-## 3.1 Handle
+##  Handle
 
 ```go
 func(pattern string, handler Handler)
@@ -546,7 +579,7 @@ func main() {
 }
 ```
 
-## 3.2 HandleFunc
+## HandleFunc
 
 
 ```go
@@ -583,7 +616,7 @@ func main() {
 }
 ```
 
-## 3.3 HandlerFunc
+## HandlerFunc
 
 ```go
 type HandlerFunc func(ResponseWriter, *Request)
@@ -723,19 +756,6 @@ In the context of Go's `net/http` package, `Handle`, `HandleFunc`, and `HandlerF
 - `Handle` is used for types that already implement the `http.Handler` interface, while `HandleFunc` is a convenience for registering functions directly.
 - `HandlerFunc` is the type that makes `HandleFunc` possible by allowing functions to be treated as `http.Handler`.
 
-### In Your Code
-Your code uses `Handle`:
-```go
-mux.Handle("/time", timeHandler{format: time.RFC822})
-```
-This works because `timeHandler` implements `http.Handler` via its `ServeHTTP` method. If you wanted to use `HandleFunc` instead, you could rewrite it as:
-```go
-mux.HandleFunc("/time", func(w http.ResponseWriter, r *http.Request) {
-    tm := time.Now().Format(time.RFC822)
-    w.Write([]byte("The time is: " + tm))
-})
-```
-This achieves the same result without needing a custom struct.
 
 ### Summary
 - Use **`Handle`** for registering types that implement `http.Handler`.
