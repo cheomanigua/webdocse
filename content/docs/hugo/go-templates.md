@@ -15,192 +15,130 @@ Package template (html/template) implements data-driven templates for generating
 
 The documentation for [html/template](https://pkg.go.dev/html/template) focuses on the security features of the package. For information about how to program the templates themselves, see the documentation for [text/template](https://pkg.go.dev/text/template).
 
-## Use case
 
-### Project tree
+# Use cases
 
-- root
-    - main.go
-    - home.html
-    - greeting.html
-
-### Code
-
-##### `main.go`
-
-```go
-package main
-
-import (
-  "embed"
-  "log"
-  "net/http"
-  "html/template"
-)
-
-type Profile struct {
-    SiteName string
-    UserName string
-}
-
-//go:embed *html
-var templateFS embed.FS
-var tmpl = template.Must(template.ParseFS(templateFS, "*.html"))
-
-func main() {
-  mux := http.NewServeMux()
-
-  mux.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
-    // Strict path check + allow only GET. Prevents unexpected behavior on `/..//` or other tricks
-    if r.URL.Path != "/" {
-      http.NotFound(w, r)
-      return
-    }
-
-    p := Profile{"My Amazing Site", "Alice"}
-
-    if err := tmpl.ExecuteTemplate(w, "home.html", p); err != nil {
-      log.Printf("Template error: %v", err)
-      http.Error(w, err.Error(), http.StatusInternalServerError)
-    }
-  })
-
-  server := &http.Server {
-    Addr: ":3000",
-    Handler: mux,
-  }
-
-  log.Println("Server running at http://localhost:3000")
-  log.Fatal(server.ListenAndServe())
-}
-```
-
-##### `home.html`
+## layouts/baseof.html
 
 ```html
-<html>
+<!DOCTYPE html>
+<html lang="{{ .Site.Language.Lang }}">
 <head>
-  <title>{{ .SiteName }}</title>
+  <meta charset="UTF-8" />
+	<link rel="stylesheet" href="https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="{{ "css/main-menu.css" | relURL }}">
+  <link rel="stylesheet" href="{{ "css/post-cards.css" | relURL }}">
+  {{ partial "head.html" . }}
 </head>
 <body>
-  <h1>Welcome to {{ .SiteName }}</h1>
-  {{ template "greeting" . }} <!-- If we don't add the dot, greeting.html cannot retrieve .UserName -->
+  <header>
+    {{ partial "header.html" . }}
+  </header>
+  <main>
+    {{ block "main" . }}
+      {{ .Content }}
+    {{ end }}
+  </main>
+  <footer>
+    {{ partial "footer.html" . }}
+  </footer>
 </body>
 </html>
 ```
 
-##### `greeting.html`
+- `{{ partial "header.html" }}`: Executes a reusable piece of markup from `header.html`.
+- `{{ block "main" }}`: Make the content inside block a default that pages/section can optionally replace.
+- `{{ .Content }}`: Renders the content, depending on the context, of pages in `content/`.
+
+## layouts/home.html
 
 ```html
-{{ define "greeting" }}
-<p>Welcome {{ .UserName }}. We are very happy that you decided to join our membership subscription. We are looking forward to your input.</p>
+{{ define "main" }}
+  {{ .Content }}
+  {{ partial "pricing-cards.html" }}
+
+  <div class="posts-container">
+    {{ range (where .Site.RegularPages "Section" "posts").ByDate.Reverse }}
+      <div class="post-card">
+        <h2 class="f3 b mb1">
+          <a href="{{ .Permalink }}">{{ .Title }}</a>
+        </h2>
+        <p class="f5 gray lh-copy">{{ .Summary }}</p>
+      </div>
+    {{ end }}
+  </div>
 {{ end }}
 ```
 
-## ParseFiles vs //go:embed
+- `{{ .Content }}`: Renders the content of `content/_index.md`.
+- `{{ partial "pricing-cards.html" }}`: Executes the code of `pricing-cards.html`.
+- `{{ range (where .Site.RegularPages "Section" "posts").ByDate.Reverse }}`: Loop through all pages inside the `content/posts/` directory by oldest date.
+- `{{ .Permalink }}` and `{{ .Title }}`: Show the title and the url of the post.\*
+- `{{ .Summary }}`: Renders a excerpt of the post.\*
 
-### Option 1: Using `ParseFiles`
+\* because of the context of the `range` loop, we are fetching posts.
 
-```go
-var tmpl = template.Must(template.ParseFiles("*.html"))
+## layouts/page.html
+
+```html
+{{ define "main" }}
+  <h1>{{ .Title }}</h1>
+
+  {{ $dateMachine := .Date | time.Format "2006-01-02T15:04:05-07:00" }}
+  {{ $dateHuman := .Date | time.Format ":date_long" }}
+  <time datetime="{{ $dateMachine }}">{{ $dateHuman }}</time>
+
+  {{ .Content }}
+  {{ partial "terms.html" (dict "taxonomy" "tags" "page" .) }}
+{{ end }}
 ```
 
-### Option 2: Using `//go:embed`
+- `{{ .Content }}`: render the content associated with the current page (`.md` file)
+- `{{ partial "terms.html" (dict "taxonomy" "tags" "page" .) }}`: render a list of terms (e.g., tags) associated with the current page.
 
-```go
-//go:embed *.html
-var templateFS embed.FS
-var tmpl = template.Must(template.ParseFS(templateFS, "*.html"))
+## layouts/section.htlml
+
+```html
+{{ define "main" }}
+  <h1>{{ .Title }}</h1>
+  {{ range .Pages }}
+    <section>
+      <h2><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h2>
+      {{ .Summary }}
+    </section>
+  {{ end }}
+{{ end }}
 ```
----
+- `{{ range .Pages }}`: loop through all the pages in `content/<section>/` directory.
+- `{{ .Summary }}`: renders a excerpt of the page.
 
-### Option 1
+## layouts/taxonomy.html
 
-
-#### ✅ Pros
-
-* **Great for development:**
-  You can edit `.html` files and just refresh the page — no rebuild required.
-
-* **Simpler conceptually:**
-  Uses the regular filesystem, no embedding directives.
-
-#### ⚠️ Cons
-
-* **Not self-contained:**
-  You must ship the `.html` files alongside your binary, preserving the exact directory structure.
-
-* **Can break in deployment:**
-  If your program can’t find the template files (e.g., wrong working directory), it’ll crash at startup.
-
-* **Less secure:**
-  If someone modifies the files on disk, your templates change without a rebuild.
-
-### Option 2
-
-#### ✅ Pros
-
-* **Self-contained binary:**
-  All `.html` files are compiled *into* your Go binary. You can ship just one file (the binary) — no need to distribute templates separately.
-
-* **No filesystem dependencies at runtime:**
-  Works even if you run your app inside a Docker image, serverless function, or a read-only filesystem.
-
-* **More secure & reliable:**
-  Templates can’t be accidentally modified or deleted after compilation.
-
-* **Production-friendly:**
-  Ideal for deployment since everything is versioned and embedded.
-
-#### ⚠️ Cons
-
-* **You must rebuild the binary** every time you change an HTML file.
-* Slightly larger binary size (the HTML is included in it).
-* Not ideal for rapid development if you frequently tweak templates.
-
----
-
-###  When to Use Each
-
-| Use Case                 | Recommended Option                   |
-| ------------------------ | ------------------------------------ |
-| Local development        | `ParseFiles` (faster iteration)      |
-| Production / deployment  | `//go:embed` (self-contained binary) |
-| Docker / serverless      | `//go:embed`                         |
-| Heavy template iteration | `ParseFiles`                         |
-
----
-
-### A Common Hybrid Approach
-
-Many Go developers do this:
-
-```go
-var tmpl *template.Template
-
-func init() {
-	if os.Getenv("DEV_MODE") == "1" {
-		// Load from disk during development
-		tmpl = template.Must(template.ParseFiles("*.html"))
-	} else {
-		// Use embedded templates in production
-		tmpl = template.Must(template.ParseFS(templateFS, "*.html"))
-	}
-}
+```html
+{{ define "main" }}
+  <h1>{{ .Title }}</h1>
+  {{ .Content }}
+  {{ range .Pages }}
+    <h2><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h2>
+  {{ end }}
+{{ end }}
 ```
+- List all taxonomy terms.
 
-Then run with:
+## layouts/terms.html
 
-```bash
-DEV_MODE=1 go run main.go
+```html
+{{ define "main" }}
+  <h1>{{ .Title }}</h1>
+  {{ .Content }}
+  {{ range .Pages }}
+    <h2><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h2>
+  {{ end }}
+{{ end }}
 ```
-
-This gives you **both the fast dev cycle and the safety of embedding** for deployment.
-
----
-
-✅ **In summary:**
-
-* Use `ParseFiles` during development for convenience.
-* Use `//go:embed` in production for reliability and simplicity in deployment.
-
+- Lists all pages that belong to that term, with:
+    - Title link
+    - Optional date
+    - Optional excerpt
+    - Tag list using the `terms.html` partial you already have
