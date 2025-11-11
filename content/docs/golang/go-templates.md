@@ -83,6 +83,7 @@ Key/value variables for each iteration also can be obtained:
     - main.go
     - home.html
     - greeting.html
+    - technologies.html
     - footer.html
 
 ### Code
@@ -103,6 +104,7 @@ type Profile struct {
     SiteName string
     UserName string
     Features []string
+    Technologies: map[string]string
 }
 
 //go:embed *html
@@ -123,6 +125,11 @@ func main() {
         SiteName: "My Amazing Site",
         UserName: "Alice",
         Features: []string {"Feature 1", "Feature 2", "Feature 3"},
+        Technologies: map[string]string {
+            "Frontend": "Hugo + HTMX",
+            "Backend": "Go",
+            "Database": "SQLite",
+            "Host": "Cloud Run"},
     }
 
     if err := tmpl.ExecuteTemplate(w, "home.html", profile); err != nil {
@@ -151,6 +158,7 @@ func main() {
 <body>
   <h1>Welcome to {{ .SiteName }}</h1>
   {{ template "greeting" . }} <!-- If we don't add the dot, greeting.html cannot retrieve .UserName -->
+  {{ template "technologies" . }}
   {{ template "footer" . }}
 </body>
 </html>
@@ -161,6 +169,21 @@ func main() {
 ```html
 {{ define "greeting" }}
 <p>Welcome {{ .UserName }}. We are very happy that you decided to join our membership subscription. We are looking forward to your input.</p>
+{{ end }}
+```
+
+##### `technologies.html`
+
+```html
+{{ define "technologies" }}
+<section>
+  <h3>Technologies</h3>
+  <ul>
+    {{range $key, $value := .Technologies}}
+    <li>{{$key}} : {{$value}}</li>
+    {{end}}
+  </ul>
+</section>
 {{ end }}
 ```
 

@@ -273,12 +273,9 @@ for key := range m {
 users := map[string]int{"John": 42}
 name := "John"
 
-if age, exists := users[name]; exists {
-    fmt.Printf("%s is %d years old\n", name, age)
-    return
+if v, ok := users[name]; ok {
+    fmt.Printf("%s is %d years old\n", name, v) // John is 42 years old
 }
-
-fmt.Printf("Couldn't find %s in the users map\n", name)
 ```
 
 ##### Testing presence only
@@ -297,8 +294,8 @@ func main() {
     }
     // discard the value using '_'
     // keep only the existence boolean
-    _, exists := words["foo"]
-    fmt.Println(exists) // false
+    _, ok := words["foo"]
+    fmt.Println(ok) // false
 }
 ```
 
