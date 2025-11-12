@@ -15,8 +15,12 @@ Processing HTTP requests with Go is primarily about two things: `handlers` and `
 
 - Handlers are responsible for carrying out your application logic and writing response headers and bodies.
 - A Servemux (also known as a router) stores a mapping between the predefined URL paths for your application and the corresponding handlers. Usually you have one servemux for your application containing all your routes.
+- `ListenAndServe` starts an HTTP server with a given address and handler. The handler is usually `nil`, which means to use `DefaultServeMux`. `Handle` and `HandleFunc` add handlers to `DefaultServeMux`.
+- It is recommended to create your own ServeMux, like this: `mux := http.NewServeMux()`.
+- **Handle**: `func Handle(pattern string, handler Handler)`
+- **HandleFunc**: `func HandleFunc(pattern string, handler func(ResponseWriter, *Request))`
 
-Go's [net/http](https://pkg.go.dev/net/http) package ships with the simple but effective [ServeMux](https://pkg.go.dev/net/ServeMux) servemux, plus a few functions to generate common handlers including [http.FileServer()](https://pkg.go.dev/net/http/#FileServer), [http.NotFoundHandler()](https://pkg.go.dev/net/http/#NotFoundHandler) and [http.RedirectHandler()](https://pkg.go.dev/net/http/#RedirectHandler).
+Go's [net/http](https://pkg.go.dev/net/http) package ships with the simple but effective [ServeMux](https://pkg.go.dev/net/ServeMux) servemux, plus a few helper functions to generate common handlers including [http.FileServer()](https://pkg.go.dev/net/http/#FileServer), [http.NotFoundHandler()](https://pkg.go.dev/net/http/#NotFoundHandler) and [http.RedirectHandler()](https://pkg.go.dev/net/http/#RedirectHandler).
 
 Let's take a look at the simplest static web server:
 
@@ -28,14 +32,14 @@ import (
 )
 
 func main() {
-	http.ListenAndServe(":8080", http.FileServer(http.Dir("./static")))
+	http.ListenAndServe(":8080", http.FileServer(http.Dir("./html")))
 }
 ```
 
 `http.ListenAndServe` creates the server.
 `:8080` tells the server to listen for requests on port 8080.
 `http.FileServer` servers the files to the client.
-`http.Dir("./static")` instructs `http.FileServer` to look at the host's `static`directory for the files to serve.
+`http.Dir("./html")` instructs `http.FileServer` to look at the host's `static`directory for the files to serve.
 
 By default, `net/http` will use `index.html` as the first file to look at. This is the structure of the project:
 
@@ -43,7 +47,7 @@ By default, `net/http` will use `index.html` as the first file to look at. This 
 server/
     |_ go.mod
     |_ server.go
-    |_ static/
+    |_ html/
         |_ index.html
         |_ about.html
         |_ contact.html
@@ -53,18 +57,20 @@ server/
 
 In Go, the `net/http` package provides `http.Handle` and `http.HandleFunc` as the primary ways to register handlers for HTTP requests, and they use the `http.DefaultServeMux`
 
-### http.Handle
+### http.Handle [](https://pkg.go.dev/net/http#Handle)
 
-- Registers a handler that implements the `http.Handler` interface (i.e., has a `ServerHTTP` method) for a specific URL pattern. You can check those patterns [here](https://pkg.go.dev/net/http#hdr-Patterns). Basically the first parameter declares the pattern to match, and the second paramenter instructs what the handler actually does when the match occurs.
+- `func Handle(pattern string, handler Handler)`
+- Registers a handler ([Handler](https://pkg.go.dev/net/http#Handler) interface) for a specific URL pattern in `DefaultServeMux`. You can check those patterns [here](https://pkg.go.dev/net/http#hdr-Patterns). Basically the first parameter declares the pattern to match, and the second paramenter instructs what the handler actually does when the match occurs.
 - Used when you have a custom type that implements `http.Handler` interface.
 
 ```go
 http.Handle("/example", &MyHandler{})
 ```
 
-### http.HandleFunc
+### http.HandleFunc [](https://pkg.go.dev/net/http#HandleFunc)
 
-- Registers a function with the signature `func(http.ResponseWriter, *http.Request)` as a handler for a specific URL pattern.
+- `func HandleFunc(pattern string, handler func(ResponseWriter, *Request))`
+- Registers a handler function ([HandlerFunc](https://pkg.go.dev/net/http#HandlerFunc) func) with the signature `func(ResponseWriter, *Request)` for a specific URL pattern in `DefaultServeMux`.
 - Convenient for simple handlers without needing a custom type.
 
 ```go
@@ -73,12 +79,23 @@ http.HandleFunc("/example", func(w http.ResponseWriter, r *http.Request) {
 })
 ```
 
+### http.Handler [](https://pkg.go.dev/net/http#Handler)
+
+- A [handler](https://pkg.go.dev/net/http#Handler) responds to an HTTP request.
+- There are 8 convenient helper functions to generate common handlers: AllowQuerySemicolons, FileServer, FileServerFS, MaxBytesHandler, NotFoundHandler, RedirectHandler, StripPrefix, TimeoutHandler.
+- You can create your own handlers as long as they satisfy the `http.Handler` interface.
+
+### http.HandlerFunc [](https://pkg.go.dev/net/http#HandlerFunc)
+
+- The [HandlerFunc](https://pkg.go.dev/net/http#HandlerFunc) type is an adapter to allow the use of ordinary functions as HTTP handlers. If f is a function with the appropriate signature, HandlerFunc(f) is a Handler that calls f.
+- HandlerFunc implements `ServeHTTP` under the hood.
+
 ### Examples
 
 The code below shows how to create a basic web server using Effective Go writing style: clear and idiomatic. The code shows how to implement the same solution using three different methods: `http.Handle`, `http.HandleFunc` and `http.HandlerFunc`.
 
 
-{{< tabs tabTotal="3">}}
+{{< tabs tabTotal="5">}}
 {{% tab tabName="Handle" %}}
 
 ```go
@@ -90,7 +107,7 @@ import (
 )
 
 func main() {
-	http.Handle("/", http.FileServer(http.Dir("./html")))
+    http.Handle("/", http.FileServer(http.Dir("./html"))) // Create the handler on EVERY request (less efficient)
 
 	log.Print("Listening on :8080...")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
@@ -99,18 +116,44 @@ func main() {
 }
 ```
 
-However it is better to have a dedicated function:
+We can do even better. Make a handler factory so we can target any path, not just `/html`:
 
 ```go
-func rootFileServer() http.HandlerFunc {
-    return func(w http.ResponseWriter, r *http.Request) {
-        http.FileServer(http.Dir("./html")).ServeHTTP(w, r)
-    }
+// === FACTORY: Returns a full http.Handler (not just HandlerFunc) ===
+func handlerFactory(prefix, rootDir string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		fs := http.StripPrefix(prefix, http.FileServer(http.Dir(rootDir))) // Create a handler on EVERY request (less efficient)
+		fs.ServeHTTP(w, r)
+	}
 }
 
 func main() {
-    http.Handle("/", rootFileServer())
-    // ...
+	// You can use http.Handle because http.HandlerFunc implements http.Handler
+	http.Handle("/", handlerFactory("/", "html"))
+	http.Handle("/static/", handlerFactory("/static/", "static"))
+  // ...
+```
+
+{{% /tab %}}
+{{% tab tabName="Handle efficient" %}}
+
+
+```go
+package main
+
+import (
+	"log"
+	"net/http"
+)
+
+func main() {
+	rootFileServer := http.FileServer(http.Dir("./html")) // Create the handler ONCE, at startup
+	http.Handle("/", rootFileServer)
+
+	log.Print("Listening on :8080...")
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+		log.Fatal(err)
+	}
 }
 ```
 
@@ -119,7 +162,7 @@ We can do even better. Make a handler factory so we can target any path, not jus
 ```go
 // === FACTORY: Returns a full http.Handler (not just HandlerFunc) ===
 func handlerFactory(prefix, rootDir string) http.Handler {
-    return http.StripPrefix(prefix, http.FileServer(http.Dir(rootDir)))
+    return http.StripPrefix(prefix, http.FileServer(http.Dir(rootDir))) // Create the handler ONCE, at startup
 }
 
 func main() {
@@ -141,8 +184,8 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-        http.FileServer(http.Dir("./static")).ServeHTTP(w, r)
+    http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+        http.FileServer(http.Dir("./html")).ServeHTTP(w, r) // Create the handler on EVERY request (less efficient)
 	})
 
 	log.Print("Listening on :8080...")
@@ -155,14 +198,13 @@ func main() {
 However it is better to have a dedicated function:
 
 ```go
-func rootFileServer() http.HandlerFunc {
-    return func(w http.ResponseWriter, r *http.Request) {
-        http.FileServer(http.Dir("./static")).ServeHTTP(w, r)
-    }
+// ...
+func rootFileServer(w http.ResponseWriter, r *http.Request) {
+	http.FileServer(http.Dir("./html")).ServeHTTP(w, r) // Create the handler on EVERY request (less efficient)
 }
 
 func main() {
-    http.HandleFunc("/", rootFileServer())
+	http.HandleFunc("/", rootFileServer)
     // ...
 }
 ```
@@ -172,8 +214,8 @@ We can do even better. Make a handler factory so we can target any path, not jus
 ```go
 // === FACTORY: Returns a HandlerFunc that serves files ===
 func handlerFuncFactory(prefix, rootDir string) http.HandlerFunc {
-	fs := http.StripPrefix(prefix, http.FileServer(http.Dir(rootDir)))
 	return func(w http.ResponseWriter, r *http.Request) {
+	    fs := http.StripPrefix(prefix, http.FileServer(http.Dir(rootDir))) // Create the handler on EVERY request (less efficient)
 		fs.ServeHTTP(w, r)
 	}
 }
@@ -184,6 +226,60 @@ func main() {
 //...
 ```
 
+{{% /tab %}}
+{{% tab tabName="HandleFunc efficient" %}}
+
+```go
+package main
+
+import (
+	"log"
+	"net/http"
+)
+
+func main() {
+    rootFileServer := http.FileServer(http.Dir("./html")) // Create the handler ONCE, at startup
+	http.HandleFunc("/", rootFileServer.ServeHTTP)
+	
+	log.Print("Listening on :8080...")
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+		log.Fatal(err)
+	}
+}
+```
+
+However it is better to have a dedicated function:
+
+```go
+// ...
+func rootFileServer(fs http.Handler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		fs.ServeHTTP(w, r)
+	}
+}
+
+func main() {
+	fs := http.FileServer(http.Dir("./html")) // Create the handler ONCE, at startup
+	http.HandleFunc("/", rootFileServer(fs))
+}
+```
+
+We can do even better. Make a handler factory so we can target any path, not just `/html`:
+
+```go
+// === FACTORY: Returns a HandlerFunc that serves files ===
+func handlerFuncFactory(prefix, rootDir string) http.HandlerFunc {
+	fs := http.StripPrefix(prefix, http.FileServer(http.Dir(rootDir))) // Create the handler ONCE, at startup
+	return func(w http.ResponseWriter, r *http.Request) {
+		fs.ServeHTTP(w, r)
+	}
+}
+
+func main() {
+  http.HandleFunc("/", handlerFuncFactory("/", "html"))
+  http.HandleFunc("/static/", handlerFuncFactory("/static/", "static"))
+//...
+```
 {{% /tab %}}
 {{% tab tabName="HandlerFunc" %}}
 
@@ -197,15 +293,16 @@ import (
     "net/http"
 )
 
-func staticHandler(w http.ResponseWriter, r *http.Request) {
-    http.FileServer(http.Dir("./static")).ServeHTTP(w, r)
+func rootFileServer(w http.ResponseWriter, r *http.Request) {
+    http.FileServer(http.Dir("./html")).ServeHTTP(w, r)
 }
 
 func main() {
-    http.Handle("/", staticHandler)  // Compile error: staticHandler is a function, not Handler
+    http.Handle("/", rootFileServer)  // Compile error: rootFileServer is a function, not Handler
 
     // Solution: use http.HandlerFunc to adapt the function into a Handler
-    http.Handle("/", http.HandlerFunc(staticHandler))
+    fs := http.HandlerFunc(rootFileServer)
+    http.Handle("/", fs)
 
     log.Print("Listening on :8080...")
     if err := http.ListenAndServe(":8080", nil); err != nil {
@@ -275,22 +372,6 @@ func main() {
 }
 ```
 
-However it is better to have a dedicated function:
-
-```go
-func rootFileServer() http.HandlerFunc {
-    return func(w http.ResponseWriter, r *http.Request) {
-        http.FileServer(http.Dir("./html")).ServeHTTP(w, r)
-    }
-}
-
-func main() {
-	mux := http.NewServeMux()
-    mux.Handle("/", rootFileServer())
-    // ...
-}
-```
-
 We can do even better. Make a handler factory so we can target any path, not just `/html`:
 
 ```go
@@ -321,7 +402,7 @@ import (
 func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-        http.FileServer(http.Dir("./static")).ServeHTTP(w, r)
+        http.FileServer(http.Dir("./html")).ServeHTTP(w, r)
 	})
 
 	log.Print("Listening on :8080...")
@@ -334,15 +415,13 @@ func main() {
 However it is better to have a dedicated function:
 
 ```go
-func rootFileServer() http.HandlerFunc {
-    return func(w http.ResponseWriter, r *http.Request) {
-        http.FileServer(http.Dir("./static")).ServeHTTP(w, r)
-    }
+func rootFileServer(w http.ResponseWriter, r *http.Request) {
+	mux.FileServer(http.Dir("./html")).ServeHTTP(w, r)
 }
 
 func main() {
 	mux := http.NewServeMux()
-    mux.HandleFunc("/", rootFileServer())
+	mux.HandleFunc("/", rootFileServer)
     // ...
 }
 ```
@@ -359,9 +438,9 @@ func handlerFuncFactory(prefix, rootDir string) http.HandlerFunc {
 }
 
 func main() {
-	mux := http.NewServeMux()
-  mux.HandleFunc("/", handlerFuncFactory("/", "html"))
-  mux.HandleFunc("/static/", handlerFuncFactory("/static/", "static"))
+    mux := http.NewServeMux()
+    mux.HandleFunc("/", handlerFuncFactory("/", "html"))
+    mux.HandleFunc("/static/", handlerFuncFactory("/static/", "static"))
 //...
 ```
 
