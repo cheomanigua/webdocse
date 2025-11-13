@@ -87,8 +87,107 @@ http.HandleFunc("/example", func(w http.ResponseWriter, r *http.Request) {
 
 ### http.HandlerFunc [](https://pkg.go.dev/net/http#HandlerFunc)
 
-- The [HandlerFunc](https://pkg.go.dev/net/http#HandlerFunc) type is an adapter to allow the use of ordinary functions as HTTP handlers. If f is a function with the appropriate signature, HandlerFunc(f) is a Handler that calls f.
 - HandlerFunc implements `ServeHTTP` under the hood.
+- The [HandlerFunc](https://pkg.go.dev/net/http#HandlerFunc) type is an adapter to allow `http.Handle` the use of ordinary functions as HTTP handlers. Without `HandlerFunc`, you cannot pass a plain function to `http.Handle`.
+
+    ```go
+    func myFunc(w http.ResponseWriter, r *http.Request) {
+        fmt.Fprintf(w, "Hello!\n")
+    }
+
+    http.Handle("/", http.HandlerFunc(myFunc))
+    ```
+
+
+### Basic Examples
+
+{{< tabs tabTotal="3">}}
+{{% tab tabName="Version 1" %}}
+
+```go
+package main
+
+import (
+	"fmt"
+	"net/http"
+)
+
+func main() {
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "Welcome to my website!\n")
+	})
+
+	http.ListenAndServe(":8080", nil)
+}
+```
+
+{{% /tab %}}
+{{% tab tabName="Version 2" %}}
+
+```go
+package main
+
+import (
+	"fmt"
+	"net/http"
+)
+
+func myHandlerFunc(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Welcome to my website!\n")
+}
+
+func main() {
+	http.Handle("/", http.HandlerFunc(myHandlerFunc))  // Option 1
+	http.HandleFunc("/", myHandlerFunc)                // Option 2
+
+
+	http.ListenAndServe(":8080", nil)
+}
+```
+
+{{% /tab %}}
+{{% tab tabName="Version 3" %}}
+
+```go
+package main
+
+import (
+	"fmt"
+	"net/http"
+)
+
+type myHandler struct {
+	name string
+}
+
+func (h *myHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {   // Declares a handler (implements ServeHTTP)
+	h.name = "Alice"
+	fmt.Fprintf(w, "Welcome to my website, %s!\n", h.name)
+}
+
+func main() {
+	http.Handle("/", &myHandler{}) // Register the handler using http.Handle (not HandleFunc)
+
+	fmt.Println("Server running at http://localhost:8080")
+	http.ListenAndServe(":8080", nil)
+}
+```
+
+{{% /tab %}}
+{{< /tabs >}}
+
+### Best to use
+
+| Feature / Use Case                   | `http.Handle` with `http.Handler` | `http.HandleFunc` | `http.HandlerFunc`                                                                                  |
+| ------------------------------------ | --------------------------------- | ----------------- | --------------------------------------------------------------------------------------------------- |
+| **Handler type**                     | Struct implementing `ServeHTTP`   | Function          | Function adapter that implements `ServeHTTP`                                                        |
+| **Stateful handlers**                | ✅ Yes, struct can store state     | ❌ Stateless       | ❌ Stateless (but can wrap a struct method)                                                          |
+| **Complex logic / multiple methods** | ✅ Yes                             | ❌ Harder          | ⚪ Can wrap complex logic, but usually function-level                                                |
+| **Simple endpoints**                 | ⚪ Works, maybe overkill           | ✅ Perfect         | ✅ Works, can be used wherever `http.Handler` is needed                                              |
+| **Reusability**                      | ✅ Created once at startup         | ✅ Function reused | ✅ Can wrap a function once and reuse it                                                             |
+| **Use case**                         | Stateful, production-grade        | Simple, stateless | When you need a function to behave as a `Handler` (e.g., passing method reference to `http.Handle`) |
+
+
 
 ### Examples
 
@@ -107,12 +206,25 @@ import (
 )
 
 func main() {
-    http.Handle("/", http.FileServer(http.Dir("./html"))) // Create the handler on EVERY request (less efficient)
+    http.Handle("/", http.FileServer(http.Dir("./html"))) // Create the handler ONCE, at startup
 
 	log.Print("Listening on :8080...")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal(err)
 	}
+}
+```
+
+However, it is better to have a dedicated function:
+
+```go
+func serveStaticFiles(w http.ResponseWriter, r *http.Request) {
+    http.FileServer(http.Dir("./html")).ServeHTTP(w, r) // Create a handler on EVERY request (less efficient)
+}
+
+func main() {
+    http.Handle("/", http.HandlerFunc(serveStaticFiles))
+    // ...
 }
 ```
 
@@ -154,6 +266,20 @@ func main() {
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal(err)
 	}
+}
+```
+
+
+However, it is better to have a dedicated function:
+
+```go
+func serveStaticFiles(w http.ResponseWriter, r *http.Request) {
+    http.FileServer(http.Dir("./html")).ServeHTTP(w, r) // Create a handler on EVERY request (less efficient)
+}
+
+func main() {
+    http.Handle("/", http.HandlerFunc(serveStaticFiles))
+    // ...
 }
 ```
 
@@ -294,7 +420,7 @@ import (
 )
 
 func rootFileServer(w http.ResponseWriter, r *http.Request) {
-    http.FileServer(http.Dir("./html")).ServeHTTP(w, r)
+    http.FileServer(http.Dir("./html")).ServeHTTP(w, r) // Create a handler on EVERY request (less efficient)
 }
 
 func main() {
@@ -531,71 +657,7 @@ func timeHandler(format string) http.HandlerFunc {
 }
 ```
 
-
-# 2. Handler
-
-So, what is a handler?
-
-`http.Handler` is an **interface** that responds to an HTTP request. [http.Handler.ServeHTTP] should write reply headers and data to the [`http.ResponseWriter`](https://pkg.go.dev/net/http#ResponseWriter) or read from the [Request.Body] after or concurrently with the completion of the ServeHTTP call.
-
-```go
-type Handler interface {
-	ServeHTTP(ResponseWriter, *Request)
-}
-```
-
-Types that implement the `ServeHTTP(w http.ResponseWriter, r *http.Request)` method satisfy the [`http.Handler`](https://pkg.go.dev/net/http/#Handler) interface and therefore instances of those types can, for example, be used as the second argument to the [`http.Handle`](https://pkg.go.dev/net/http/#Handle) function or the equivalent [`ServeMux.Handle`](https://pkg.go.dev/net/ServeMux.Handle) method.
-
-An example might make this more clear:
-
-```go
-type myHandler struct {
-    // ...
-}
-
-func (h myHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("hello world"))
-}
-
-func main() {
-	mux. := http.NewServeMux()
-	mux.Handle("/", myHandler{})
-	http.ListenAndServe(":8080", mux)
-}
-```
-
-#### func FileServer - a Handler type
-```go
-func FileServer(root FileSystem) Handler
-```
-FileServer returns a handler that serves HTTP requests with the contents of the file system rooted at root.
-
-As a special case, the returned file server redirects any request ending in "/index.html" to the same path, without the final "index.html".
-
-To use the operating system's file system implementation, use [`http.Dir`](https://pkg.go.dev/net/http#Dir):
-
-```go
-http.Handle("/", http.FileServer(http.Dir("/tmp")))
-```
-
-Example of FileServer Handler type:
-
-```go
-package main
-
-import (
-	"log"
-	"net/http"
-)
-
-func main() {
-	// Simple static webserver:
-	log.Fatal(http.ListenAndServe(":8080", http.FileServer(http.Dir("/usr/share/doc"))))
-}
-```
-
-
-# 3. Implementations
+# 2. Implementations
 
 ##  Handle
 
@@ -641,7 +703,7 @@ func myHandler5() http.Handler {
 	})
 }
 
-func myHandler6(w http.ResponseWriter, r *http.Request) {
+func myFunc6(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, "Hello from myHandler 6\n")
 }
 
@@ -653,7 +715,7 @@ func main() {
 	mux.Handle("/h3", new(myHandler3))
 	mux.Handle("/h4", h4)
 	mux.Handle("/h5", myHandler5())
-	mux.Handle("/h6", http.HandlerFunc(myHandler6))
+	mux.Handle("/h6", http.HandlerFunc(myFunc6))
 	log.Fatal(http.ListenAndServe(":8080", mux))
 }
 ```
@@ -678,10 +740,8 @@ import (
 
 func h2(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, "Hello from HandleFunc #2!\n")
-}
-
-func h3(http.ResponseWriter, *http.Request) {
-	log.Println("Logging HandleFunc #3!")
+    w.Write([]byte("Hellow from HandleFunc #2"))
+	log.Println("Logging HandleFunc #2!")
 }
 
 func main() {
@@ -690,7 +750,6 @@ func main() {
 		io.WriteString(w, "Hello from HandleFunc #1!\n")
 	})
 	mux.HandleFunc("/h2", h2)
-	mux.HandleFunc("/h3", h3)
 	http.ListenAndServe(":8080", mux)
 }
 ```
@@ -704,118 +763,18 @@ type HandlerFunc func(ResponseWriter, *Request)
 Example:
 
 ```go
-func myHandlerFunc(w http.ResponseWriter, r *http.Request) {
+func myFunc(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("hello world"))
 }
 
 func main() {
-	http.Handle("/", http.HandlerFunc(myHandlerFunc))
+	http.Handle("/", http.HandlerFunc(myFunc))
 	http.ListenAndServe(":8080", nil)
 }
 ```
 
+# 3. Uses
 
-#### func (HandlerFunc) ServeHTTP - a HandlerFunc type
-ServeHTTP calls f(w,r)
-
-```go
-func (f HandlerFunc) ServeHTTP(w ResponseWriter, r *Request)
-```
-
-Example:
-
-```go
-package main
-
-import (
-	"fmt"
-	"net/http"
-)
-
-// MyHandler is a simple HTTP handler function.
-func MyHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "Hello, this is my handler!")
-}
-
-func main() {
-	// Convert MyHandler function to a HandlerFunc
-	handlerFunc := http.HandlerFunc(MyHandler)
-
-	// Use handlerFunc as an HTTP handler
-	http.Handle("/myhandler", handlerFunc)
-
-	// Start the web server
-	http.ListenAndServe(":8080", nil)
-}
-```
-
-
-# 4. Uses
-
-In the context of Go's `net/http` package, `Handle`, `HandleFunc`, and `HandlerFunc` are related to handling HTTP requests, but they serve different purposes and have distinct roles. Below, I explain the differences:
-
-### 1. `Handle`
-- **Type**: Method of the `http.ServeMux` type.
-- **Purpose**: Registers a handler for a specific URL pattern.
-- **Signature**:
-  ```go
-  func (mux *ServeMux) Handle(pattern string, handler Handler)
-  ```
-- **Explanation**:
-  - `Handle` is used to associate a URL pattern (e.g., `/time`) with an `http.Handler` interface, which must implement the `ServeHTTP` method:
-    ```go
-    type Handler interface {
-        ServeHTTP(http.ResponseWriter, *http.Request)
-    }
-    ```
-  - You pass a struct or type that implements the `http.Handler` interface (like the `timeHandler` struct in your code).
-  - Example from your code:
-    ```go
-    mux.Handle("/time", timeHandler{format: time.RFC822})
-    ```
-    Here, `timeHandler` implements `http.Handler` because it has a `ServeHTTP` method, and `Handle` registers it to handle requests to `/time`.
-- **Use Case**: Use `Handle` when you have a custom type (e.g., a struct) that implements the `http.Handler` interface.
-
-### 2. `HandleFunc`
-- **Type**: Method of the `http.ServeMux` type.
-- **Purpose**: Registers a function (not an interface) as an HTTP handler for a specific URL pattern.
-- **Signature**:
-  ```go
-  func (mux *ServeMux) HandleFunc(pattern string, handler func(http.ResponseWriter, *http.Request))
-  ```
-- **Explanation**:
-  - `HandleFunc` is used to register a plain function with the signature `func(http.ResponseWriter, *http.Request)` to handle HTTP requests for a given pattern.
-  - Unlike `Handle`, it does not require the handler to implement the `http.Handler` interface. Instead, it takes a function directly.
-  - Internally, `HandleFunc` converts the function into an `http.Handler` by wrapping it with `http.HandlerFunc` (see below).
-  - Example:
-    ```go
-    mux.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
-        w.Write([]byte("Hello, World!"))
-    })
-    ```
-    This registers a function to respond with "Hello, World!" for requests to `/hello`.
-- **Use Case**: Use `HandleFunc` when you want to quickly define a handler as a function without creating a custom struct or type.
-
-### 3. `HandlerFunc`
-- **Type**: A type defined in the `net/http` package.
-- **Purpose**: A type that wraps a function to make it compatible with the `http.Handler` interface.
-- **Signature**:
-  ```go
-  type HandlerFunc func(http.ResponseWriter, *http.Request)
-  ```
-- **Explanation**:
-  - `http.HandlerFunc` is a type that allows a function with the signature `func(http.ResponseWriter, *http.Request)` to act as an `http.Handler`.
-  - It implements the `http.Handler` interface by defining a `ServeHTTP` method that calls the underlying function.
-  - Essentially, `HandlerFunc` is a convenience type that bridges plain functions and the `http.Handler` interface.
-  - Example:
-    ```go
-    var myHandler http.HandlerFunc = func(w http.ResponseWriter, r *http.Request) {
-        w.Write([]byte("Hello via HandlerFunc!"))
-    }
-    mux.Handle("/hello", myHandler)
-    ```
-    Here, `myHandler` is a function of type `http.HandlerFunc`, which can be passed to `mux.Handle` because it satisfies the `http.Handler` interface.
-- **Use Case**: Use `HandlerFunc` when you want to explicitly treat a function as an `http.Handler` or pass it to `Handle`.
 
 ### Key Differences
 | **Feature**       | **Handle**                              | **HandleFunc**                          | **HandlerFunc**                         |
@@ -824,13 +783,13 @@ In the context of Go's `net/http` package, `Handle`, `HandleFunc`, and `HandlerF
 | **Input**         | URL pattern and `http.Handler`         | URL pattern and function               | Function with specific signature        |
 | **Purpose**       | Registers an `http.Handler` interface  | Registers a function as a handler       | Wraps a function to act as `http.Handler` |
 | **Requires**      | Type implementing `ServeHTTP`          | Plain function with correct signature  | Function with correct signature         |
-| **Example**       | `mux.Handle("/time", timeHandler{})`   | `mux.HandleFunc("/hello", func(w, r) {})` | `http.HandlerFunc(func(w, r) {})`       |
+| **Example**       | `http.Handle("/time", timeHandler{})`   | `http.HandleFunc("/hello", func(w, r) {})` | `http.HandlerFunc(func(w, r) {})`       |
 
 ### Relationship Between Them
 - `HandleFunc` internally uses `HandlerFunc` to convert a function into an `http.Handler` so it can be registered with the multiplexer.
-  - When you call `mux.HandleFunc(pattern, fn)`, it essentially does:
+  - When you call `http.HandleFunc(pattern, fn)`, it essentially does:
     ```go
-    mux.Handle(pattern, http.HandlerFunc(fn))
+    http.Handle(pattern, http.HandlerFunc(fn))
     ```
 - `Handle` is used for types that already implement the `http.Handler` interface, while `HandleFunc` is a convenience for registering functions directly.
 - `HandlerFunc` is the type that makes `HandleFunc` possible by allowing functions to be treated as `http.Handler`.
@@ -840,10 +799,3 @@ In the context of Go's `net/http` package, `Handle`, `HandleFunc`, and `HandlerF
 - Use **`Handle`** for registering types that implement `http.Handler`.
 - Use **`HandleFunc`** for registering plain functions as handlers.
 - Use **`HandlerFunc`** as a type to explicitly treat a function as an `http.Handler` or when passing functions to `Handle`.
-
-
-# 5. Tips
-
-* `http.Handle` takes a value of any type that implements the `http.Handler` interface, `http.HandlerFunc` is one of those types that implements that interface, but it's not the only one.
-* `http.HandleFunc` takes in a function of type `http.HandlerFunc`. Note that `http.HandleFunc` is not the same as `http.Handle`.
-* also note that for the argument to `http.HandleFunc` the method `ServeHTTP(...` is not important, what's important is that the signature, ie type, of the function that you pass in is the same as defined by the argument, ie. `func(http.ResponseWriter, *http.Request)`. The ServeHTTP method is only important for the `http.Handle` or anything that depends on the `http.Handler` interface which declares that method as one of its members.
