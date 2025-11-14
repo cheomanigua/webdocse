@@ -11,7 +11,7 @@ toc: true
 
 # Struct
 
-Structs lack scoping modifiers such as private, public, or protected that are commonly used in other languAges to control access to their members. Instead, Go uses capitalization to determine scope: types and fields that begin with a capital letter are exported and accessible outside the package, whereas those starting with a lowercase letter are private, accessible only within the package.
+Structs lack scoping modifiers such as private, public, or protected that are commonly used in other languages to control access to their members. Instead, Go uses capitalization to determine scope: types and fields that begin with a capital letter are exported and accessible outside the package, whereas those starting with a lowercase letter are private, accessible only within the package.
 
 ## Declaration
 
@@ -261,7 +261,7 @@ You might wonder when it’s useful to have a data type that’s associated only
 
 ## Composition
 
-Composition is similar to OOP languAges inheritance. While Go doesn’t have inheritance, it encourAges code reuse via built-in support for composition and promotion.
+Composition is similar to OOP languages inheritance. While Go doesn’t have inheritance, it encourages code reuse via built-in support for composition and promotion.
 
 ```go
 package main
@@ -291,7 +291,7 @@ The above code will print: `John Doe 43 Main Street London`
 
 ## Methods & Pointers
 
-Methods are functions on user defined types like structs. They are the equivalent to class methods in OOP languAges. Method declarations look like function declarations, with one addition: the `receiver` specification. The receiver appears between the keyword *func* and the Name of the method.
+Methods are functions on user defined types like structs. They are the equivalent to class methods in OOP languages. Method declarations look like function declarations, with one addition: the `receiver` specification. The receiver appears between the keyword *func* and the Name of the method.
 
 Pointers are better explained at the [pointers pAge]( {{<ref "pointers">}}), but in the example below you see how they work together with methods.
 

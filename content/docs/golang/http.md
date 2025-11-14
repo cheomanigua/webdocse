@@ -132,13 +132,13 @@ import (
 	"net/http"
 )
 
-func myHandlerFunc(w http.ResponseWriter, r *http.Request) {
+func myFunc(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Welcome to my website!\n")
 }
 
 func main() {
-	http.Handle("/", http.HandlerFunc(myHandlerFunc))  // Option 1
-	http.HandleFunc("/", myHandlerFunc)                // Option 2
+	http.HandleFunc("/", myFunc)                // Option 1 - HandleFunc
+	http.Handle("/", http.HandlerFunc(myFunc))  // Option 2 - Handle
 
 
 	http.ListenAndServe(":8080", nil)
@@ -215,15 +215,15 @@ func main() {
 }
 ```
 
-However, it is better to have a dedicated function:
+However, we can have a dedicated function:
 
 ```go
-func serveStaticFiles(w http.ResponseWriter, r *http.Request) {
+func myFunc(w http.ResponseWriter, r *http.Request) {
     http.FileServer(http.Dir("./html")).ServeHTTP(w, r) // Create a handler on EVERY request (less efficient)
 }
 
 func main() {
-    http.Handle("/", http.HandlerFunc(serveStaticFiles))
+    http.Handle("/", http.HandlerFunc(myFunc))
     // ...
 }
 ```
@@ -259,8 +259,8 @@ import (
 )
 
 func main() {
-	rootFileServer := http.FileServer(http.Dir("./html")) // Create the handler ONCE, at startup
-	http.Handle("/", rootFileServer)
+	fs := http.FileServer(http.Dir("./html")) // Create the handler ONCE, at startup
+	http.Handle("/", fs)
 
 	log.Print("Listening on :8080...")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
@@ -270,18 +270,50 @@ func main() {
 ```
 
 
-However, it is better to have a dedicated function:
+However, we can have a dedicated function (Version 1):
 
 ```go
-func serveStaticFiles(w http.ResponseWriter, r *http.Request) {
-    http.FileServer(http.Dir("./html")).ServeHTTP(w, r) // Create a handler on EVERY request (less efficient)
+func main() {
+    fs := http.FileServer(http.Dir("./html"))
+
+    handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        fs.ServeHTTP(w, r)
+    })
+
+    http.Handle("/", handler)
+    // ...
+```
+
+However, we can have a dedicated function (Version 2):
+
+```go
+func myFunc(fs http.Handler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		fs.ServeHTTP(w, r)
+	}
 }
 
 func main() {
-    http.Handle("/", http.HandlerFunc(serveStaticFiles))
+	fs := http.FileServer(http.Dir("./html")) // Create the handler ONCE, at startup
+	http.Handle("/", http.HandlerFunc(myFunc(fs)))
+    // ...
+```
+
+However, we can have a dedicated function (Version 3):
+
+```go
+var fs = http.FileServer(http.Dir("./html")) // Create the handler ONCE, at startup
+
+func myFunc(w http.ResponseWriter, r *http.Request) {
+    fs.ServeHTTP(w, r)
+}
+
+func main() {
+    http.Handle("/", http.HandlerFunc(myFunc))
     // ...
 }
 ```
+
 
 We can do even better. Make a handler factory so we can target any path, not just `/html`:
 
@@ -321,16 +353,16 @@ func main() {
 }
 ```
 
-However it is better to have a dedicated function:
+However we can have a dedicated function:
 
 ```go
 // ...
-func rootFileServer(w http.ResponseWriter, r *http.Request) {
+func myFunc(w http.ResponseWriter, r *http.Request) {
 	http.FileServer(http.Dir("./html")).ServeHTTP(w, r) // Create the handler on EVERY request (less efficient)
 }
 
 func main() {
-	http.HandleFunc("/", rootFileServer)
+	http.HandleFunc("/", myFunc)
     // ...
 }
 ```
@@ -364,8 +396,8 @@ import (
 )
 
 func main() {
-    rootFileServer := http.FileServer(http.Dir("./html")) // Create the handler ONCE, at startup
-	http.HandleFunc("/", rootFileServer.ServeHTTP)
+    fs := http.FileServer(http.Dir("./html")) // Create the handler ONCE, at startup
+	http.HandleFunc("/", fs.ServeHTTP)
 	
 	log.Print("Listening on :8080...")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
@@ -374,11 +406,11 @@ func main() {
 }
 ```
 
-However it is better to have a dedicated function:
+However we can have a dedicated function:
 
 ```go
 // ...
-func rootFileServer(fs http.Handler) http.HandlerFunc {
+func myFunc(fs http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fs.ServeHTTP(w, r)
 	}
@@ -386,7 +418,8 @@ func rootFileServer(fs http.Handler) http.HandlerFunc {
 
 func main() {
 	fs := http.FileServer(http.Dir("./html")) // Create the handler ONCE, at startup
-	http.HandleFunc("/", rootFileServer(fs))
+	http.HandleFunc("/", myFunc(fs))
+    // ...
 }
 ```
 
@@ -419,16 +452,15 @@ import (
     "net/http"
 )
 
-func rootFileServer(w http.ResponseWriter, r *http.Request) {
+func myFunc(w http.ResponseWriter, r *http.Request) {
     http.FileServer(http.Dir("./html")).ServeHTTP(w, r) // Create a handler on EVERY request (less efficient)
 }
 
 func main() {
-    http.Handle("/", rootFileServer)  // Compile error: rootFileServer is a function, not Handler
+    http.Handle("/", myFunc)  // Compile error: myFunc is a function, not Handler
 
     // Solution: use http.HandlerFunc to adapt the function into a Handler
-    fs := http.HandlerFunc(rootFileServer)
-    http.Handle("/", fs)
+    http.Handle("/", http.HandlerFunc(myFunc))
 
     log.Print("Listening on :8080...")
     if err := http.ListenAndServe(":8080", nil); err != nil {
@@ -538,16 +570,16 @@ func main() {
 }
 ```
 
-However it is better to have a dedicated function:
+However we can have a dedicated function:
 
 ```go
-func rootFileServer(w http.ResponseWriter, r *http.Request) {
+func myFunc(w http.ResponseWriter, r *http.Request) {
 	mux.FileServer(http.Dir("./html")).ServeHTTP(w, r)
 }
 
 func main() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", rootFileServer)
+	mux.HandleFunc("/", myFunc)
     // ...
 }
 ```

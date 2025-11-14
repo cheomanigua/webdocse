@@ -44,16 +44,21 @@ newgrp subuid subgid  # Or log out and back in
 
 ### Equivalences with Docker
 
-- All Podman commands are the same as Docker. Just use the prefix **podman** instead of **docker**
-- Containerfile = Dockerfile
-- podman-compose = docker-compose
+- All Podman commands are the same as Docker. Just use the prefix **podman** instead of **docker**:
+    - podman build
+    - podman run
+    - podman-compose up -d
+    - etc
+- Podman can use both Podman files and Docker files:
+    - `Containerfile` and `Dockerfile`
+    - `podman-compose.yaml` and `docker-compose.yaml`
 
 
 ### Operations
 
 ##### Build an Image
 
-- Create a Dockerfile/Containerfile and run:
+- Create a `Containerfile` or `Dockerfile` and run:
 
 ```bash
 $ podman build -t my-go-app .               // Creates an image tagged my-go-app 
@@ -88,7 +93,7 @@ podman run -d --rm -p 8080:8080 my-go-app
 
 ##### Start a Container
 
-Start an already created container. Most likely the Dockerfile will need some initialization data, like port number, etc:
+Start an already created container. Most likely the `Containerfile` or `Dockerfile` will need some initialization data, like port number, etc:
 
 ```bash
 podman start container-name
@@ -102,6 +107,12 @@ Stop a running container. If the container was started with the flag **--rm**, t
 podman stop container-name
 ```
 
+##### Remove a Container
+
+```bash
+podman rm container-name
+```
+
 ##### Remove an image
 
 ```bash
@@ -111,14 +122,14 @@ podman rmi my-go-app
 ##### Remove all dangling images
 
 ```
-podman images prune
+podman images prune -f
 ```
 
 
 
 ### Buildah
 
-You can also build images and create containers using **Buildah**. Instead of a **Dockerfile** file, Buildah uses a **Containerfile** file, but script is the same.
+You can also build images and create containers using **Buildah**. Instead of a `Dockerfile` file, Buildah uses a `Containerfile` file, but script is the same.
 
 ##### Build image
 
@@ -158,7 +169,7 @@ buildah rmi localhost/my-image:latest
 
 For further operations, check the Docker operations below:
 
-- [Creating a nging container](#creating-a-nginx-container)
+- [Creating a nginx container](#creating-a-nginx-container)
 - [Dockerfile: custom image](#dockerfile--custom-image)
 - [Volumes](#volumes-1)
 - [Docker Compose](#docker-compose--multi-container-applications)
