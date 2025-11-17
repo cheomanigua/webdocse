@@ -15,6 +15,7 @@ toc: true
 
 - `grep -R "text"` - Find all files containing the specific string in current directory and child directories
 - `find /usr -iname "wallpaper.jpg"` - Find all files named with the specified string
+- `xclip -sel c myfile.txt` - Copy the content of myfile.txt into the clipboard
 - `sed -i 's/original/new/g' file.txt` - Replace the specified string in a file
 - `sed 's/original/new/g' file.txt` - Preview the replacement preserving the file intact
 
@@ -65,7 +66,7 @@ To install nVidia drivers in **Debian 13 Trixie**, follow these instructions ([s
     
     1. Create the following file `~/.config/mpv/mpv.conf`:
         ```bash
-
+        # Use NVIDIA GPU hardware decoding
         # Use NVIDIA GPU hardware decoding
         hwdec=nvdec
 
@@ -77,7 +78,20 @@ To install nVidia drivers in **Debian 13 Trixie**, follow these instructions ([s
         ytdl-format=bestvideo[vcodec~="avc1|vp9"][height<=1080]+bestaudio/best
 
         # Enable caching to reduce stutter
+        # === CACHING & SMOOTHNESS ===
         cache=yes
+        cache-secs=30
+        demuxer-readahead-secs=10
+        demuxer-max-bytes=100M
+        demuxer-max-back-bytes=50M
+
+        # Force mpv to treat every YouTube stream as seekable
+        # You can click any point in the bar
+        force-seekable=yes
+
+        # === AUDIO: PIPEWIRE (SMOOTH & LOW LATENCY) ===
+        ao=pulse
+        audio-buffer=1.5
 
         # Use high-quality video profile
         profile=high-quality
@@ -85,18 +99,6 @@ To install nVidia drivers in **Debian 13 Trixie**, follow these instructions ([s
         # Optional: smooth seeking and interpolation
         interpolation=yes
         tscale=oversample
-
-        # Force mpv to treat every YouTube stream as seekable
-        # You can click any point in the bar
-        force-seekable=yes
-
-        # Aggressive prefetch after a seek (10 s is usually enough)
-        # Playback starts almost instantly
-        demuxer-readahead-secs=10
-
-        # (Optional) Slightly larger cache for instant seeks – still tiny on RAM
-        # Reduces rebuffering on fast connections
-        demuxer-max-bytes=100M
         ```
 
     2. To run a YouTube video:

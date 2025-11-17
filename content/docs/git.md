@@ -39,7 +39,7 @@ $ ssh-add ~/.ssh/id_ed25519
 The files `id_ed25519` and `id_ed25519.pub` have been created in the `.ssh` directory. Copy the content of `id_ed25519.pub` to the clipboard for the next step:
 
 ```bash
-$ xclip -sel c < ~/.ssh/id_ed25519.pub
+$ xclip -sel c ~/.ssh/id_ed25519.pub
 ```
 
 ### 2. Add your public ssh key to GitHub
@@ -159,9 +159,9 @@ git config --list
 #### Starting a Repo
 
 ```
-git init                            # Start new local repo
-git clone <url>                     # Clone repo from GitHub/Gitlab/etc
-gir clone --branch <branch> <url>   # Clone repo and checkout to branch
+git init                            # Option 1. Start new local repo
+git clone <url>                     # Option 2. Clone repo from GitHub/Gitlab/etc
+gir clone --branch <branch> <url>   # Option 3. Clone repo and checkout to branch
 ```
 
 ## Status and Version Control
