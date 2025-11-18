@@ -218,3 +218,196 @@ $ git push
 
 
 
+# Docker/Podman
+
+You can create a Firebase development environment in your local machine by firing up the Firebase Emulator suite container. Bad news is that there is no official image. Good news is that you can create one.
+
+
+### 1. Create the environment
+
+Firebase Emulator needs a minimal environment to run propefly composed of five files: Containerfile, podman-compose.yaml, firebase.json, firestore.rules and firestore.indexes.json.
+
+Below is the structure of the project and the content of the files:
+
+```
+Project Root
+│
+├─Containerfile
+├─podman-compose.yaml
+├─firebase.json
+├─firestore.rules
+├─firestore.indexes.json
+│
+└─public/
+  └─index.html
+```
+
+- ##### `Containerfile`
+
+```docker
+# Stage 1: Builder
+FROM node:20-slim AS builder
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    openjdk-17-jre-headless \
+    ca-certificates \
+  && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN npm install -g firebase-tools@13.25.0
+
+WORKDIR /workspace
+COPY firebase.json .
+COPY firestore.rules .
+COPY firestore.indexes.json .
+COPY public ./public
+
+# Stage 2: Final Image
+FROM node:20-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    openjdk-17-jre-headless \
+    ca-certificates \
+  && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN npm install -g firebase-tools@13.25.0
+
+WORKDIR /workspace
+COPY --from=builder /workspace /workspace
+
+EXPOSE 4000 5000 8080 9099
+
+ENTRYPOINT ["firebase"]
+
+CMD ["emulators:start","--project=my-test-project","--only=auth,firestore,hosting,ui"]
+```
+
+- ##### `podman-compose.yaml`
+
+```yaml
+version: "3.9"
+
+services:
+  firebase:
+    image: localhost/firebase-emulator:latest
+    container_name: firebase-emulator
+
+    working_dir: /workspace
+
+    # Required for Fedora/RedHat/SELinux!
+    security_opt:
+      - label=disable
+
+    volumes:
+      - ./firebase.json:/workspace/firebase.json:Z
+      - ./firestore.rules:/workspace/firestore.rules:Z
+      - ./firestore.indexes.json:/workspace/firestore.indexes.json:Z
+      - ./public:/workspace/public:Z
+      - ./.firebase_data:/workspace/.firebase_data:Z
+
+    ports:
+      - "4000:4000"   # Emulator UI
+      - "5000:5000"   # Hosting
+      - "8080:8080"   # Firestore
+      - "9099:9099"   # Auth
+
+    command:
+      [
+        "emulators:start",
+        "--project=my-test-project",
+        "--only=auth,firestore,hosting,ui",
+      ]
+```
+
+- ##### `firebase.json`
+
+```json
+{
+  "hosting": {
+    "public": "public",
+    "host": "0.0.0.0"
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json",
+    "host": "0.0.0.0"
+  },
+  "emulators": {
+    "hosting": { "port": 5000, "host": "0.0.0.0" },
+    "firestore": { "port": 8080, "host": "0.0.0.0" },
+    "auth": { "port": 9099, "host": "0.0.0.0" },
+    "ui": { "enabled": true, "port": 4000, "host": "0.0.0.0" }
+  }
+}
+```
+
+- ##### `firestore.rules`
+
+```
+// Allow read/write on the emulator for dev
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
+```
+
+- ##### firestore.indexes.json
+
+```json
+{
+  "indexes": [],
+  "fieldOverrides": []
+}
+```
+
+### 2. Build the image
+
+Now run:
+
+```bash
+$ podman build -t firebase-emulator .
+```
+
+After a while, the image will be created. You can check:
+
+```bash
+$ podman images
+
+REPOSITORY                   TAG          IMAGE ID      CREATED         SIZE
+localhost/firebase-emulator  latest       93599db124d7  57 seconds ago  617 MB
+```
+
+### 3. Create the container
+
+- In order to create the container, run:
+
+```bash
+$ podman compose up -d
+```
+
+- Check that the container is created and running:
+
+```bash
+$ podman ps
+
+CONTAINER ID  IMAGE                               COMMAND               CREATED         STATUS         PORTS                                                                                           NAMES
+758e03c05eb9  localhost/firebase-emulator:latest  emulators:start -...  40 minutes ago  Up 41 minutes  0.0.0.0:4000
+```
+
+- To stop and delete the container:
+
+```bash
+$ podman compose down
+```
+
+When the container is running, you can access the Firebase Emulator in these ports:
+
+| Port | Service |
+| --- | ---
+| localhost:4040 | emulator ui |
+| localhost:5000 | hosting |
+| localhost:8080 | firestore |
+| localhost:9099 | auth |

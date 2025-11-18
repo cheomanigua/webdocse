@@ -64,6 +64,8 @@ newgrp subuid subgid  # Or log out and back in
 $ podman build -t my-go-app .               // Creates an image tagged my-go-app 
 ```
 
+**Note**: Podman does not tolerate in Containerfile Unicode box drawing characters, like `| __` etc
+
 ##### Create a Container
 
 Creates but do not run a container:
