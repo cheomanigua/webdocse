@@ -41,13 +41,21 @@ toc: true
 - `go build -ldflags "-w -s" hello.go` is the same as above, but reduces the file size of the binary by removing debugging information and the symbol table.
 - `GOOS="linux" GOARCH="amd64" go build hello.go` compiles your application to the especified OS and architecture.
 
-##### go doc
+##### go mod
 
-- `go doc fmt.Println` shows the source code comments of a particular package, function, method or variable, in this case **fmt.Println**.
+- `go mod init foo`: Initializes the module for the project
+- `go mod tidy`:
+    - Automatically installs all external packages added in the `import` section of your source code
+    - Generates the `go.sum` file.
+    - Updates the `go.mod` file.
 
 ##### go get
 
-- `go get github.com/stacktitan/ldapauth` obtains the **ldapauth** package source code that appears imported in your **Go** file import section. However, to avoid backward compatibility when the package receives an update, **Go** has introduced two separate tools: `dep` and `mod` to lock dependencies.
+- `go get github.com/foo/bar` Manually install the **bar** package added in the `import` section of your source code. However, to avoid backward compatibility when the package receives an update, **Go** has introduced two separate tools: `dep` and `mod` to lock dependencies.
+
+##### go doc
+
+- `go doc fmt.Println` shows the source code comments of a particular package, function, method or variable, in this case **fmt.Println**.
 
 ##### go fmt
 

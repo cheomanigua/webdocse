@@ -102,14 +102,11 @@ We can embed mini-templates into a `.md` file by using Shortcodes.
 	title = 'My Amazing Website'
 	+++
 	 
-	## Welcome to My Amazing Website
-	 
-	This is the best website in all internet.
-	 
 	### Choose your plan
 	 
-	{{\< pricing-cards \>}}		## Do not use the backlashes, they are used only for escaping to avoid an error.
+	{{</* pricing-cards */>}}
 	```
+
 3. If the page shows an error, stop hugo and restart again.
 
 # Posts list
@@ -174,11 +171,11 @@ Think of it as the “who-does-what” map of Hugo’s templating system.
 
 | Piece | Folder (default) | Primary purpose | When you use it | Key characteristics |
 |-------|------------------|----------------|-----------------|---------------------|
-| **_default** | `layouts/_default/` | **Fallback templates** for any content type that does not have its own specific template. | You have many content types (blog, docs, products…) and you don’t want to duplicate the same HTML for each. | Files like `baseof.html`, `single.html`, `list.html`, `home.html` live here. Hugo looks here **after** it checks a more specific folder (e.g. `layouts/post/`). |
+| **default** | `layouts/_default/` | **Fallback templates** for any content type that does not have its own specific template. | You have many content types (blog, docs, products…) and you don’t want to duplicate the same HTML for each. | Files like `baseof.html`, `single.html`, `list.html`, `home.html` live here. Hugo looks here **after** it checks a more specific folder (e.g. `layouts/post/`). |
 | **partials** | `layouts/_partials/` | **Reusable HTML snippets** that can be embedded anywhere (pages, shortcodes, other partials). | Header, footer, navigation, sidebar, social-share buttons, meta tags, etc. | Called with `{{ partial "header.html" . }}`. Receives the current context (`.`) and any data you pass (`partial "card.html" .Data`). No front-matter, pure HTML + Go template. |
-| **shortcodes** | `layouts/_shortcodes/` | **Markdown-embedded mini-templates** that let content authors write &#123;&#123;< name >&#125;&#125; or &#123;&#123;% name %&#125;&#125;. | Galleries, YouTube embeds, alerts, buttons, figures, call-outs, etc. | Two flavours: <br>• &#123;&#123;< … >&#125;&#125; – **HTML-escaped** (safe for inline text). <br>• &#123;&#123;% … %&#125;&#125; – **rendered as markdown** (allows nested markdown). Can have parameters and inner content. |
-| **page** | `content/` (any section) | **Individual content file** (markdown, HTML, etc.) that becomes a **single page** (`kind = "page"`). | About, Contact, Landing pages, Documentation articles, etc. | Rendered with `layouts/_default/single.html` **or** a more specific template (e.g. `layouts/pages/single.html`). |
-| **post** | `content/posts/` (or any section you configure) | **Blog-style article** that appears in lists, RSS, archives (`kind = "page"` but usually in a section named “post”). | Blog posts, news, tutorials. | Usually rendered with `layouts/_default/list.html` for the archive and `layouts/_default/single.html` (or `layouts/post/single.html`) for the article. |
+| **shortcodes** | `layouts/_shortcodes/` | **Markdown only embedded-mini-templates** that let content authors write &#123;&#123;< name >&#125;&#125; or &#123;&#123;% name %&#125;&#125;. | Galleries, YouTube embeds, alerts, buttons, figures, call-outs, etc. | Two flavours: <br>• &#123;&#123;< … >&#125;&#125; – **HTML-escaped** (safe for inline text). <br>• &#123;&#123;% … %&#125;&#125; – **rendered as markdown** (allows nested markdown). Can have parameters and inner content. |
+| **page** | `content/` (any section) | **Individual content file** (markdown, HTML, etc.) that becomes a **single page** (`kind = "page"`). | About, Contact, Landing pages, Documentation articles, etc. | Rendered with `layouts/page.html`. |
+| **post** | `content/posts/` (or any section you configure) | **Blog-style article** that appears in lists, RSS, archives (`kind = "page"` but usually in a section named “post”). | Blog posts, news, tutorials. | Rendered with `layouts/page.html`. |
 
 ---
 

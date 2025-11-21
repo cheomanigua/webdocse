@@ -124,9 +124,33 @@ podman rmi my-go-app
 ##### Remove all dangling images
 
 ```
-podman images prune -f
+podman rmi $(podman images -f "dangling=true" -q)
 ```
 
+### Podman Compose
+
+##### Build and run containers as per compose file
+
+```docker
+podman compose up --build
+```
+
+##### Run containers as per compose file
+
+```docker
+podman compose up
+```
+##### Stop and delete the containers
+
+```docker
+podman compose down
+```
+
+##### Read the container logs
+
+```docker
+podman logs container-name
+```
 
 
 ### Buildah

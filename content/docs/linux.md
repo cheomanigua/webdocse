@@ -13,12 +13,16 @@ toc: true
 
 #### Finding text and files
 
-- `grep -R "text"` - Find all files containing the specific string in current directory and child directories
+- `grep -r "text"` - Find all files containing the specific string in current directory and child directories
 - `find /usr -iname "wallpaper.jpg"` - Find all files named with the specified string
-- `xclip -sel c myfile.txt` - Copy the content of myfile.txt into the clipboard
 - `sed -i 's/original/new/g' file.txt` - Replace the specified string in a file
 - `sed 's/original/new/g' file.txt` - Preview the replacement preserving the file intact
 
+#### Useful commands
+
+- `diff file1 file2` - Show the differences in the content of file1 and file2
+- `diff -r dir1/ dir2/` - Show the differences in the content and files of dir1/ and dir2/
+- `xclip -sel c myfile.txt` - Copy the content of myfile.txt into the clipboard
 
 #### NVidia Drivers
 
