@@ -19,7 +19,7 @@ The command below will install podman, buildah, crun, criu, conmon, fuse-overlay
 $ sudo apt install podman
 ```
 
-If you want to use podman-compose, you must install it:
+You don't need the separate program `podman-compose` because `podman` already have a `compose` utility. Anyway, if you want to use `podman-compose`, you can install it:
 
 ```bash
 $ sudo apt install podman-compose
@@ -48,6 +48,7 @@ newgrp subuid subgid  # Or log out and back in
     - podman build
     - podman run
     - podman-compose up -d
+    - podman compose up -d (preferred)
     - etc
 - Podman can use both Podman files and Docker files:
     - `Containerfile` and `Dockerfile`
@@ -56,69 +57,25 @@ newgrp subuid subgid  # Or log out and back in
 
 ### Operations
 
+#### Images
+
 ##### Build an Image
 
-- Create a `Containerfile` or `Dockerfile` and run:
+- Be sure to run the command where the `Containerfile` or `Dockerfile` is located:
 
-```bash
-$ podman build -t my-go-app .               // Creates an image tagged my-go-app 
+```docker
+$ podman build -t my-go-app .                       // Creates an image tagged my-go-app 
+$ podman build -t my-go-app ./backend               // As above, but Container file is located in directory `backend`
+$ podman build --no-cache -t my-go-app ./backend    // As above, but not using cache
 ```
 
-**Note**: Podman does not tolerate in Containerfile Unicode box drawing characters, like `| __` etc
+**Note**: Podman does not tolerate Unicode box drawing characters, like `| __` etc in `Containerfile`.
 
-##### Create a Container
+##### Remove images
 
-Creates but do not run a container:
-
-```bash
-podman create my-go-app:latest              // Creates a container with random name using my-go-app image
-podman create --name foo my-go-app:latest   // Creates a container named foo using my-go-app image
-```
-
-##### Create and Start Container
-
-Creates and run a container:
-
-```bash
-podman run -d --rm -p 8080:8080 --name foo my-go-app:latest
-podman run -d --rm -p 8080:8080 my-go-app
-```
-
-##### Flags for Create and Run commands
-
-- **-d**: detatch
-- **--rm**: when container is stopped, it is also removed
-- **-p**: port
-- **-t**: tag image (when using **--name** also, no need for **-t**)
-- **--name**: name image
-
-
-##### Start a Container
-
-Start an already created container. Most likely the `Containerfile` or `Dockerfile` will need some initialization data, like port number, etc:
-
-```bash
-podman start container-name
-```
-
-##### Stop a Container
-
-Stop a running container. If the container was started with the flag **--rm**, the container will be deleted as well:
-
-```bash
-podman stop container-name
-```
-
-##### Remove a Container
-
-```bash
-podman rm container-name
-```
-
-##### Remove an image
-
-```bash
-podman rmi my-go-app
+```docker
+podman rmi my-go-app                                // Removes image my-go-app
+podman rmi $(podman images -f "dangling=true" -q)   // Removes all dangling images
 ```
 
 ##### Remove all dangling images
@@ -127,31 +84,151 @@ podman rmi my-go-app
 podman rmi $(podman images -f "dangling=true" -q)
 ```
 
+#### Containers
+
+Containers are created based on images. So the image tag or name must be in the command.
+
+##### Create a Container
+
+Creates but do not run a container:
+
+```docker
+podman create my-go-app:latest              // Creates a container with random name based on my-go-app image
+podman create --name foo my-go-app:latest   // Creates a container named foo based on my-go-app image
+```
+
+##### Start a Container
+
+Start an already created container. Most likely the `Containerfile` or `Dockerfile` will need some initialization data, like port number, etc:
+
+```docker
+podman start foo                            // Starts a container named foo
+```
+
+##### Create and Start Container
+
+Creates and run a container, in this case with some inline initialization data:
+
+```docker
+podman run -d --rm -p 8080:8080 --name foo my-go-app:latest
+podman run -d --rm -p 8080:8080 my-go-app
+```
+
+##### Flags for `Create` and `Run` commands
+
+- **-d**: detatch
+- **--rm**: when container is stopped, it is also removed
+- **-p**: port
+- **-t**: tag image (when using **--name** also, no need for **-t**)
+- **--name**: name image
+
+##### Stop a Container
+
+Stop a running container. If the container was started with the flag **--rm**, the container will be deleted as well:
+
+```docker
+podman stop foo
+```
+
+##### Delete a Container
+
+```docker
+podman rm foo
+```
+
 ### Podman Compose
 
-##### Build and run containers as per compose file
+All `podman compose` commands need a compose file in order to read the instructions.
 
-```docker
-podman compose up --build
+
+##### Build images
+
+Build the images only
+
+```
+podman compose build
 ```
 
-##### Run containers as per compose file
+##### Create containers
+
+Create containers using existing images
+
+```
+podman compose create
+```
+
+##### Start containers
+
+Start container using existing images
 
 ```docker
-podman compose up
+podman compose up -d                        // using the only compose file
+podman-compose -f compose.dev.yaml up -d    // using a specific compose file
+
 ```
+
+##### Build image and start containers
+
+Build the images and start containers based on those images
+
+```docker
+podman compose up -d --build
+podman compose up -d --build --no-cache
+podman compose up -d --build --no-cache foo-service
+podman compose up -d --force-recreate foo-service
+```
+
+##### Restart a service (container)
+
+Restart a specific service of those defined in the compose file
+
+```
+podman compose restart foo-service
+```
+
 ##### Stop and delete the containers
 
 ```docker
 podman compose down
+podman-compose down --remove-orphans
+podman-compose -f compose.dev.yaml down
 ```
 
-##### Read the container logs
+##### Read container logs
 
 ```docker
-podman logs container-name
+podman logs foo
+podman compose logs -f foo-service
 ```
 
+##### Clean up
+
+```
+podman-compose down --remove-orphans
+podman volume prune -f
+podman volume rm $(podman volume ls -q) 2>/dev/null || true
+podman rmi localhost/my-go-app:latest
+podman rmi $(podman images -f "dangling=true" -q)
+```
+
+##### Clearing commands
+
+```
+podman system prune -f
+podman rm --all
+podman image prune
+podman image prune -a
+podman rmi $(podman images -f "dangling=true" -q)
+podman volume prune
+podman volume prune -f
+podman volume rm $(podman volume ls -q) 2>/dev/null || true
+podman system prune -f
+podman system prune --all
+podman system prune --all --force
+podman network prune
+go clean modcache
+rm -rf ./.firebase_data
+```
 
 ### Buildah
 
@@ -159,7 +236,7 @@ You can also build images and create containers using **Buildah**. Instead of a 
 
 ##### Build image
 
-```bash
+```docker
 $ buildah build --tag my-image
 $ buildah images
 ```
@@ -168,26 +245,26 @@ $ buildah images
 
 The `buildah from` command can be used to start a container that uses the image:
 
-```bash
+```docker
 $ buildah from my-image
 $ buildah containers
 ```
 
 ##### Remove a container
 
-```bash
+```docker
 buildah rm my-image-working-container
 ```
 
 ##### Remove image
 
-```bash
+```docker
 buildah rmi my-image
 ```
 
 or
 
-```bash
+```docker
 buildah rmi localhost/my-image:latest
 ```
 
