@@ -9,6 +9,17 @@ draft: false
 toc: true
 ---
 
+
+### When SQLite is not recommended
+
+If any of the following applies, don't use SQLite:
+
+- Big data.
+- Concurrent writers.
+- Long running write transactions.
+- Remote database: need to run database in a separate server.
+- Ephemeral, serveless environment.
+
 ### SQLite
 
 The database with all the tables is just a single file. The database is created in the directory where the command is issued. You cannot list databases or tables if you are not in the directory where the database is.
@@ -113,16 +124,6 @@ $ sqlite3 database.db ".backup 'database.db.bak'"   # if db is used to write and
 $ sqlite3 my_database .dump | gzip -c > my_database.dump.gz # backup
 $ zcat my_database.dump.gz | sqlite3 my_database            # restoration
 ```
-
-### When SQLite is not recommended
-
-If any of the following applies, don't use SQLite:
-
-- Big data.
-- Concurrent writers.
-- Long running write transactions.
-- Remote database: need to run database in a separate server.
-- Ephemeral, serveless environment.
 
 
 ### Improve performance

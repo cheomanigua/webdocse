@@ -38,7 +38,7 @@ $ hugo version
 
 # Create a site
 
-## Create a base template site
+## Create a base theme site
 
 ```
 hugo new site my-site
@@ -48,7 +48,9 @@ echo "theme = 'my-theme'" >> hugo.toml
 hugo server
 ```
 
-## Create a third party template site
+## Create a third party theme site
+
+The commands below use one of the four methods to add a theme to a Hugo site.
 
 ```
 hugo new site my-site
@@ -69,11 +71,11 @@ In order for a Hugo site to work, there must be at least one theme present in th
 
 ### Add a theme
 
-There are four different methods to download and add themes to your project: Git clone, Git submodule, Zip file and Hugo module. 
+There are four different methods to download and add themes to your project: Hugo Module, Git Clone, Zip file and Git submodule.
 
 ##### 1. Hugo module (preferred)
 
-{{< alert context="danger" text="You need [Go](https://go.dev/doc/install) version 1.18 or later and [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) to use Hugo Modules.." />}}
+{{< alert context="danger" text="You need [Go](https://go.dev/doc/install) version 1.18 or later and [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) to use Hugo Modules." />}}
 
 1. Initialize your own hugo module system:
 
@@ -93,6 +95,14 @@ There are four different methods to download and add themes to your project: Git
 
     ```
     hugo mod get -u ./...
+    ```
+
+4. Create git repository (optional, but recommended)
+
+    If want to download all the theme's directories and files in your project's directory, create a Git repository
+
+    ```
+    git init
     ```
 
 More information about Hugo Modules: [https://gohugo.io/hugo-modules/use-modules/](https://gohugo.io/hugo-modules/use-modules/)
@@ -151,6 +161,8 @@ $ echo "theme = 'theme-name'" >> hugo.toml
 In Hugo, layouts can live in either the project’s (root) or the themes’ layout folders. Any template inside the root layout folder will override the theme’s layout that is relative to it.
 
 For example: `layouts/baseof.html` will override `themes/[hugo-theme]/layouts/baseof.html`. So, you can easily customize the theme without editing it directly, which makes updating the theme easier.
+
+{{< alert text="If you added the theme using Hugo Modules, in order to get access to the theme's directories and files, you must create a Git repository in your root project directory: `git init`." />}}
 
 ## Add content
 

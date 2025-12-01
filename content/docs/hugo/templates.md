@@ -1,7 +1,7 @@
 ---
 weight: 2300
 title: "Templates"
-description: "Layouts, Partials, Shortcodes, base, page, list, etc"
+description: "layouts, partials, shortcodes, base, page, list, etc"
 icon: "article"
 date: "2025-10-31T15:37:27-06:00"
 lastmod: "2025-10-31T15:37:27-06:00"
@@ -36,7 +36,7 @@ Changes here will affect all pages under `content/`, except `_index.md`.
 
 ##### `section.html`
 
-Changes here will affect `content/posts/_index.md`
+Changes here will affect `content/posts/_index.md`, `content/docs/_index.md`, `content/mycategory/_index.md`, etc.
 
 <br>
 
@@ -54,7 +54,6 @@ We can create reausable HTML chunks into a template files (`.html`) by using Par
 	<link rel="stylesheet" href="https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css">
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
-	</div>
 	<ul class="list pa0 ma0 mb4">
 	<li class="mb2 fw4">✓ 1 User Account</li>
 	<li class="mb2 fw4">✓ 10GB Storage</li>
@@ -84,7 +83,6 @@ We can embed mini-templates into a `.md` file by using Shortcodes.
 	<link rel="stylesheet" href="https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css">
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
-	</div>
 	<ul class="list pa0 ma0 mb4">
 	<li class="mb2 fw4">✓ 1 User Account</li>
 	<li class="mb2 fw4">✓ 10GB Storage</li>

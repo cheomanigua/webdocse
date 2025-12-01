@@ -38,18 +38,24 @@ Note that the summary variable is different than the `description` variable. The
 Standard file structure:
 
 ```
-
 - root
 	- content/
 		- _index.md
+		- contact.md
 		- about/
-			- _index.md
+			- index.md
+			- image.jpg
 		- posts/
 			- _index.md
 			- post01.md
 			- post02.md
+            - post03/
+                - index.md
+                - image.jpg
 	- layouts/
 		- home.html
+		- _partials/
+			- header.html
 		- _shortcodes/
 			- pricing-cards.html
 ```
@@ -193,8 +199,8 @@ In the worflow below, we convert a single page called `about.md` to a bundle:
 1. Move to the root of `about.md` page, normally `content/`
 2. Create a new folder called `about/`
 3. Copy `about.md` file to `about/` folder
-4. Rename `about.md` to `index.md` (note that is not `_index.md`
-5. Add all resources necessary to render the page into `about/` folder
+4. Rename `about.md` to `index.md` (note that is not `_index.md`)
+5. Add all resources necessary to render the page into `about/` folder (images, etc)
 
 {{< alert context="light" text="**index.md** vs **_index.md**<br><br>While `_index.md` and `index.md` are similar names, they are two very different files: `index.md` represents the content of a single web page, and `_index.md` represents a section’s root, which is a set of web pages." />}}
 

@@ -78,12 +78,6 @@ podman rmi my-go-app                                // Removes image my-go-app
 podman rmi $(podman images -f "dangling=true" -q)   // Removes all dangling images
 ```
 
-##### Remove all dangling images
-
-```
-podman rmi $(podman images -f "dangling=true" -q)
-```
-
 #### Containers
 
 Containers are created based on images. So the image tag or name must be in the command.
@@ -146,7 +140,8 @@ All `podman compose` commands need a compose file in order to read the instructi
 Build the images only
 
 ```
-podman compose build
+podman compose build        // build all services defined in the compose.yaml
+podman compose build foo    // build only the foo service defined in compose.yaml
 ```
 
 ##### Create containers
@@ -479,11 +474,11 @@ CMD ["/main"]
 Or a slightly different approach:
 
 ```dockerfile
-FROM golang:1.25.3-alpine AS build     
+FROM golang:1.25.3-alpine AS build
 WORKDIR /src
 COPY go.mod go.sum* ./
 RUN go mod download
-COPY . .               
+COPY . .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o /bin/hello ./main.go
 
 FROM scratch
