@@ -140,8 +140,9 @@ All `podman compose` commands need a compose file in order to read the instructi
 Build the images only
 
 ```
-podman compose build        // build all services defined in the compose.yaml
-podman compose build foo    // build only the foo service defined in compose.yaml
+podman compose build                            // build all services defined in the compose file available
+podman compose build foo                        // build only the foo service defined in the compose file available
+podman compose -f compose.dev.yaml build foo    // build only the foo service defined in a specific compose file
 ```
 
 ##### Create containers
@@ -157,7 +158,7 @@ podman compose create
 Start container using existing images
 
 ```docker
-podman compose up -d                        // using the only compose file
+podman compose up -d                        // using the available compose file
 podman-compose -f compose.dev.yaml up -d    // using a specific compose file
 
 ```
