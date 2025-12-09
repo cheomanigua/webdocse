@@ -238,23 +238,42 @@ Examples:
 
 ## File Management
 
+- **Explorer**: Tool to create/open/delete files and directories.
+- **Buffer**: Space in memory created automatically when opening a file with Explorer. Each open file will be stored in a different buffer.
+- **Window**: View space in a tab where a buffer is rendered at a time. You can create new windows within a tab by using the split command (vertically or horizontally) to accomodate other buffers.
+    - Closing a window will not delete the buffer.
+    - Opening a new file with Explorer in the same window will not delete the previous buffer.
+- **Tab**: A screen. It's the parent container where one or more windows exist. A vim session starts with one tab, but you can create several extra tabs in a session. Each tab can contain different windows. Closing a tab will not delete the buffers.
+
 ### Explorer
 
 - Open file explorer -\> **:e .**
 - Open file explorer -\> **:Ex**
 - Open file explorer -\> **:Explore**
+- Open a new 100 characters width window explorer -\> **:100vs .**
+- Open new file -\> **:e <filename path\>** (creates a buffer)
+- Open/create a file in new window horizontally -\> **sp: filename** (creates a buffer)
+- Open/create a file in new window vertically -\> **vsp: filename** (creates a buffer)
 - Create a directory within Explorer -\> **d**
 - Create a file within Explorer -\> **%**
 - Delete a file/directory within Explorer -\> Place the cursor over the file/directory and press **D**
 - Create a new file: `:e filename`
 - List files in current directory -\> **:e** then press **Space** and **Ctrl**+**d**
-- Open/create a file in new window horizontally -\> **split filename** or **sp: filename** 
-- Open/create a file in new window vertically -\> **vsplit filename** or **vsp: filename**
+
+### Buffers
+
+- Create a buffer -\> Open a file with Explorer
+- List active buffers -\> **:ls**
+- Change to specific buffer -\> **:b <buffer-number\>**
+- Move to next/previous buffer -\> **:bn** / **:bp**
+- Delete current buffer -\> **:bd**
+- Delete specific buffer -\> **:bd <buffer-number\>**
+- Jump back/forward to last jump location -\> **Ctrl** + **o** / **Ctrl** + **i**
 
 ### Windows
-- Split window horizontally -\> **:split** or **:sp** or **Ctrl** + **w** + **s**
-- Split window vertically -\> **:vsplit** or **:vs** or **Ctrl** + **w** + **v**
-- Cycle through windows -\> **Ctrl** + **w**  + **w**
+- Split screen horizontally -\> **:split** or **:sp** or **Ctrl** + **w** + **s**
+- Split screen vertically -\> **:vsplit** or **:vs** or **Ctrl** + **w** + **v**
+- Cycle between windows -\> **Ctrl** + **w**  + **w**
 - Move to left window -\> **Ctrl** + **h** or **Ctrl** + **w** + **h**
 - Move to right window -\> **Ctrl** + **l** or **Ctrl** + **w** + **l**
 - Move to previous active window -\> **Ctrl** + **w** + **p**
@@ -275,18 +294,6 @@ Examples:
 - Move current tab to the # position -\> **:tabm #**
 - Close tab -\> **:close**
 
-### Buffers
-
-- Open a new 100 characters width window buffer explorer -\> **:100vs .** 
-- Toggle between open windows: -\> **Ctrl** + **w** + **w**
-- Open new file in buffer -\> **:e <filename path\>**
-- Open a new file and split screen horizontally -\> **:sp**
-- Open a new file and split screen vertically -\> **:vsp**
-- List active buffers -\> **:ls**
-- Change to specific buffer -\> **:b <buffer-number\>**
-- Move to next/previous buffer -\> **:bn** / **:bp**
-- Delete current buffer -\> **:bd**
-- Jump back/forward to last jump location -\> **Ctrl** + **o** / **Ctrl** + **i**
 
 ## Customize Vim
 
