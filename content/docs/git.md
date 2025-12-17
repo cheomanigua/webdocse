@@ -9,7 +9,7 @@ draft: false
 toc: true
 ---
 
-In this tutorial you'll learn how to create and maintain a version control system for your project, as if you just installed the operating system. This tutorial assumes that you already have a project in your local machine.
+In this tutorial you'll learn how to create and maintain a version control system for your project. This tutorial assumes that you already have a project in your local machine.
 
 # Initial Setup
 
@@ -85,7 +85,6 @@ git push
 - `git add -u`: Add all modified files from the working directory to the staging area.
 - `git add .` Add all modified and untracked files from the working directory to the stagin area.
 
-
 ### Git commit
 - `git commit -m 'useful comment'`
 - Get the files in the staging area ready to be pushed to the remote repository
@@ -93,8 +92,6 @@ git push
 ### Git push
 - `git push`
 - Upload all commited files to the remote repository
-
-
 
 ### Git clone
 
@@ -109,7 +106,7 @@ git push
 - Updates a local repository to the latest changes from GitHub
 - It is recommended to pull frequenctly when working within a team
 
-### Git branch, git merge & git checkout
+### Git branch, git checkout & git merge
 
 - Diverge from the main branch to develop new features without messing the main branch.
 - Once the new features are tested, the diverged branch is merged with the main branch.
@@ -119,10 +116,13 @@ Workflow:
 ```
 $ git branch newbranch
 $ git checkout newbranch
-[edit existing file/s or create new file/s]
-[git add and git commit as needed]
+[edit/create/delete files]
+$ git add
+$ git commit
 $ git push -u origin newbranch
-[edit, add, commit and push to origin newbranch as needed until the new feature is completed and tested]
+[edit, add, commit]
+$ git push
+[edit, add, commit and push as needed until the new feature is completed and tested]
 $ git checkout main
 $ git pull origin main
 $ git merge newbranch
@@ -229,13 +229,14 @@ participant Remote Repository
 end
 Note over Working Directory: Untracked files
 Note over Working Directory: Modified files
+Note over Working Directory: Deleted files
 Working Directory->>Staging Area: git add
 Note over Staging Area: Staged files
 Staging Area->>Commit: git commit
 Note over Commit: Commited files
 Commit->>Remote Repository: git push
-Staging Area-->> Working Directory: git reset HEAD
 Commit-->>Staging Area: git reset --soft HEAD~1
+Staging Area-->> Working Directory: git reset HEAD
 Remote Repository->>Working Directory: git pull
 ```
 
@@ -265,5 +266,19 @@ To push the changes in your code for all repositories:
 $ git push github main
 $ git push gitlab main
 $ git push bitbucket main
+```
+
+If we create and checkout to a new branch, the first push with the new branch is like this:
+```
+git push -u github newbranch
+git push -u gitlab newbranch
+git push -u bitbucket newbranch
+```
+
+Next pushes are like this:
+```
+git push github newbranch
+git push gitlab newbranch
+git push bitbucket newbranch
 ```
 

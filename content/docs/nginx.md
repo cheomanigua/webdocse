@@ -9,26 +9,26 @@ draft: false
 toc: true
 ---
 
-# Functionalities of Nginx 
+# Functionalities of Nginx
 
 ## 1. Web Server
 
 The primary function is to serve web pages to client's browser
 
-## 2. Load Balancing (as proxy server)
+## 2. Load Balancing (as reverse proxy)
 
 If a web server cannot handle the amount of requests to serve a web page, Nginx can be used as a Load Balencer. A Nginx load balancer server will route the traffic to several Nginx web servers behing it. Some Load Balancing methods include:
 
 - **Least Connections**: Routes traffic to the server with the fewest active connections in the group. 
 - **Round Robin**: Distributes client request in a sequencial, cyclical manner to each server in the group.
 
-## 3. Caching (as proxy server)
+## 3. Caching (as reverse proxy)
 
 Feching data from remote servers or databases on each request results in slower response times. With a caching server we can do the heavy lifting once and store the response. Caching does the following:
 - Cache responses from backend server for frequently accessed resources.
 - Copies are stored temporarily to improve the performance.
 
-## 4. Security (as proxy server)
+## 4. Security (as reverse proxy)
 
 ### Only entry point
 
