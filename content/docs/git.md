@@ -127,6 +127,8 @@ $ git checkout main
 $ git pull origin main
 $ git merge newbranch
 $ git push origin main
+$ git branch -d newbranch
+$ git push origin --delete newbranch
 ```
 
 ```mermaid
