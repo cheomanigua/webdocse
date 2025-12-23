@@ -131,14 +131,6 @@ $ git branch -d newbranch
 $ git push origin --delete newbranch
 ```
 
-If your new branch is a mess and you want to completely get rid of it:
-
-```
-git checkout main
-git branch -D newbranch
-git reset --hard
-```
-
 ```mermaid
 %%{init: { 'logLevel': 'debug', 'theme': 'default' , 'themeVariables': {
               'git0': '#ffa500'
@@ -154,6 +146,26 @@ git reset --hard
 		merge newbranch tag:"v1.0.1"
 		commit
 		commit
+```
+
+If your new branch is a mess and you want to completely get rid of it:
+
+```
+git checkout main
+git branch -D newbranch
+git reset --hard
+```
+
+List all branches in remote origin:
+
+```
+git branch -r
+```
+
+Show information about origin:
+
+```
+git remote show origin
 ```
 
 ## Operations (General)
