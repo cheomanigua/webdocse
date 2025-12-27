@@ -510,6 +510,8 @@ There are two mutually exclusive config files in NeoVim:
 - `~/.config/nvim/init.vim`
 - `~/.config/nvim/init.lua`
 
+You can download a minimalistic init.lua file for Go development. Download [here](https://github.com/cheomanigua/config/blob/master/init.lua).
+
 ## 3.3  Plugin managers
 
 There are several plugin managers for NeoVim. Below is a list of a few of them:

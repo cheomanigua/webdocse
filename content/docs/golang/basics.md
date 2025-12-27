@@ -11,7 +11,7 @@ toc: true
 
 ## Installation
 
-### Debian
+### Go
 
 1. Download the appropiate tarball in [https://go.dev/dl/](https://go.dev/dl/)
 2. Extract to `/usr/local/`:
@@ -29,6 +29,37 @@ toc: true
 	$ which go
 	$ echo $PATH
 	```
+
+### LSP Client
+
+1. Install **gopls:**
+
+    ```
+    $ go install golang.org/x/tools/gopls@latest
+    ```
+
+2. Check **gopls** installation path and env path:
+
+    ```
+    $ whereis gopls
+    $ go env GOPATH
+    ```
+
+3. Create **gopls** paths both for terminal apps and desktop apps
+
+    ```
+    $ echo 'export PATH="$HOME/go/bin:$PATH"' >> ~/.bashrc
+    $ echo 'export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin' >> ~/.profile
+    ```
+
+## Editors
+
+### NeoVim
+
+You can download a minimalistic (no plugins) Go development ready init.lua file [here](https://github.com/cheomanigua/config/blob/master/init.lua). It is asumed that you have installed Go [LSP Client](#lsp-client) for all the LSP Client features to work.
+
+**Note** that for autocompletion, you need to be in INSERT mode and press: `Ctrl` + `x` + `o`. The rest of key bindings are explained in the file.
+
 ## Commands
 
 ##### go run
