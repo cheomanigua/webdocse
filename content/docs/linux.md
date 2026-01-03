@@ -128,6 +128,17 @@ ffmpeg \
   output.mkv
 ```
 
+#### OpenSUSE
+
+Install HEVC supported ffmpeg:
+
+```
+sudo zypper ar -cfp 90 https://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Leap_16.0/ packman
+sudo zypper refresh
+sudo zypper dup --from packman --allow-vendor-change
+sudo zypper install ffmpeg libavcodec-full vlc mpv
+```
+
 #### Apple keyboards
 
 ```bash
