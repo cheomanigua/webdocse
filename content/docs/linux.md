@@ -17,12 +17,21 @@ toc: true
 - `find /usr -iname "wallpaper.jpg"` - Find all files named with the specified string
 - `sed -i 's/original/new/g' file.txt` - Replace the specified string in a file
 - `sed 's/original/new/g' file.txt` - Preview the replacement preserving the file intact
+- `history | grep "string"` - List history of commands where `string` is present
 
 #### Useful commands
 
 - `diff file1 file2` - Show the differences in the content of file1 and file2
 - `diff -r dir1/ dir2/` - Show the differences in the content and files of dir1/ and dir2/
 - `xclip -sel c myfile.txt` - Copy the content of myfile.txt into the clipboard
+- `sudo dd bs=4M if=my_iso_image.iso of=/dev/sdc status=progress oflag=sync` - Create bootable pendrive
+
+#### Disk space
+
+- `df -h` - Disk usage by partition
+- `du -shc *` - Disk usage by directory and files
+- `du -hc` - Disk usage by directory (recursive, detailed)
+- `du -hc *` - Disk usage by directory and files (recursive, detailed)
 
 #### NVidia Drivers
 
