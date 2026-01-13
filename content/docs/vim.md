@@ -49,6 +49,12 @@ toc: true
 
 The typed text will replicate to all selected lines
 
+### Mark & Jump
+
+- Mark line as `a`: -\> **ma**
+- Mark line as `b`: -\> **mb**
+- Jump to line marked as `a`: -\> **'a**
+- Jump to line marked as `b`: -\> **'b**
 
 ### Moving around
 
@@ -268,7 +274,7 @@ Examples:
 - Move to next/previous buffer -\> **:bn** / **:bp**
 - Delete current buffer -\> **:bd**
 - Delete specific buffer -\> **:bd <buffer-number\>**
-- Jump back/forward to last jump location -\> **Ctrl** + **o** / **Ctrl** + **i**
+- Jump back/forward to previos/next jump location -\> **Ctrl** + **o** / **Ctrl** + **i**
 
 ### Windows
 - Split screen horizontally -\> **:split** or **:sp** or **Ctrl** + **w** + **s**
