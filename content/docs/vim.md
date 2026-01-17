@@ -59,12 +59,13 @@ The typed text will replicate to all selected lines
 ### Moving around
 
 - Search forward and backward once -\> **/** and **?**
-- On search: (next hit -\> **n**, previous hit -\> **N**)
-- Jump into the next/previous ocurrence of character x -/> **fx**/**Fx**
-- Jump up to the next/previous ocurrence of character x -/> **tx**/**Tx**
-- Repeat previous **f/F** movement forward/backward -\> **;**/**,**
+- Highlight all ocurrences of the word under cursor -\> **Alt + 3**
+- Iterate over the highlighted words (next hit -\> **n**, previous hit -\> **N**)
 - Search for next/previous match currently under cursor -\> **asterisk** / **#**
 - Find and replace all occurrences of *foo* with *bar* -\> **:%s/foo/bar/g**
+- Jump over the next/previous ocurrence of character `x` -/> **fx**/**Fx**
+- Jump up to the next/previous ocurrence of character `x` -/> **tx**/**Tx**
+- Repeat previous **f/F** movement forward/backward -\> **;**/**,**
 - Jump to the older/newer cursor position -/> **Ctrl** + **o** / **Ctrl** + **i**
 - Move to the paired parenthesis/curly braces -\> **%**
 - Move to the beginning/end of a word (forward) -\> **w** / **e**
@@ -168,6 +169,7 @@ Examples:
 - delete character or selection (Backspace) -\> **X**
 - replace character -\> **r**
 - delete character and insert mode -\> **s**
+- convert character to capital letter -\> **Alt + 4**
 - Switch to 'Insert' mode -\> **i**
 - Exit 'Insert' mode -\> **ESC** or **Ctrl** + **c**
 - Increase/Decrease the first number in a line: **Ctrl** + **a**/**x**
@@ -211,19 +213,21 @@ Examples:
 - Remove all blank lines. The pattern ^$ matches all empty lines -\> **:g/^$/d**
 
 
-#### Special operations
+### Other operations
 
-- Comment a block of lines:
+#### Comment a block of lines:
   1. Select the block of lines with **V**
   2. Enter command mode and type: `norm I#`
 
-- Uncomment a block of lines:
+#### Uncomment a block of lines:
   1. Select the block of lines with **V**
   2. Enter command mode and type: `norm x` 
 
-- Find and replace all occurrences of *foo* with *bar* -\> **:%s/foo/bar/g**
+#### Find and replace
+Find and replace all occurrences of **foo** with **bar** at once -\> `:%s/foo/bar/g`
 
-- Find and replace *foo* with *bar* X number of times:
+#### Find and replace
+Find and replace **foo** with **bar** selectively:
   1. Search for *foo*: `/foo` + **enter**
   2. Type `cgn` + `bar`
   3. **ESC**
@@ -231,6 +235,17 @@ Examples:
     - Press **n** to move to next *foo* instance
     - Press **.** to replace *foo* for *bar*
 
+#### Visual mode multi-line editing
+  1. Move the cursor exactly where you want to insert the new text
+  2. `Ctrl + v`
+  3. Move up or down the lines to select several lines
+  4. `Shift + i`
+  5. Type in the text
+  6. `ESC`
+  
+  The typed text will replicate to all selected lines
+
+#### Move all lines
 
 - Move all lines that start with specific character/s to the end of the document. In this example, the specific characters is `static`:
 ```
