@@ -283,8 +283,9 @@ fmt.Println(z)		// prints 15
 Setting or getting  a variable through a pointer
 
 ```go
+fmt.Printf("The value p points to is: %v", *p)  // 10
 *p = 21
-fmt.Printf("The value p points to is: %v", *p)
+fmt.Printf("The value p points to is: %v", *p)  // 21
 ```
 
 #### Generate a pointer directly with the & operator

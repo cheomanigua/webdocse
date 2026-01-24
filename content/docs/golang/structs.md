@@ -293,34 +293,46 @@ The above code will print: `John Doe 43 Main Street London`
 
 Methods are functions on user defined types like structs. They are the equivalent to class methods in OOP languages. Method declarations look like function declarations, with one addition: the `receiver` specification. The receiver appears between the keyword *func* and the Name of the method.
 
-Pointers are better explained at the [pointers pAge]( {{<ref "pointers">}}), but in the example below you see how they work together with methods.
+Pointers are better explained at the [pointers page]( {{<ref "pointers">}}), but in the example below you see how they work together with methods.
 
 ```go
 type Employee struct {
-	Name    string
-	Age     int
+	Name string
+	Age  int
 }
 
 func (e Employee) updateName(newName string) {
 	e.Name = newName
-	fmt.Println(e.Name)  // It will print Bob
+	fmt.Println("a. " + e.Name) // It will print "a. Bob"
 }
 
 func (e *Employee) updateNamePointer(newName string) {
 	e.Name = newName
-	fmt.Println(e.Name)  // It will print Bob
+	fmt.Println("b. " + e.Name) // It will print "b. Bob"
 }
 
 func main() {
-	employee1 := Employee {
-		Name:   "Alice",
-		Age:    38,
+	employee1 := Employee{
+		Name: "Alice",
+		Age:  38,
 	}
 
 	employee1.updateName("Bob") // The Name will not be updated to Bob. It will remain Alice
-	employee1.updateNamePointer("Bob") // The Name will be updated to Bob.
+	fmt.Println("Employee Name:", employee1.Name)
+	fmt.Println("Employee Age:", employee1.Age)
 
+	employee1.updateNamePointer("Bob") // The Name will be updated to Bob.
 	fmt.Println("Employee Name:", employee1.Name)
 	fmt.Println("Employee Age:", employee1.Age)
 }
+```
+Output:
+
+```
+a. Bob
+Employee Name: Alice
+Employee Age: 38
+b. Bob
+Employee Name: Bob
+Employee Age: 38
 ```
