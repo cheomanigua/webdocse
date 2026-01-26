@@ -90,9 +90,9 @@ So, if you want to update your deployment with the last code changes, you have t
 
 
 
-## 3. Hugo site to GitHub to Firebase Hosting
+## 3. Computer to GitHub to Firebase Hosting
 
-If you don't want to install Firebase in your computer, you can create a CI/CD pipeline using GitHub Actions. This way when you `git push` in the project on your computer, GitHub Actions will automatically deploy the site on Firebase. These are the steps:
+If you don't want to install Firebase in your computer, you can create a CI/CD pipeline using GitHub Actions. This way when you `git push` the project on your computer, GitHub Actions will automatically deploy the site on Firebase. These are the steps:
 
 #### 1. Firebase account
 
@@ -112,7 +112,7 @@ If you don't want to install Firebase in your computer, you can create a CI/CD p
 3. Click on **Generate a new private key**
 4. A **.json** key file will be downloaded into your computer
 
-#### 2. Your computer
+#### 2. Your computer (for Hugo only)
 
 1. Convert the JSON key file to a base64-encoded string to store it safely in GitHub Secrets:
 	```bash
@@ -143,6 +143,8 @@ You will use `GOOGLE_APPLICATION_CREDENTIALS` and `FIREBASE_PROJECT_ID` when cre
 
 In your root project directory, create the file **firebase.json** with the following content, making sure that you type your site ID and not your site URL:
 
+- **For HUGO**
+
 ```json
 {
   "hosting": {
@@ -154,7 +156,22 @@ In your root project directory, create the file **firebase.json** with the follo
       "**/node_modules/**",
       ".git/",
       ".gitignore",
-      "README.md"
+    ]
+  }
+}
+```
+
+- **For HTML**
+
+```json
+{
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      ".github/**"
     ]
   }
 }
@@ -165,6 +182,7 @@ In your root project directory, create the file **firebase.json** with the follo
 - Create the folling directory at the root of your project directory: `.github/workflow/`
 - Inside the new created directory, create the file **deploy.yml** with the following content:
 
+- **For Hugo**
 ```yml
 name: Deploy to Firebase Hosting
 on:
@@ -189,11 +207,34 @@ jobs:
         run: npm install -g firebase-tools
       - name: Set up Google Service Account
         run: |
-          echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" | base64 -d > $HOME/gcp_credentials.json
-          export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp_credentials.json
-          echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp_credentials.json" >> $GITHUB_ENV
+          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}" | base64 -d > $HOME/gcp_credentials.json
+          export FIREBASE_SERVICE_ACCOUNT_JSON=$HOME/gcp_credentials.json
+          echo "FIREBASE_SERVICE_ACCOUNT_JSON=$HOME/gcp_credentials.json" >> $GITHUB_ENV
       - name: Deploy to Firebase
         run: firebase deploy --only hosting --project ${{ secrets.FIREBASE_PROJECT_ID }}
+```
+
+- **For HTML**
+```yml
+name: Deploy to Firebase Hosting
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to Firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}'
+          channelId: live
+          projectId: ${{ secrets.FIREBASE_PROJECT_ID }}
 ```
 
 ##### Push the new changes to GitHub
