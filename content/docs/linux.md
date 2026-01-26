@@ -17,6 +17,7 @@ toc: true
 - `find /usr -iname "wallpaper.jpg"` - Find all files named with the specified string
 - `sed -i 's/original/new/g' file.txt` - Replace the specified string in a file
 - `sed 's/original/new/g' file.txt` - Preview the replacement preserving the file intact
+- `find . -type f -exec sed -i 's/original/new/g' {} +` - Replace the specific string in recursively in from current directory
 - `history | grep "string"` - List history of commands where `string` is present
 
 #### Useful commands
