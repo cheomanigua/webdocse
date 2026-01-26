@@ -127,7 +127,7 @@ If you don't want to install Firebase in your computer, you can create a CI/CD p
 1. Go to your repository -> Settings -> Secrets and variables -> Actions
 2. Click on **New repository secret**
 3. Paste the output of the clipboard in the box **Secret**
-4. Name your new secret `GOOGLE_APPLICATION_CREDENTIALS` in the box **Name**
+4. Name your new secret `FIREBASE_SERVICE_ACCOUNT_JSON` in the box **Name**
 
 ##### Add secret for your Site ID
 
@@ -135,7 +135,7 @@ If you don't want to install Firebase in your computer, you can create a CI/CD p
 2. Write the **Project ID** or **Site ID** in the box **Secret**
 3. Name your new secret `FIREBASE_PROJECT_ID` in the box **Name**
 
-You will use `GOOGLE_APPLICATION_CREDENTIALS` and `FIREBASE_PROJECT_ID` when creating the `deploy.yml` file below.
+You will use `FIREBASE_SERVICE_ACCOUNT_JSON` and `FIREBASE_PROJECT_ID` when creating the `deploy.yml` file below.
 
 #### 4. Your computer
 
