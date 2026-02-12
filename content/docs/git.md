@@ -262,6 +262,68 @@ Staging Area-->> Working Directory: git reset HEAD
 Remote Repository->>Working Directory: git pull
 ```
 
+## Commits (Revision)
+
+If you want to go back to previous commits to start from there, there are serveral ways to achieve this. All the methods below are based on the same scenario: four commits and all of them pushed to a remote repository. The user wants to go back to commit 1111111.
+
+```git
+commit 4444444
+Date:   Thu Feb 14 14:00:00 2026 +0100
+    update 4
+
+commit 3333333
+Date:   Thu Feb 13 13:00:00 2026 +0100
+    update 3
+
+commit 2222222
+Date:   Thu Feb 12 12:00:00 2026 +0100
+    update 2
+
+commit 1111111
+Date:   Thu Feb 11 11:00:00 2026 +0100
+    update 1
+```
+
+### Method 1: Reset
+
+If you want your repo to look exactly like it did at the first commit and remove everything after it:
+
+```bash
+git reset --hard 1111111
+git push --force origin main
+```
+
+**WARNING**: This erases the three latest commits. Anyone else using this repo will need to re-clone or reset.
+
+### Method 2: Revert
+
+If you want to revert back to commit 1111111, but do not want to get rid of the latest commits:
+
+```bash
+git revert 4444444 3333333 2222222
+git push origin main
+```
+
+This command will generate three new commits for each reverted commit. After revert, git history will look like this:
+
+```
+NEW revert commit (note: this is exactly like 1111111)
+NEW revert commit
+NEW revert commit
+4444444
+3333333
+2222222
+1111111
+```
+
+|                  | `reset --hard` | `revert` |
+| ---------------- | -------------- | -------- |
+| Rewrites history | ✅ Yes          | ❌ No     |
+| Needs force push | ✅ Yes          | ❌ No     |
+| Safe for teams   | ❌ No           | ✅ Yes    |
+| Clean history    | ✅ Yes          | ❌ No     |
+
+
 # GitLab & Bitbucket
 
 You can also host your code in GitLab and Bitbucket at the same time you host your code on Github.

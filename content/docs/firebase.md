@@ -114,11 +114,7 @@ If you don't want to install Firebase in your computer, you can create a CI/CD p
 
 #### 2. Your computer (for Hugo only)
 
-1. Convert the JSON key file to a base64-encoded string to store it safely in GitHub Secrets:
-	```bash
-	$ base64 yourprojectid-firebase-adminsdk-alphanum-alphanum.json | tr -d '\n'
-	```
-2. Copy the output to the clipboard
+1. Copy the output to the clipboard
 
 #### 3. GitHub account
 
