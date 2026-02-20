@@ -180,6 +180,92 @@ sudo lsof -i :8080
 kill -9 "PID of the port"
 ```
 
+### i3
+
+#### Key Binds
+You can change the MOD key to Windows(⊞) / Command(⌘) key by editing `.config/i3/config` and changing the line `set $mod Mod1` to `set $mod Mod4`.
+
+#### Main
+- **MOD + Enter**: Open terminal
+- **MOD + d**: Open app launcher
+- **MOD + left / down / up / right**: Focus left, down, up, right (or J / K / L / Ñ)
+- **MOD + Shift + left / down / up / right**: Move window left, down, up, right (or J / K / L / Ñ)
+- **MOD + Number**: Switch to another workspace
+- **MOD + Shift + Number**: Move window to workspace
+
+#### Modifying windows
+- **MOD + f**: Toggle Fullscreen
+- **MOD + v / h**: Split new window vertically / horizontally
+- **MOD + r**: Resize Window
+
+#### Changing the container layout
+- **MOD + e**: Split mode (default)
+- **MOD + s**: Stack mode
+- **MOD + w**: Tabbed mode
+
+#### Floating
+- **MOD + Shift + Space**: Toggle floating
+- **MOD + Left click**: Drag floating
+
+#### Miscelanea
+- **MOD + Shift + q**: Close Window
+- **MOD + Shift + c**: Reload configuration file
+- **MOD + Shift + r**: Restart i3 inplace
+- **MOD + Shift + e**: Exit i3
+
+If you want to switch between the last two workspaces by pressing **MOD + Tab**, edit `.config/i3/config` and add this line:
+```
+bindsym $mod+Tab workspace back_and_forth
+```
+
+If you want to change focus by pressing **MOD + Tab** and **MOD + Shift + Tab**, edit `.config/i3/config` and add these lines:
+```
+bindsym $mod+Tab focus right
+bindsym $mod+Shift+Tab focus left
+```
+
+#### Copy & Paste
+
+1. Drag with the mouse while keeping the left mouse button pressed. The moment you release the left mouse button, the selection is copied in the clipboard.
+2. Click with the mouse wheel to paste.
+
+#### Terminal Tabbed Window
+
+If you want to simulate a terminal with several tabs:
+
+1. Focus on the terminal window.
+2. Change to vertical orientation: **MOD + v**.
+3. Change to tabbed layout: **MOD + w**.
+4. There you go. You can add more terminal tabs by pressing: **MOD + Return**.
+#### Other settings
+
+1. Open `.config/i3/config` and add these lines at the end:
+    ```
+    exec_always --no-startup-id xrdb -merge ~/.Xresources
+    exec_always --no-startup-id sh -c 'sleep 1; setxkbmap -layout us,es -option grp:alt_shift_toggle'
+    exec_always --no-startup-id feh --bg-fill /usr/share/wallpapers/openSUSEdefault/contents/images/default-dark.png
+    bindsym $mod+Ctrl+c exec /opt/ungoogled-chromium-143.0.7499.169-1-x86_64_linux/chrome
+    exec_always --no-startup-id xset dpms 3600 3600 3600
+    exec_always --no-startup-id xset s 3600 3600
+    ```
+2. Reload i3: **Mod + Shift + r**
+
+The second line let you toggle keyboard layout `us/es`: **Alt + Shift**
+
+#### XTerm Customization
+
+1. Edit `.Xresources`:
+    ```
+    xterm*faceName: Monospace
+    xterm*faceSize: 10
+    xterm*background: SteelBlue
+    xterm*foreground: White
+    ! This is a comment. You can comment out lines to disable them.
+    ```
+2. Save the changes
+3. Run `xrbd -load .Xresources`
+4. Restart xterm
+
 ### Wezterm
 
 - **Cmd** + **t**: New tab

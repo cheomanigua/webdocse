@@ -38,6 +38,11 @@ toc: true
   - **<** : shift selection left
   - **>** : shift selection right
 
+### Visual mode copy & pase
+
+1. Select the text by using any visual mode
+2. `"+y` : Copy
+3. `"+p` : Paste
 
 ### Visual mode multi-line editing
 1. Move the cursor exactly where you want to insert the new text
