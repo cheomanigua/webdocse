@@ -114,9 +114,9 @@ If you want to copy text and paste outside Vim, you need to visually select the 
 #### Motion
 Motion specifies where the Operators operate in relation to the cursor position:
 
-- **w** -\> word 
-- **W** -\> all text between empty spaces 
-- **p** -\> paragraph 
+- **w** -\> word
+- **W** -\> all text between empty spaces
+- **p** -\> paragraph
 - **_** -\> line
 - **2j** -\> down 2 lines
 - **e** -\> until the end of the word
@@ -165,7 +165,8 @@ Examples:
 - delete/cut word from cursor position forward -\> **dw**
 - delete/cut word from cursor position backward -\> **db**
 - delete/cut whole word -\> **diw**
-- delete/cut word and insert mode -\> **cw** 
+- delete/cut word from cursor position forward and insert mode -\> **cw** 
+- delete/cut word from cursor position backward and insert mode -\> **cb** 
 - delete/cut paragraph -\> **dap**
 - paste -\> **p**
 - undo -\> **u**
