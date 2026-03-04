@@ -422,8 +422,8 @@ The following example shows a slight variation of the for loop that loops over a
 ```go
 nums := []int{2,4,6,8}
 
-for idx, val := range nums {
-	fmt.Println(idx, val)
+for i, val := range nums {
+	fmt.Println(i, val)
 }
 ```
 

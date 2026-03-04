@@ -184,41 +184,51 @@ kill -9 "PID of the port"
 
 #### Key Binds
 You can change the MOD key to Windows(⊞) / Command(⌘) key by editing `.config/i3/config` and changing the line `set $mod Mod1` to `set $mod Mod4`.
+You can change the MOD key to Alt key by editing `.config/i3/config` and changing the line `set $mod Mod4` to `set $mod Mod1`.
+
+[!IMPORTANT]
+In <strong>i3</strong> config file, <code>Alt</code> and <code>Win/Command</code> does not work. You must use <code>Mod1</code> and </code>Mod4</code> respectively.
+
+#### Set MOD key
+```text
+set $mod Mod4
+```
 
 #### Main
-- **MOD + Enter**: Open terminal
-- **MOD + d**: Open app launcher
-- **MOD + left / down / up / right**: Focus left, down, up, right (or J / K / L / Ñ)
-- **MOD + Shift + left / down / up / right**: Move window left, down, up, right (or J / K / L / Ñ)
-- **MOD + Number**: Switch to another workspace
-- **MOD + Shift + Number**: Move window to workspace
+- **$mod + Return**: Open terminal
+- **$mod + d**: Open app launcher
+- **$mod + left / down / up / right**: Focus left, down, up, right (or J / K / L / Ñ)
+- **$mod + Shift + left / down / up / right**: Move window left, down, up, right (or J / K / L / Ñ)
+- **$mod + Number**: Switch to another workspace
+- **$mod + Shift + Number**: Move window to workspace
 
 #### Modifying windows
-- **MOD + f**: Toggle Fullscreen
-- **MOD + v / h**: Split new window vertically / horizontally
-- **MOD + r**: Resize Window
+- **$mod + f**: Toggle Fullscreen
+- **$mod + v / h**: Split new window vertically / horizontally
+- **$mod + r**: Resize Window
 
 #### Changing the container layout
-- **MOD + e**: Split mode (default)
-- **MOD + s**: Stack mode
-- **MOD + w**: Tabbed mode
+- **$mod + e**: Split mode (default)
+- **$mod + s**: Stack mode
+- **$mod + w**: Tabbed mode
 
 #### Floating
-- **MOD + Shift + Space**: Toggle floating
-- **MOD + Left click**: Drag floating
+- **$mod + Shift + Space**: Toggle floating
+- **$mod + Left click**: Drag floating
 
 #### Miscelanea
-- **MOD + Shift + q**: Close Window
-- **MOD + Shift + c**: Reload configuration file
-- **MOD + Shift + r**: Restart i3 inplace
-- **MOD + Shift + e**: Exit i3
+- **$mod + Shift + q**: Close Window
+- **Mod1 + Return**: Toggle full screen
+- **$mod + Shift + c**: Reload configuration file
+- **$mod + Shift + r**: Restart i3 inplace
+- **$mod + Shift + e**: Exit i3
 
-If you want to switch between the last two workspaces by pressing **MOD + Tab**, edit `.config/i3/config` and add this line:
+If you want to switch between the last two workspaces by pressing **Win + Tab**, edit `.config/i3/config` and add this line:
 ```
-bindsym $mod+Tab workspace back_and_forth
+bindsym $Mod1+Tab workspace back_and_forth
 ```
 
-If you want to change focus by pressing **MOD + Tab** and **MOD + Shift + Tab**, edit `.config/i3/config` and add these lines:
+If you want to change focus by pressing **$mod + Tab** and **$mod + Shift + Tab**, edit `.config/i3/config` and add these lines:
 ```
 bindsym $mod+Tab focus right
 bindsym $mod+Shift+Tab focus left
@@ -234,9 +244,9 @@ bindsym $mod+Shift+Tab focus left
 If you want to simulate a terminal with several tabs:
 
 1. Focus on the terminal window.
-2. Change to vertical orientation: **MOD + v**.
-3. Change to tabbed layout: **MOD + w**.
-4. There you go. You can add more terminal tabs by pressing: **MOD + Return**.
+2. Change to vertical orientation: **$mod + v**.
+3. Change to tabbed layout: **$mod + w**.
+4. There you go. You can add more terminal tabs by pressing: **$mod + Return**.
 #### Other settings
 
 1. Open `.config/i3/config` and add these lines at the end:
