@@ -729,6 +729,37 @@ awk -F, '$3>4 && $9~/vivec/' databasemw.csv
 
 ### Adding apps to Launch Menu
 
+#### Folder with another folders and executable
+
+**1. Move the folder to /opt**
+
+```bash
+sudo mv blender-4.1.0-linux-x64 /opt/blender
+```
+
+**2. Create a desktop entry**
+
+```
+nano ~/.local/share/applications/blender.desktop
+```
+
+```
+[Desktop Entry]
+Name=Blender
+Exec=/opt/blender/blender
+Icon=/opt/blender/blender.svg
+Type=Application
+Categories=Graphics;3DGraphics;
+```
+
+**3. Refresh the desktop app database**
+
+```
+update-desktop-database ~/.local/share/applications
+```
+
+#### Single executable
+
 1. Add an `png` icon file either in `.local/share/icons` or `/usr/share/icons`
 2. Create a `.desktop` file either in `.local/share/applications` or `/usr/share/applications`
 3. Where you created the `.desktop` file, execute: `sudo desktop-file-install myapp.desktop`
