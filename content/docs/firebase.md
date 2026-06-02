@@ -97,7 +97,7 @@ If you don't want to install Firebase in your computer, you can create a CI/CD p
 #### 1. Firebase account
 
 1. Go to [Firebase console](https://console.firebase.google.com/)
-2. Go to your project
+2. Create a new project or go to your existing project
 
 ##### Check your site ID
 
@@ -112,9 +112,9 @@ If you don't want to install Firebase in your computer, you can create a CI/CD p
 3. Click on **Generate a new private key**
 4. A **.json** key file will be downloaded into your computer
 
-#### 2. Your computer (for Hugo only)
+#### 2. Your computer
 
-1. Copy the output to the clipboard
+1. Copy the content of the downloaded **.json** key file to the clipboard
 
 #### 3. GitHub account
 
