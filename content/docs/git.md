@@ -324,15 +324,66 @@ NEW revert commit
 | Clean history    | ✅ Yes          | ❌ No     |
 
 
-# GitLab & Bitbucket
+# GitHub & GitLab & Bitbucket
+
+## Create repositories from command line
+
+### GitHub
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $GITHUB_TOKEN" \
+  -H "Accept: application/vnd.github+json" \
+  https://api.github.com/user/repos \
+  -d '{"name":"my-project","private":true}'
+```
+
+### GitLab
+
+GitLab has a REST API:
+
+```bash
+curl --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
+     --data "name=my-project" \
+     "https://gitlab.com/api/v4/projects"
+```
+
+The response contains the SSH URL.
+
+### Bitbucket
+
+Bitbucket also has a REST API:
+
+```bash
+curl -i -X POST \
+  -u "$ATLASSIAN_EMAIL:$BITBUCKET_TOKEN" \
+  https://api.bitbucket.org/2.0/repositories/username/my-project \
+  -H "Content-Type: application/json" \
+  -d '{"scm":"git","is_private":true}'
+```
+<br>
+<br>
+<br>
+
+**NOTE**: The tokens for each repository have to be created in their respective consoles and then copied to `.bashrc` like this:
+
+```
+export GITHUB_TOKEN='foo'
+export GITLAB_TOKEN='foo'
+export BITBUCKET_TOKEN='foo'
+```
+
+and then run: `source .bashrc`
+
+## Multiple remotes
 
 You can also host your code in GitLab and Bitbucket at the same time you host your code on Github.
 
 Simply add the new repositories:
 
 ```
-$ git remote add gitlab <GitLab repository URL>
-$ git remote add bitbucket <Bitbucket repository URL>
+$ git remote add gitlab git@gitlab.com:user/my-project.git
+$ git remote add bitbucket git@bitbucket.org:user/my-project.git
 ```
 
 Confirm that the repositories have been added successfully:
@@ -351,6 +402,20 @@ $ git push github main
 $ git push gitlab main
 $ git push bitbucket main
 ```
+
+Or configure multiple push URLs on a single remote:
+
+```bash
+git remote add origin git@github.com:user/my-project.git
+
+git remote set-url --add --push origin git@github.com:user/my-project.git
+git remote set-url --add --push origin git@gitlab.com:user/my-project.git
+git remote set-url --add --push origin git@bitbucket.org:user/my-project.git
+
+git push origin main
+```
+
+## Branches
 
 If we create and checkout to a new branch, the first push with the new branch is like this:
 ```
