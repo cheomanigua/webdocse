@@ -734,7 +734,7 @@ awk -F, '$3>4 && $9~/vivec/' databasemw.csv
 **1. Move the folder to /opt**
 
 ```bash
-sudo mv blender-4.1.0-linux-x64 /opt/blender
+sudo mv blender-4.1.0-linux-x64 /opt
 ```
 
 **2. Create a desktop entry**
@@ -746,8 +746,8 @@ nano ~/.local/share/applications/blender.desktop
 ```
 [Desktop Entry]
 Name=Blender
-Exec=/opt/blender/blender
-Icon=/opt/blender/blender.svg
+Exec=/opt/blender-4.1.0-linux-x64/blender
+Icon=/opt/blender-4.1.0-linux-x64/blender.svg
 Type=Application
 Categories=Graphics;3DGraphics;
 ```
