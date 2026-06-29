@@ -489,26 +489,55 @@ $ sudo apt install libstdc++-12-dev
 
 ### Raylib
 
-#### OpenSuse
+#### Installation
 
-##### Install
+##### OpenSuse Leap 16
 
 ```bash
-$ zypper in raylib-devel
+zypper install raylib-devel
 ```
 
-##### Compilation
+##### Debian 14 Forky
+
+```bash
+sudo apt install libraylib-dev
+```
+
+##### Debian 13 Trixie
+
+```bash
+wget http://ftp.es.debian.org/debian/pool/main/r/raylib/libraylib600_6.0+ds-2_amd64.deb
+wget http://ftp.es.debian.org/debian/pool/main/r/raylib/libraylib-dev_6.0+ds-2_amd64.deb
+sudo apt install ./libraylib600_6.0+ds-2_amd64.deb
+sudo apt install ./libraylib-dev_6.0+ds-2_amd64.deb
+```
+
+#### Compilation
 
 ```bash
 g++ main.cpp -o MyApp -lraylib -lm -lpthread -ldl -lrt
 ```
 
-##### Optional dependencies
+#### Optional dependencies
+
+If you use these headers in your source code:
+
+```cplusplus
+#include <GL/gl.h>
+#include <X11/Xlib.h>
+```
+
+Then:
 
 ```bash
-zypper in Mesa-libGL-devel libX11-devel
+// OpenSuse
+zypper install Mesa-libGL-devel libX11-devel
 
-g++ main.cpp -o RadarApp -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+// Debian
+apt install libgl-dev libx11-dev
+
+// OpenSuse and Debian
+g++ main.cpp -o MyApp -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
 ```
 
 ### ranger
