@@ -487,6 +487,30 @@ In above result, the version is 12. In order to install version 12 of libstdc++,
 $ sudo apt install libstdc++-12-dev
 ```
 
+### Raylib
+
+#### OpenSuse
+
+##### Install
+
+```bash
+$ zypper in raylib-devel
+```
+
+##### Compilation
+
+```bash
+g++ main.cpp -o MyApp -lraylib -lm -lpthread -ldl -lrt
+```
+
+##### Optional dependencies
+
+```bash
+zypper in Mesa-libGL-devel libX11-devel
+
+g++ main.cpp -o RadarApp -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+```
+
 ### ranger
 
 - **y**: copy, yank 
