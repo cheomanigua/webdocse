@@ -14,11 +14,13 @@ toc: true
 #### Finding text and files
 
 - `grep -r "text"` - Find all files containing the specific string in current directory and child directories
+- `grep -r "text" --exclude-dir={foo,bar}` - Find all files containing the specific string in current directory and child directories excluding *foo* and *bar* directories.
 - `find /usr -iname "wallpaper.jpg"` - Find all files named with the specified string
 - `sed -i 's/original/new/g' file.txt` - Replace the specified string in a file
 - `sed 's/original/new/g' file.txt` - Preview the replacement preserving the file intact
 - `find . -type f -exec sed -i 's/original/new/g' {} +` - Replace the specific string in recursively in from current directory
 - `history | grep "string"` - List history of commands where `string` is present
+- `tree -I "foo|bar" --dirsfirst` - Show tree of all files and directories and child directories. Ignore directories *foo* and *bar*. Show directories first.
 
 #### Useful commands
 
@@ -516,6 +518,24 @@ sudo apt install ./libraylib-dev_6.0+ds-2_amd64.deb
 
 ```bash
 g++ main.cpp -o MyApp -lraylib -lm -lpthread -ldl -lrt
+```
+
+Also, you can just run `make` if you have the following `Makefile` file:
+
+```makefile
+CXX = g++
+TARGET = MyApp
+
+CXXFLAGS = -O2 -Wall
+LIBS = -lraylib -lm -lpthread -ldl -lrt
+
+SRCS = main.cpp
+
+$(TARGET): $(SRCS)
+    $(CXX) $(CXXFLAGS) $(SRCS) -o $(TARGET) $(LIBS)
+
+clean:
+    rm -f $(TARGET)
 ```
 
 #### Optional dependencies
