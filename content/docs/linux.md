@@ -526,7 +526,7 @@ Also, you can just run `make` if you have the following `Makefile` file:
 CXX = g++
 TARGET = MyApp
 
-CXXFLAGS = -O2 -Wall
+CXXFLAGS = -O2 -Wall -std=c++20
 LIBS = -lraylib -lm -lpthread -ldl -lrt
 
 SRCS = main.cpp
@@ -536,6 +536,28 @@ $(TARGET): $(SRCS)
 
 clean:
     rm -f $(TARGET)
+```
+
+A more conventional Makefile separates compilation from linking. This structure scales much better as your project grows to multiple source files:
+
+```makefile
+CXX = g++
+CXXFLAGS = -O2 -Wall -std=c++20
+LDFLAGS =
+LDLIBS = -lraylib -lm -lpthread -ldl -lrt
+
+TARGET = MyApp
+SRCS = main.cpp
+OBJS = $(SRCS:.cpp=.o)
+
+$(TARGET): $(OBJS)
+	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	rm -f $(TARGET) $(OBJS)
 ```
 
 #### Optional dependencies
