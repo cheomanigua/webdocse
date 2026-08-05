@@ -13,14 +13,27 @@ toc: true
 
 #### Finding text and files
 
-- `grep -r "text"` - Find all files containing the specific string in current directory and child directories
-- `grep -r "text" --exclude-dir={foo,bar}` - Find all files containing the specific string in current directory and child directories excluding *foo* and *bar* directories.
-- `find /usr -iname "wallpaper.jpg"` - Find all files named with the specified string
-- `sed -i 's/original/new/g' file.txt` - Replace the specified string in a file
-- `sed 's/original/new/g' file.txt` - Preview the replacement preserving the file intact
-- `find . -type f -exec sed -i 's/original/new/g' {} +` - Replace the specific string in recursively in from current directory
-- `history | grep "string"` - List history of commands where `string` is present
-- `tree -I "foo|bar" --dirsfirst` - Show tree of all files and directories and child directories. Ignore directories *foo* and *bar*. Show directories first.
+- `find /usr -iname "wallpaper.jpg"` - Find all files named `wallpaper.jpg` inside `/usr` directory
+- `grep -r "foo"` - Find all files containing `foo` in current directory recursively
+- `sed -i 's/foo/bar/g' file.txt` - Replace all instances of string `foo` for `bar` in `file.txt`
+- `sed 's/foo/bar/g' file.txt` - Preview the replacement preserving the file intact
+- `history | grep "foo"` - List history of commands where `foo` is present
+
+#### Batch replacement
+
+**Scenario**: We want to replace all instances of string `original` for `new` in all files inside the current directory recursively:
+
+- `find . -type f -exec grep -l 'original' {} +` - Show which files will be affected
+- `find . -type f -exec sed 's/original/new/g' {} +` - Preview the modified contents (no changes) recursively from current directory
+- `find . -type f -exec sed -i 's/original/new/g' {} +` - Replace the specific contents recursively from current directory
+- Preview the changes showing a unified diff of what would change:
+    ```
+    find . -type f -exec sh -c '
+    for f; do
+        diff -u "$f" <(sed "s/original/new/g" "$f")
+    done
+    ' sh {} +
+    ```
 
 #### Useful commands
 
@@ -518,46 +531,6 @@ sudo apt install ./libraylib-dev_6.0+ds-2_amd64.deb
 
 ```bash
 g++ main.cpp -o MyApp -lraylib -lm -lpthread -ldl -lrt
-```
-
-Also, you can just run `make` if you have the following `Makefile` file:
-
-```makefile
-CXX = g++
-TARGET = MyApp
-
-CXXFLAGS = -O2 -Wall -std=c++20
-LIBS = -lraylib -lm -lpthread -ldl -lrt
-
-SRCS = main.cpp
-
-$(TARGET): $(SRCS)
-    $(CXX) $(CXXFLAGS) $(SRCS) -o $(TARGET) $(LIBS)
-
-clean:
-    rm -f $(TARGET)
-```
-
-A more conventional Makefile separates compilation from linking. This structure scales much better as your project grows to multiple source files:
-
-```makefile
-CXX = g++
-CXXFLAGS = -O2 -Wall -std=c++20
-LDFLAGS =
-LDLIBS = -lraylib -lm -lpthread -ldl -lrt
-
-TARGET = MyApp
-SRCS = main.cpp
-OBJS = $(SRCS:.cpp=.o)
-
-$(TARGET): $(OBJS)
-	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
-
-%.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-clean:
-	rm -f $(TARGET) $(OBJS)
 ```
 
 #### Optional dependencies
