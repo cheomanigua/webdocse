@@ -4,7 +4,7 @@ title: "Linux"
 description: "Several commonly used commands for Linux"
 icon: "article"
 date: "2024-10-23T14:16:02+02:00"
-lastmod: "2024-10-23T14:16:02+02:00"
+lastmod: "2026-08-07T21:17:02+02:00"
 draft: false
 toc: true
 ---
@@ -38,7 +38,7 @@ toc: true
 #### Useful commands
 
 - `diff file1 file2` - Show the differences in the content of file1 and file2
-- `diff -r dir1/ dir2/` - Show the differences in the content and files of dir1/ and dir2/
+- `diff -r dir1 dir2` - Show the differences in the content and files of dir1 and dir2
 - `xclip -sel c myfile.txt` - Copy the content of myfile.txt into the clipboard
 - `sudo dd bs=4M if=my_iso_image.iso of=/dev/sdc status=progress oflag=sync` - Create bootable pendrive
 
