@@ -300,13 +300,21 @@ NetHack.double_tile_size: True
 XTerm*termName: xterm-256color
 XTerm*selectToClipboard: true
 XTerm*alternateScroll: true
-!XTerm*vt100.initialFont: 6
 XTerm*faceName: Classic Console
 XTerm*faceSize: 16
 XTerm*background: black
 XTerm*foreground: gray90
+
 !XTerm*renderFont: true
+!XTerm*vt100.initialFont: 6
 ```
+
+then run:
+
+```
+$ xrdb -merge .Xresources
+```
+and restart Xterm.
 
 ### Wezterm
 
