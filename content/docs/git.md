@@ -328,6 +328,19 @@ NEW revert commit
 
 ## Create repositories from command line
 
+### Generate and copy tokens
+
+First thing to do is to generate the tokens for each repository in their respective consoles and then copy to `.bashrc` like this:
+
+```
+export GITHUB_TOKEN='foo'
+export GITLAB_TOKEN='foo'
+export BITBUCKET_TOKEN='foo'
+```
+
+and then run: `source .bashrc`
+
+
 ### GitHub
 
 ```bash
@@ -361,19 +374,14 @@ curl -i -X POST \
   -H "Content-Type: application/json" \
   -d '{"scm":"git","is_private":true}'
 ```
-<br>
-<br>
-<br>
 
-**NOTE**: The tokens for each repository have to be created in their respective consoles and then copied to `.bashrc` like this:
+### Next steps
 
 ```
-export GITHUB_TOKEN='foo'
-export GITLAB_TOKEN='foo'
-export BITBUCKET_TOKEN='foo'
+git remote add origin git@github.com:user/my-project.git
+git push --set-upstream origin master
 ```
 
-and then run: `source .bashrc`
 
 ## Multiple remotes
 
