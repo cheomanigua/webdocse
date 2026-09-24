@@ -278,6 +278,23 @@ The second line let you toggle keyboard layout `us/es`: **Alt + Shift**
 3. Run `xrbd -load .Xresources`
 4. Restart xterm
 
+### Xterm
+
+- `.Xresources`:
+
+```
+NetHack.double_tile_size: True
+XTerm*termName: xterm-256color
+XTerm*selectToClipboard: true
+XTerm*alternateScroll: true
+!XTerm*vt100.initialFont: 6
+XTerm*faceName: Classic Console
+XTerm*faceSize: 16
+XTerm*background: black
+XTerm*foreground: gray90
+!XTerm*renderFont: true
+```
+
 ### Wezterm
 
 - **Cmd** + **t**: New tab

@@ -327,11 +327,34 @@ Find and replace **foo** with **bar** selectively:
 You can customize Vim by editing `~/.vimrc`
 
 ```
+syntax enable
+filetype plugin indent on
+
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+set expandtab
+
+" Custom syntax colors
+highlight String  ctermfg=Yellow
+highlight Boolean ctermfg=210
+highlight Number  ctermfg=183
+highlight Comment ctermfg=245
+highlight jsonKeyword ctermfg=Blue
+highlight jsonString ctermfg=Yellow
+
+set number
+set relativenumber
+set listchars=tab:»\ ,trail:·,lead:·
+```
+
+More elaborated:
+
+```
 let mapleader = " " 
 set mouse=a
 set tabstop=4
 set shiftwidth=0
-set noexpandtab
 set autoindent
 set number " enable line numbering
 set relativenumber "enable relative line number
