@@ -414,14 +414,18 @@ endfunction
 
 ## Macros
 ```
+[press ESC]
 [move the cursor where you want to start to record the macro]
-$ qq
+$ qa
 [do all the staff]
 $ ESC
 $ q
 [move the cursor where you want to apply the macro]
-$ @q
+$ @a
 ```
+
+- You can record `a-z` macros: `qa`, `qb`, ... `qz`
+- You can apply a macro in batch: `3@a`
 
 # 2. Plugin Managers
 
