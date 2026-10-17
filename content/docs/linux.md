@@ -596,8 +596,8 @@ gpu-context=x11egl
 
 ytdl-format=bestvideo[height<=720]+bestaudio/best[height<=720]
 
-# Avoid AV1, allow H.264 (avc1) and VP9 (8-bit) up to 1080p
-#ytdl-format=bestvideo[vcodec~="avc1|vp9"][height<=1080]+bestaudio/best
+# Avoid AV1, allow H.264 (avc1) and VP9 (8-bit) up to 720p
+#ytdl-format=bestvideo[vcodec~="avc1|vp9"][height<=720]+bestaudio/best
 
 # Enable caching to reduce stutter
 # === CACHING & SMOOTHNESS ===
@@ -626,8 +626,12 @@ tscale=oversample
 #### `.config/yt-dlp/config`
 
 ```
-# Best video up to 1080p + best audio
--f "bestvideo[vcodec~='^(avc1|vp9)'][height<=1080]+bestaudio/best[height<=1080]"
+# Best video up to 720p + best audio
+# Avoid AV1, allow H.264 (avc1) and VP9 (8-bit) up to 720p
+-f "bestvideo[vcodec~='^(avc1|vp9)'][height<=720]+bestaudio/best[height<=720]"
+
+# Do not avoid  AV1
+#-f "bestvideo[height<=720]+bestaudio/best[height<=720]"
 
 # Download location
 -P ~/Videos/YouTube
