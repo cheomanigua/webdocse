@@ -580,6 +580,55 @@ apt install libgl-dev libx11-dev
 g++ main.cpp -o MyApp -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
 ```
 
+### mpv & yt-dlp
+
+##### `.config/mpv/mpv.conf`
+
+```
+# Use NVIDIA GPU hardware decoding
+hwdec=nvdec
+
+# Modern GPU output for smooth playback
+vo=gpu-next
+gpu-context=x11egl
+
+# Avoid AV1, allow H.264 (avc1) and VP9 (8-bit) up to 1080p
+ytdl-format=bestvideo[vcodec~="avc1|vp9"][height<=1080]+bestaudio/best
+
+# Enable caching to reduce stutter
+# === CACHING & SMOOTHNESS ===
+cache=yes
+cache-secs=30
+demuxer-readahead-secs=10
+demuxer-max-bytes=100M
+demuxer-max-back-bytes=50M
+
+# Force mpv to treat every YouTube stream as seekable
+# You can click any point in the bar
+force-seekable=yes
+
+# === AUDIO: PIPEWIRE (SMOOTH & LOW LATENCY) ===
+ao=pulse
+audio-buffer=1.5
+
+# Use high-quality video profile
+profile=high-quality
+
+# Optional: smooth seeking and interpolation
+interpolation=yes
+tscale=oversample
+```
+
+##### `.config/yt-dlp`
+
+```
+# Best video up to 1080p + best audio
+-f "bestvideo[vcodec~='^(avc1|vp9)'][height<=1080]+bestaudio/best[height<=1080]"
+
+# Download location
+-P ~/Videos/YouTube
+```
+
 ### ranger
 
 - **y**: copy, yank 
