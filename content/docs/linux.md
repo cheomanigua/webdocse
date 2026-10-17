@@ -585,8 +585,6 @@ g++ main.cpp -o MyApp -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
 ##### `.config/mpv/mpv.conf`
 
 ```
-So, I have this config file:
-
 # Use NVIDIA GPU hardware decoding
 hwdec=nvdec
 
@@ -594,10 +592,11 @@ hwdec=nvdec
 vo=gpu-next
 gpu-context=x11egl
 
-ytdl-format=bestvideo[height<=720]+bestaudio/best[height<=720]
-
 # Avoid AV1, allow H.264 (avc1) and VP9 (8-bit) up to 720p
-#ytdl-format=bestvideo[vcodec~="avc1|vp9"][height<=720]+bestaudio/best
+ytdl-format=bestvideo[vcodec~="avc1|vp9"][height<=720]+bestaudio/best[height<=720]
+
+# Do not avoid AV1
+#ytdl-format=bestvideo[height<=720]+bestaudio/best[height<=720]
 
 # Enable caching to reduce stutter
 # === CACHING & SMOOTHNESS ===
