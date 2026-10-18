@@ -424,6 +424,7 @@ AddToMenu VintageRoot "Unix Workstation" Title
 + "Dolphin Files"    Exec exec dolphin
 + "Ungoogled Chrome" Exec exec /opt/ungoogled-chromium-143.0.7499.169-1-x86_64_linux/chrome
 + "Okular"           Exec exec okular
++ "Gwenview"		 Exec exec gwenview
 + ""                 Nop
 + "Blender"          Exec exec /opt/blender/blender
 + "Godot"            Exec exec /opt/Godot_v4.6.3-stable_mono_linux_x86_64/Godot_v4.6.3-stable_mono_linux.x86_64
@@ -460,22 +461,28 @@ Style FvwmButtons !Title, !Borders, Sticky, \
 
 # LEFT: application menu
 
-*FvwmButtons: (70x1, Title "MENU", \
+# LEFT: application menu
+*FvwmButtons: (70x1, Icon \
+    /usr/share/fvwm/default-config/images/fvwm-logo-small.svg:70x20, \
     Action (Mouse 1) "Menu VintageRoot", Frame 2)
 
 # Application launchers
-
-*FvwmButtons: (45x1, Title "xterm", \
+*FvwmButtons: (40x1, Icon \
+    /usr/share/icons/breeze/apps/48/utilities-terminal.svg:20x20, \
     Action (Mouse 1) "Exec exec xterm -ls", Frame 2)
 
-*FvwmButtons: (45x1, Title "Kate", \
+*FvwmButtons: (40x1, Icon \
+    /usr/share/icons/breeze/apps/48/kate.svg:20x20, \
     Action (Mouse 1) "Exec exec kate", Frame 2)
 
-*FvwmButtons: (55x1, Title "Dolphin", \
+*FvwmButtons: (40x1, Icon \
+    /usr/share/icons/hicolor/scalable/apps/org.kde.dolphin.svg:20x20, \
     Action (Mouse 1) "Exec exec dolphin", Frame 2)
 
-*FvwmButtons: (65x1, Title "Chrome", \
+*FvwmButtons: (40x1, Icon \
+    /usr/share/icons/product_logo_48.png, \
     Action (Mouse 1) "Exec exec /opt/ungoogled-chromium-143.0.7499.169-1-x86_64_linux/chrome", Frame 2)
+
 
 # Four workspaces
 
