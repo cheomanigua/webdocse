@@ -364,6 +364,210 @@ NetworkStatusDevice="wlp6s0"
 
 TaskBarShowWindowListMenu=0
 ```
+
+### FVWM
+
+##### `.fvm/config`
+```
+# Vintage 1990s Unix workstation with bottom taskbar
+# FVWM 2.7.0 / openSUSE Leap 16
+#
+# Panel: 30 pixels high, anchored to the bottom of the screen.
+# Maximized windows should leave the bottom 30 pixels free.
+
+Read /etc/X11/fvwm2/system.fvwm2rc
+
+# --------------------------------------------------
+# Keyboard
+# --------------------------------------------------
+
+Exec exec setxkbmap -layout "es,us" -option "grp:alt_shift_toggle"
+
+# --------------------------------------------------
+# Workspaces
+# --------------------------------------------------
+
+DeskTopSize 1x1
+EwmhNumberOfDesktops 4 4
+
+# --------------------------------------------------
+# Motif-style workstation colors
+# --------------------------------------------------
+
+Colorset 1 fg black, bg grey75
+Colorset 2 fg white, bg navy
+Colorset 3 fg black, bg grey75
+Colorset 4 fg white, bg navy
+Colorset 5 fg grey45, bg grey75
+Colorset 6 fg black, bg grey60
+
+Style * Colorset 1
+Style * HilightColorset 2
+Style * BorderWidth 5
+Style * HandleWidth 5
+Style * Font "fixed"
+
+# Use the available working area when maximizing windows.
+Style * MaximizeUseWorkingArea
+
+MenuStyle * MenuColorset 3
+MenuStyle * ActiveColorset 4
+MenuStyle * GreyedColorset 5
+
+# --------------------------------------------------
+# Application menu
+# --------------------------------------------------
+
+AddToMenu VintageRoot "Unix Workstation" Title
++ "Terminal"         Exec exec xterm -ls
++ "Kate Editor"      Exec exec kate
++ "Dolphin Files"    Exec exec dolphin
++ "Ungoogled Chrome" Exec exec /opt/ungoogled-chromium-143.0.7499.169-1-x86_64_linux/chrome
++ "Okular"           Exec exec okular
++ ""                 Nop
++ "Blender"          Exec exec /opt/blender/blender
++ "Godot"            Exec exec /opt/Godot_v4.6.3-stable_mono_linux_x86_64/Godot_v4.6.3-stable_mono_linux.x86_64
++ "Aseprite"         Exec exec /opt/aseprite/build/bin/aseprite
++ ""                 Nop
++ "Manual Pages"     Exec exec xterm -e man fvwm
++ "FVWM Modules"     Popup modules_popup
++ ""                 Nop
++ "Reboot..."        Exec exec systemctl reboot
++ "Shutdown..."      Exec exec systemctl poweroff
++ "Logout..."        Quit
++ "Restart FVWM"     Restart
+
+# --------------------------------------------------
+# Bottom panel
+# --------------------------------------------------
+
+DestroyModuleConfig FvwmButtons: *
+
+Style FvwmButtons !Title, !Borders, Sticky, \
+    StaysOnTop, WindowListSkip, CirculateSkip, \
+    FixedPosition, FixedSize, !Iconifiable
+
+# Panel geometry: full screen width, 30 pixels high.
+# The negative Y offset anchors the panel to the bottom.
+*FvwmButtons: Geometry 1920x30+0-0
+*FvwmButtons: Rows 1
+*FvwmButtons: Columns 1920
+*FvwmButtons: Frame 1
+*FvwmButtons: Padding 2 2
+*FvwmButtons: Back grey75
+*FvwmButtons: Fore black
+*FvwmButtons: Font "fixed"
+
+# LEFT: application menu
+
+*FvwmButtons: (70x1, Title "MENU", \
+    Action (Mouse 1) "Menu VintageRoot", Frame 2)
+
+# Application launchers
+
+*FvwmButtons: (45x1, Title "xterm", \
+    Action (Mouse 1) "Exec exec xterm -ls", Frame 2)
+
+*FvwmButtons: (45x1, Title "Kate", \
+    Action (Mouse 1) "Exec exec kate", Frame 2)
+
+*FvwmButtons: (55x1, Title "Dolphin", \
+    Action (Mouse 1) "Exec exec dolphin", Frame 2)
+
+*FvwmButtons: (65x1, Title "Chrome", \
+    Action (Mouse 1) "Exec exec /opt/ungoogled-chromium-143.0.7499.169-1-x86_64_linux/chrome", Frame 2)
+
+# Four workspaces
+
+*FvwmButtons: (35x1, Title "1", \
+    Action (Mouse 1) "GotoDesk 0 0", Frame 2)
+
+*FvwmButtons: (35x1, Title "2", \
+    Action (Mouse 1) "GotoDesk 0 1", Frame 2)
+
+*FvwmButtons: (35x1, Title "3", \
+    Action (Mouse 1) "GotoDesk 0 2", Frame 2)
+
+*FvwmButtons: (35x1, Title "4", \
+    Action (Mouse 1) "GotoDesk 0 3", Frame 2)
+
+# MIDDLE: running applications
+
+DestroyModuleConfig TaskBarIcons: *
+
+*TaskBarIcons: UseWinList true
+*TaskBarIcons: Resolution global
+*TaskBarIcons: Font "fixed"
+*TaskBarIcons: ButtonGeometry 140x26
+*TaskBarIcons: MaxButtonWidth 180
+*TaskBarIcons: ManagerGeometry 1x1
+*TaskBarIcons: DrawIcons always
+*TaskBarIcons: ReliefThickness 2
+*TaskBarIcons: Format "%t"
+*TaskBarIcons: PlainColorset 1
+*TaskBarIcons: FocusColorset 6
+*TaskBarIcons: IconAndSelectButton down
+*TaskBarIcons: IconButton down
+*TaskBarIcons: SelectButton up
+
+*FvwmButtons: (1500x1, Left, \
+    Swallow TaskBarIcons 'Module FvwmIconMan TaskBarIcons')
+
+# RIGHT: time and date
+
+*FvwmButtons: (150x1, Id PanelClock, \
+    Title "--:-- -- ---", Frame 2)
+
+# --------------------------------------------------
+# Panel stacking and reserved screen space
+# --------------------------------------------------
+
+Style FvwmButtons StaysOnTop, FixedPosition, FixedSize
+
+# Reserve the bottom 30 pixels for EWMH-aware applications.
+EwmhBaseStruts 0 0 0 30
+
+# --------------------------------------------------
+# Start and update the panel clock
+# --------------------------------------------------
+
+AddToFunc UpdatePanelClock
++ I PipeRead 'echo "SendToModule FvwmButtons ChangeButton PanelClock Title \\"`date +%H:%M\\ %d\\ %b`\\""'
+
+AddToFunc StartFunction
++ I Test (Init) Module FvwmButtons
++ I Test (Init) Module FvwmIconMan TaskBarIcons
++ I Test (Init) Schedule 10000 UpdatePanelClock
+
+# --------------------------------------------------
+# Keyboard shortcuts
+# --------------------------------------------------
+
+# Alt+F1 opens the launch menu.
+Key F1 A M Menu VintageRoot
+
+# Alt+Enter opens a terminal.
+Key Return A M Exec exec xterm -ls
+
+# Alt+F11 maximizes the focused window, leaving 30 pixels
+# at the bottom for the panel.
+Key F11 A M Maximize -7p -1p
+
+Key F12 A A WindowList
+
+# Alt+1 through Alt+4 select desktops
+Key 1 A M GotoDesk 0 0
+Key 2 A M GotoDesk 0 1
+Key 3 A M GotoDesk 0 2
+Key 4 A M GotoDesk 0 3
+
+# Alt+left/right iterates desktops
+Key Left  A M GotoDesk -1 0 3
+Key Right A M GotoDesk  1 0 3
+```
+
+
+
 ### Xterm
 
 - `.Xresources`:
@@ -388,6 +592,7 @@ then run:
 $ xrdb -merge .Xresources
 ```
 and restart Xterm.
+
 
 ### Wezterm
 
