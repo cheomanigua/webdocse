@@ -291,6 +291,79 @@ The second line let you toggle keyboard layout `us/es`: **Alt + Shift**
 3. Run `xrbd -load .Xresources`
 4. Restart xterm
 
+### IceWM
+
+- You can iterate through workspaces by using: `Ctrl + Alt + left/right`
+- You can switch between last two workspaces by using `Ctrl + Alt + down`
+- You can select a particular workspace by using `Ctrl + 1/2/3/4`
+- You can configure applets and clock by editing: `.icewm/preferences`
+- You can configure the Toolbar and the Menu by editing the files: `.icewm/toolbar` and `.icewm/menu`.
+- After editing those files, run:
+    ```
+    icewm --restart
+    ```
+
+#### Toolbar
+
+```
+# This is an example for icewm 3.6.0 toolbar definition file.
+# It will be installed as /usr/share/icewm/toolbar.
+# Place your variants in /etc/icewm or in $HOME/.icewm since
+# modifications to this file will be overwritten when you reinstall icewm.
+#
+prog "xterm" utilities-terminal xterm
+prog "Kate Editor" kate /usr/bin/kate
+prog "Dolphin" org.kde.dolphin dolphin
+prog "Ungoogled Chromium" /usr/share/icons/product_logo_48.png /opt/ungoogled-chromium-143.0.7499.169-1-x86_64_linux/chrome
+```
+
+#### Menu
+
+```
+# This is an example for icewm 3.6.0 menu definition file.
+# It will be installed as /usr/share/icewm/menu.
+# Place your variants in /etc/icewm or in $HOME/.icewm since
+# modifications to this file will be overwritten when you reinstall icewm.
+#
+#prog "xterm" xterm xterm
+prog "Konsole" utilities-terminal konsole
+#prog urxvt xterm urxvt -bg black -cr green -fg white -C -sl 500
+prog Firefox firefox firefox
+prog "Blender" blender /opt/blender/blender
+prog "Godot 4.6.3 Mono" /opt/Godot_v4.6.3-stable_mono_linux_x86_64/icon.svg /opt/Godot_v4.6.3-stable_mono_linux_x86_64/Godot_v4.6.3-stable_mono_linux.x86_64
+prog "Aseprite" /opt/aseprite/aseprite.png /opt/aseprite/build/bin/aseprite
+includeprog icewm-menu-fdo --sep-before --no-sep-others
+#menufile Programs folder programs
+menufile Tool_bar folder toolbar
+menuprog SUSE folder xdg_menu --format icewm
+```
+
+#### Preferences
+
+```
+TimeFormat="%H:%M - %d/%m/%y"
+
+# Mail icon
+TaskBarShowMailboxStatus=0
+
+# CPU monitor
+TaskBarShowCPUStatus=1
+
+# Memory monitor
+TaskBarShowMEMStatus=0
+
+# Network monitor (Ethernet/Wi-Fi)
+TaskBarShowNetStatus=1
+
+# Show only network interfaces that are running
+NetStatusShowOnlyRunning=1
+
+# Which network devices to monitor
+#NetworkStatusDevice="*"
+NetworkStatusDevice="wlp6s0"
+
+TaskBarShowWindowListMenu=0
+```
 ### Xterm
 
 - `.Xresources`:
