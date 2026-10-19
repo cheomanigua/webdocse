@@ -419,24 +419,26 @@ MenuStyle * GreyedColorset 5
 # --------------------------------------------------
 
 AddToMenu VintageRoot "Unix Workstation" Title
-+ "Terminal"         Exec exec xterm -ls
-+ "Kate Editor"      Exec exec kate
-+ "Dolphin Files"    Exec exec dolphin
-+ "Ungoogled Chrome" Exec exec /opt/ungoogled-chromium-143.0.7499.169-1-x86_64_linux/chrome
-+ "Okular"           Exec exec okular
-+ "Gwenview"		 Exec exec gwenview
-+ ""                 Nop
-+ "Blender"          Exec exec /opt/blender/blender
-+ "Godot"            Exec exec /opt/Godot_v4.6.3-stable_mono_linux_x86_64/Godot_v4.6.3-stable_mono_linux.x86_64
-+ "Aseprite"         Exec exec /opt/aseprite/build/bin/aseprite
-+ ""                 Nop
-+ "Manual Pages"     Exec exec xterm -e man fvwm
-+ "FVWM Modules"     Popup modules_popup
-+ ""                 Nop
-+ "Reboot..."        Exec exec systemctl reboot
-+ "Shutdown..."      Exec exec systemctl poweroff
-+ "Logout..."        Quit
-+ "Restart FVWM"     Restart
++ "Terminal"			Exec exec xterm -ls
++ "Xedit"            	Exec exec xedit
++ "Midnight Commander"  Exec exec xterm -e mc
++ "Kate Editor"      	Exec exec kate
++ "Dolphin Files"    	Exec exec dolphin
++ "Ungoogled Chrome" 	Exec exec /opt/ungoogled-chromium-143.0.7499.169-1-x86_64_linux/chrome
++ "Okular"           	Exec exec okular
++ "Gwenview"		 	Exec exec gwenview
++ ""                 	Nop
++ "Blender"          	Exec exec /opt/blender/blender
++ "Godot"            	Exec exec /opt/Godot_v4.6.3-stable_mono_linux_x86_64/Godot_v4.6.3-stable_mono_linux.x86_64
++ "Aseprite"         	Exec exec /opt/aseprite/build/bin/aseprite
++ ""                 	Nop
++ "Manual Pages"     	Exec exec xterm -e man fvwm
++ "FVWM Modules"     	Popup modules_popup
++ ""                 	Nop
++ "Reboot..."        	Exec exec systemctl reboot
++ "Shutdown..."      	Exec exec systemctl poweroff
++ "Logout..."        	Quit
++ "Restart FVWM"     	Restart
 
 # --------------------------------------------------
 # Bottom panel
@@ -445,7 +447,7 @@ AddToMenu VintageRoot "Unix Workstation" Title
 DestroyModuleConfig FvwmButtons: *
 
 Style FvwmButtons !Title, !Borders, Sticky, \
-    StaysOnTop, WindowListSkip, CirculateSkip, \
+    WindowListSkip, CirculateSkip, \
     FixedPosition, FixedSize, !Iconifiable
 
 # Panel geometry: full screen width, 30 pixels high.
@@ -458,6 +460,7 @@ Style FvwmButtons !Title, !Borders, Sticky, \
 *FvwmButtons: Back grey75
 *FvwmButtons: Fore black
 *FvwmButtons: Font "fixed"
+*FvwmButtons: Font "xft:DejaVu Sans:bold:pixelsize=12"
 
 # LEFT: application menu
 
@@ -468,19 +471,19 @@ Style FvwmButtons !Title, !Borders, Sticky, \
 
 # Application launchers
 *FvwmButtons: (40x1, Icon \
-    /usr/share/icons/breeze/apps/48/utilities-terminal.svg:20x20, \
+    /usr/share/icons/Adwaita/symbolic/legacy/utilities-terminal-symbolic.svg:20x20, \
     Action (Mouse 1) "Exec exec xterm -ls", Frame 2)
 
 *FvwmButtons: (40x1, Icon \
-    /usr/share/icons/breeze/apps/48/kate.svg:20x20, \
-    Action (Mouse 1) "Exec exec kate", Frame 2)
+    /usr/share/icons/Adwaita/symbolic/legacy/text-editor-symbolic.svg:20x20, \
+    Action (Mouse 1) "Exec exec xedit", Frame 2)
 
 *FvwmButtons: (40x1, Icon \
-    /usr/share/icons/hicolor/scalable/apps/org.kde.dolphin.svg:20x20, \
-    Action (Mouse 1) "Exec exec dolphin", Frame 2)
+    /usr/share/icons/Adwaita/symbolic/legacy/system-file-manager-symbolic.svg:20x20, \
+    Action (Mouse 1) "Exec exec xterm -e mc", Frame 2)
 
 *FvwmButtons: (40x1, Icon \
-    /usr/share/icons/product_logo_48.png, \
+    /usr/share/icons/Adwaita/symbolic/legacy/web-browser-symbolic.svg:20x20, \
     Action (Mouse 1) "Exec exec /opt/ungoogled-chromium-143.0.7499.169-1-x86_64_linux/chrome", Frame 2)
 
 
@@ -504,7 +507,7 @@ DestroyModuleConfig TaskBarIcons: *
 
 *TaskBarIcons: UseWinList true
 *TaskBarIcons: Resolution global
-*TaskBarIcons: Font "fixed"
+*TaskBarIcons: Font "xft:DejaVu Sans:pixelsize=12"
 *TaskBarIcons: ButtonGeometry 140x26
 *TaskBarIcons: MaxButtonWidth 180
 *TaskBarIcons: ManagerGeometry 1x1
@@ -522,14 +525,15 @@ DestroyModuleConfig TaskBarIcons: *
 
 # RIGHT: time and date
 
-*FvwmButtons: (150x1, Id PanelClock, \
+*FvwmButtons: (150x1, Id PanelClock, Font "xft:DejaVu Sans:bold:pixelsize=14", \
     Title "--:-- -- ---", Frame 2)
+	#Title "`date +'%H:%M %d %b'`", Frame 2)
 
 # --------------------------------------------------
 # Panel stacking and reserved screen space
 # --------------------------------------------------
 
-Style FvwmButtons StaysOnTop, FixedPosition, FixedSize
+Style FvwmButtons FixedPosition, FixedSize
 
 # Reserve the bottom 30 pixels for EWMH-aware applications.
 EwmhBaseStruts 0 0 0 30
@@ -539,12 +543,13 @@ EwmhBaseStruts 0 0 0 30
 # --------------------------------------------------
 
 AddToFunc UpdatePanelClock
-+ I PipeRead 'echo "SendToModule FvwmButtons ChangeButton PanelClock Title \\"`date +%H:%M\\ %d\\ %b`\\""'
-
++ I PipeRead 'echo "SendToModule FvwmButtons ChangeButton PanelClock Title \\\"`date +\"%H:%M %d %b\"`\\\""'
 AddToFunc StartFunction
 + I Test (Init) Module FvwmButtons
 + I Test (Init) Module FvwmIconMan TaskBarIcons
-+ I Test (Init) Schedule 10000 UpdatePanelClock
++ I Test (Init) Module FvwmCommandS
++ I UpdatePanelClock
++ I Schedule Periodic 1000 UpdatePanelClock
 
 # --------------------------------------------------
 # Keyboard shortcuts
