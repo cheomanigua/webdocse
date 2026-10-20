@@ -367,7 +367,7 @@ TaskBarShowWindowListMenu=0
 
 ### FVWM
 
-##### `.fvm/config`
+##### `.fvwm/config`
 ```
 # Vintage 1990s Unix workstation with bottom taskbar
 # FVWM 2.7.0 / openSUSE Leap 16
@@ -544,12 +544,12 @@ EwmhBaseStruts 0 0 0 30
 
 AddToFunc UpdatePanelClock
 + I PipeRead 'echo "SendToModule FvwmButtons ChangeButton PanelClock Title \\\"`date +\"%H:%M %d %b\"`\\\""'
+
 AddToFunc StartFunction
-+ I Test (Init) Module FvwmButtons
-+ I Test (Init) Module FvwmIconMan TaskBarIcons
++ I Test (Init) FvwmButtons
 + I Test (Init) Module FvwmCommandS
 + I UpdatePanelClock
-+ I Schedule Periodic 1000 UpdatePanelClock
++ I Schedule Periodic 10000 UpdatePanelClock
 
 # --------------------------------------------------
 # Keyboard shortcuts
