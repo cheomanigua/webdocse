@@ -39,7 +39,9 @@ toc: true
 
 - `diff file1 file2` - Show the differences in the content of file1 and file2
 - `diff -r dir1 dir2` - Show the differences in the content and files of dir1 and dir2
-- `xclip -sel c myfile.txt` - Copy the content of myfile.txt into the clipboard
+- `xclip -sel c myfile.txt` - Copy content of myfile.txt to clipboard. Paste with **Ctrl + V**.
+- `xclip -sel p myfile.txt` - Copy content of myfile.txt to clipboard. Paste with mouse middle click.
+- `setxkbmap us`, `setxkbmap es` - Change keyboard layout to US English / Spanish
 - `sudo dd bs=4M if=my_iso_image.iso of=/dev/sdc status=progress oflag=sync` - Create bootable pendrive
 
 #### Disk space
@@ -422,9 +424,12 @@ AddToMenu VintageRoot "Unix Workstation" Title
 + "Terminal"			Exec exec xterm -ls
 + "Xedit"            	Exec exec xedit
 + "Midnight Commander"  Exec exec xterm -e mc
++ "Ungoogled Chrome" 	Exec exec /opt/ungoogled-chromium-143.0.7499.169-1-x86_64_linux/chrome
++ "Firefox"				Exec exec firefox
++ ""                 	Nop
++ "Konsole"				Exec exec konsole
 + "Kate Editor"      	Exec exec kate
 + "Dolphin Files"    	Exec exec dolphin
-+ "Ungoogled Chrome" 	Exec exec /opt/ungoogled-chromium-143.0.7499.169-1-x86_64_linux/chrome
 + "Okular"           	Exec exec okular
 + "Gwenview"		 	Exec exec gwenview
 + ""                 	Nop
