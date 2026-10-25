@@ -274,6 +274,8 @@ Find and replace **foo** with **bar** selectively:
 
 ### Explorer
 
+#### Same window
+
 - Open file explorer -\> **:e .**
 - Open file explorer -\> **:Ex**
 - Open file explorer -\> **:Explore**
@@ -286,6 +288,12 @@ Find and replace **foo** with **bar** selectively:
 - Delete a file/directory within Explorer -\> Place the cursor over the file/directory and press **D**
 - Create a new file: `:e filename`
 - List files in current directory -\> **:e** then press **Space** and **Ctrl**+**d**
+
+#### Split window
+
+- Open file explorer -\> **:Lex**
+- Open file explorer 15 characters wide -\> **:Lex 15**
+- Increase/decrease window width/height -\> Check **Windows** section below.
 
 ### Buffers
 
@@ -308,6 +316,14 @@ Find and replace **foo** with **bar** selectively:
 - Move windows directionally -\> **Ctrl** + **w** + **H/J/K/L**
 - Close current window -\> **Ctrl + q** or **:hide**
 - Close all windows except current one: -\> **:only**
+- Increase/decrease window height -\> **Ctrl+w +** / **Ctrl+w -** 
+- Increase/decrease window width -\> **Ctrl+w >+** / **Ctrl+w <** 
+- Increase/decrease window height 5 lines -\> **Ctrl+w 5 +** / **Ctrl+w 5 -** 
+- Increase/decrease window width 5 columns-\> **Ctrl+w 5 >** / **Ctrl+w 5 <** 
+- Increase/decrease window height 5 lines -\> **:resize +5 / -5**
+- Increase/decrease window width 5 columns-\> **:vertical resize +5 / -5**
+- Resize window width 20 columns -\> **:resize 20**
+- Resize window height 20 lines -\> **:vertical resize 20**
 
 ### Tabs
 
@@ -329,23 +345,33 @@ You can customize Vim by editing `~/.vimrc`
 ```
 syntax enable
 filetype plugin indent on
-
 set tabstop=4
 set shiftwidth=4
 set softtabstop=4
-set expandtab
+set noexpandtab
+set autoindent
 
-" Custom syntax colors
-highlight String  ctermfg=Yellow
-highlight Boolean ctermfg=210
-highlight Number  ctermfg=183
-highlight Comment ctermfg=245
-highlight jsonKeyword ctermfg=Blue
-highlight jsonString ctermfg=Yellow
+set laststatus=2
+set statusline=%f\ %=%l:%c\ %L\ (%p%%)
+
+" Built-in netrw file explorer
+let g:netrw_liststyle = 3
+let g:netrw_banner = 0
+let g:netrw_winsize = 30
+
+" Disable swap files
+set noswapfile
 
 set number
 set relativenumber
 set listchars=tab:»\ ,trail:·,lead:·
+
+"highlight String ctermfg=Yellow
+"highlight Boolean ctermfg=210
+"highlight Number ctermfg=183
+"highlight Comment ctermfg=245
+"highlight jsonKeyword ctermfg=Blue
+"highlight jsonString ctermfg=Yellow
 ```
 
 More elaborated:

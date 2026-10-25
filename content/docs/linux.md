@@ -196,6 +196,19 @@ echo 3 | sudo tee /sys/module/hid_apple/parameters/fnmode   # firmware default
 sudo lsof -i :8080
 kill -9 "PID of the port"
 ```
+### Apps
+
+#### Consoles
+
+- Xterm, QTerminal, xfce4-terminal
+
+#### Text Editors
+
+- Leafpad, Mousepad, Featherpad, Gedit, Geany, Beaver
+
+#### File Browsers
+
+- PCManFM-Qt, Thunar, Midnight Commander
 
 ### i3
 
