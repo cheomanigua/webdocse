@@ -200,7 +200,7 @@ kill -9 "PID of the port"
 
 #### Consoles
 
-- Xterm, QTerminal, xfce4-terminal
+- Xterm, rxvt-unicode, slterm, st, QTerminal, xfce4-terminal
 
 #### Text Editors
 
@@ -623,6 +623,32 @@ $ xrdb -merge .Xresources
 ```
 and restart Xterm.
 
+###  rxvt-unicode
+
+**rxvt** is a minimalistic terminal emulator.
+
+```
+zypper install rxvt-unicode urxvt-font-size
+```
+
+`urxvt-font-size` is optional. It is used to increase/decrease the font size dynamically with keyboar binding.
+
+- `.Xresources`:
+
+```
+URxvt.font: xft:Classic Console:pixelsize=20
+URxvt.background: Black
+URxvt.foreground: Gray85
+URxvt.saveLines: 5000
+URxvt.scrollBar: false
+URxvt.mouseWheelScrollPage: false
+
+!if urxvt-font-size is installed
+URxvt.keysym.C-+: font-size:increase
+URxvt.keysym.C-minus: font-size:decrease
+URxvt.keysym.C-equal: font-size:reset
+URxvt.font-size.step: 1
+```
 
 ### Wezterm
 
