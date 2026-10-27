@@ -43,11 +43,15 @@ $ xclip -sel c ~/.ssh/id_ed25519.pub
 ```
 
 ### 2. Add your public ssh key to GitHub
+***Skip this step if you already have added your public ssh key to GitHub***
 
 1. Log into GitHub ➡️  Settings ➡️  SSH and GPG keys ➡️  New SSH key
 2. Paste the content of your public SSH key into the '**Key**' field. Add a descriptive label for the '**Title**' field.
 
 ### 3. Create a GitHub repository to host your project
+
+{{< alert context="warning" text="**CRITICAL!!!**<br>Check whether you have setup GitHub email address private or not, because the correct email address must be set in your local computer Git installation. To setup the local Git email address, run:<br><code>git config --global user.email \"email_address.com\"</code>" />}}
+
 1. Log into GitHub and click on the '**New**' button 
 2. Type in the repository name
 3. Add a description
@@ -177,6 +181,8 @@ git config --global/--local user.name "Your Name"
 git config --global/--local user.email "your@email.com"
 git config --list
 ```
+
+{{< alert context="warning" text="**CRITICAL!!!**<br>Check whether you have setup GitHub email address private or not, because the correct email address must be set in your local computer Git installation." />}}
 
 #### Starting a Repo
 
