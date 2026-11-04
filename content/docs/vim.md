@@ -316,10 +316,10 @@ Find and replace **foo** with **bar** selectively:
 - Move windows directionally -\> **Ctrl** + **w** + **H/J/K/L**
 - Close current window -\> **Ctrl + q** or **:hide**
 - Close all windows except current one: -\> **:only**
-- Increase/decrease window height -\> **Ctrl+w +** / **Ctrl+w -** 
-- Increase/decrease window width -\> **Ctrl+w >+** / **Ctrl+w <** 
-- Increase/decrease window height 5 lines -\> **Ctrl+w 5 +** / **Ctrl+w 5 -** 
-- Increase/decrease window width 5 columns-\> **Ctrl+w 5 >** / **Ctrl+w 5 <** 
+- Increase/decrease window height -\> `Ctrl`·`w`·`+` / `Ctrl`·`w`·`-` 
+- Increase/decrease window width -\> `Ctrl`·`w`·`>` / `Ctrl`·`w`·`<`
+- Increase/decrease window height 5 lines -\> `Ctrl`·`w`·`5`·`+` / `Ctrl`·`w`·`5`·`-` 
+- Increase/decrease window width 5 columns-\> `Ctrl`·`w`·`5`·`>` / `Ctrl`·`w`·`5`·`<` 
 - Increase/decrease window height 5 lines -\> **:resize +5 / -5**
 - Increase/decrease window width 5 columns-\> **:vertical resize +5 / -5**
 - Resize window width 20 columns -\> **:resize 20**
