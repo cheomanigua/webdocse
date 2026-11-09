@@ -15,6 +15,7 @@ toc: true
 
 - `find /usr -iname "wallpaper.jpg"` - Find all files named `wallpaper.jpg` inside `/usr` directory
 - `grep -r "foo"` - Find all files containing `foo` in current directory recursively
+- `grep -r "foo" --exclude-dir={build,tests}` - Exclude directories `build` and `tests` from the findings.
 - `sed -i 's/foo/bar/g' file.txt` - Replace all instances of string `foo` for `bar` in `file.txt`
 - `sed 's/foo/bar/g' file.txt` - Preview the replacement preserving the file intact
 - `history | grep "foo"` - List history of commands where `foo` is present
@@ -41,6 +42,7 @@ toc: true
 - `diff -r dir1 dir2` - Show the differences in the content and files of dir1 and dir2
 - `xclip -sel c myfile.txt` - Copy content of myfile.txt to clipboard. Paste with **Ctrl + V**.
 - `xclip -sel p myfile.txt` - Copy content of myfile.txt to clipboard. Paste with mouse middle click.
+- `tree -I build` - Show tree of current directory recursively, except for directory `build`
 - `setxkbmap us`, `setxkbmap es` - Change keyboard layout to US English / Spanish
 - `sudo dd bs=4M if=my_iso_image.iso of=/dev/sdc status=progress oflag=sync` - Create bootable pendrive
 
@@ -208,7 +210,7 @@ kill -9 "PID of the port"
 
 #### File Browsers
 
-- PCManFM-Qt, Thunar, Midnight Commander
+- PCManFM-Qt, Thunar, Midnight Commander, ranger
 
 ### i3
 
@@ -604,16 +606,16 @@ Key Right A M GotoDesk  1 0 3
 
 ```
 NetHack.double_tile_size: True
-XTerm*termName: xterm-256color
-XTerm*selectToClipboard: true
-XTerm*alternateScroll: true
-XTerm*faceName: Classic Console
-XTerm*faceSize: 16
-XTerm*background: black
-XTerm*foreground: gray90
+xterm*termName: xterm-256color
+xterm*selectToClipboard: true
+xterm*alternateScroll: true
+xterm*faceName: Classic Console
+xterm*faceSize: 16
+xterm*background: black
+xterm*foreground: gray90
 
-!XTerm*renderFont: true
-!XTerm*vt100.initialFont: 6
+!xterm*renderFont: true
+!xterm*vt100.initialFont: 6
 ```
 
 then run:
@@ -889,7 +891,7 @@ sudo apt install ./libraylib-dev_6.0+ds-2_amd64.deb
 #### Compilation
 
 ```bash
-g++ main.cpp -o MyApp -lraylib -lm -lpthread -ldl -lrt
+g++ main.cpp -o MyApp -lraylib -lm -lpthread -ldl
 ```
 
 #### Optional dependencies
@@ -911,7 +913,7 @@ zypper install Mesa-libGL-devel libX11-devel
 apt install libgl-dev libx11-dev
 
 // OpenSuse and Debian
-g++ main.cpp -o MyApp -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+g++ main.cpp -o MyApp -lraylib -lGL -lm -lpthread -ldl -lX11
 ```
 
 ### mpv & yt-dlp
@@ -1142,6 +1144,18 @@ $ pandoc --pdf-engine=groff --toc-depth=3 myfile.md -o myfile.pdf
 
 
 ### sc spreadsheet
+
+#### Installation Debian
+
+```
+sudo apt install sc
+```
+
+#### Installation OpenSuse
+
+```
+sudo zypper install sc-im
+```
 
 | | |
 |-|-|

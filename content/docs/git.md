@@ -129,7 +129,7 @@ $ git push
 [edit, add, commit and push as needed until the new feature is completed and tested]
 $ git checkout main
 $ git pull origin main
-$ git merge newbranch
+$ git merge newbranch // or git merge --no-off newbranch
 $ git push origin main
 $ git branch -d newbranch
 $ git push origin --delete newbranch
